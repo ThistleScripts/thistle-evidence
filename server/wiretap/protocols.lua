@@ -31,6 +31,9 @@ Thistle.Callback.Register("evidences:storeWiretap", function(source, arguments)
         }
     end
 
+    -- The log exists so wiretaps can be checked later, so the observer is always the player who ran it
+    arguments.observer = framework.getPlayerName(source)
+
     return database.insert(
         [[
             INSERT INTO wiretaps (type, startedAt, endedAt, observer, target, protocol)

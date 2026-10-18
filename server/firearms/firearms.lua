@@ -90,7 +90,13 @@ Thistle.Callback.Register("evidences:registerFirearm", function(source, argument
         }
     end
 
+    arguments.registeredBy = framework.getPlayerName(source)
+    arguments.registeredAt = nil -- set by registerFirearm
+
     local result <const> = registerFirearm(arguments)
+    if not result then
+        return { success = false }
+    end
 
     if result.success then
         logger.log(source, "Firearm registered", result.response)

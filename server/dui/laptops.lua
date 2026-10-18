@@ -65,11 +65,21 @@ end)
 
 Thistle.Callback.Register("evidences:pickupLaptop", function(source, coords)
     if not framework.hasPermission(config.permissions.pickup, source) then
-        TriggerClientEvent("evidences:notify", playerId, { key = "laptop.notifications.no_permission" }, "success")
+        TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end
 
-    if database.update(
+    if type(coords) ~= "vector4" or #(GetEntityCoords(GetPlayerPed(source)) - coords.xyz) > 5.0 then
+        return false
+    end
+
+    if not exports.ox_inventory:CanCarryItem(source, "evidence_laptop", 1) then
+        TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.error_laptop_pickup" }, "error")
+        return false
+    end
+
+    -- Only hand out a laptop when one was actually removed, otherwise repeating the call would duplicate it
+    local result <const> = database.update(
         [[
             DELETE FROM evidence_laptops
                 WHERE x = ?
@@ -78,13 +88,14 @@ Thistle.Callback.Register("evidences:pickupLaptop", function(source, coords)
                 AND w = ?
         ]],
         tostring(coords.x), tostring(coords.y), tostring(coords.z), tostring(coords.w)
-    ).success then
-        if exports.ox_inventory:AddItem(source, "evidence_laptop", 1) then
-            TriggerClientEvent("evidences:destroyLaptop", -1, coords)
-            return true
-        end
+    )
+
+    if result.success and (tonumber(result.response) or 0) > 0 then
+        TriggerClientEvent("evidences:destroyLaptop", -1, coords)
+        exports.ox_inventory:AddItem(source, "evidence_laptop", 1)
+        return true
     end
 
-    TriggerClientEvent("evidences:notify", playerId, { key = "laptop.notifications.error_laptop_pickup" }, "error")
+    TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.error_laptop_pickup" }, "error")
     return false
 end)

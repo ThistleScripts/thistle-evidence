@@ -6,7 +6,78 @@ local logger <const> = require "server.logger"
 
 local actions = {}
 
+local reach <const> = 10.0
+local removalMethods <const> = {
+    removeFromPlayer = true,
+    removeFromEntity = true,
+    removeFromRelativeEntityCoords = true,
+    removeFromVehicleSeats = true,
+    removeFromVehicleDoors = true,
+    removeFromCoords = true
+}
+
+-- Confirms the evidence the client wants to collect or destroy really is where it says, and within reach.
+local function isEvidenceInReach(source, evidenceType, owner, remove)
+    if type(owner) ~= "string" or type(remove) ~= "table" or type(remove.arguments) ~= "table" or not removalMethods[remove.fun] then
+        return false
+    end
+
+    local target <const> = remove.arguments[1]
+    local stateKey <const> = ("evidences:%s"):format(evidenceType)
+
+    if remove.fun == "removeFromCoords" then
+        local evidence <const> = EvidencesAtCoords[target]
+        return evidence ~= nil and evidence.__name == evidenceType and evidence.owner == owner and api.isNear(source, target, reach)
+    end
+
+    if remove.fun == "removeFromPlayer" then
+        local playerId <const> = tonumber(target)
+        if not playerId or not DoesPlayerExist(playerId) then
+            return false
+        end
+
+        local evidences <const> = Player(playerId).state[stateKey]
+        return evidences ~= nil and evidences[owner] ~= nil and api.isNear(source, GetEntityCoords(GetPlayerPed(playerId)), reach)
+    end
+
+    local entity <const> = api.entityFromNetId(target)
+    local evidences <const> = entity and Entity(entity).state[stateKey]
+    return evidences ~= nil and evidences[owner] ~= nil and api.isNear(source, GetEntityCoords(entity), reach)
+end
+
+-- The client builds the item's metadata (it knows the street name and local time), so only keep the expected fields
+local function sanitizeMetadata(metadata)
+    metadata = type(metadata) == "table" and metadata or {}
+
+    local function text(value)
+        return type(value) == "string" and value:sub(1, 250) or nil
+    end
+
+    local information <const> = type(metadata.information) == "table" and metadata.information or {}
+    local ballistics <const> = type(metadata.ballistics) == "table" and metadata.ballistics or {}
+
+    return {
+        createdAt = tonumber(metadata.createdAt),
+        information = {
+            collectionTime = text(information.collectionTime),
+            crimeScene = text(information.crimeScene),
+            additionalData = text(information.additionalData)
+        },
+        ballistics = {
+            weaponType = text(ballistics.weaponType),
+            weaponImage = text(ballistics.weaponImage),
+            serial = text(ballistics.serial),
+            imperfections = text(ballistics.imperfections),
+            type = text(ballistics.type)
+        }
+    }
+end
+
 Thistle.Callback.Register("evidences:destroy", function(source, evidenceType, owner, remove)
+    if not evidenceTypes[evidenceType] or not isEvidenceInReach(source, evidenceType, owner, remove) then
+        return false
+    end
+
     local requiredItem <const> = evidenceTypes[evidenceType].target.destroy.requiredItem or nil
 
     if requiredItem then
@@ -19,19 +90,19 @@ Thistle.Callback.Register("evidences:destroy", function(source, evidenceType, ow
     local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
     object[remove.fun](object, table.unpack(remove.arguments))
 
-    local data = {
+    logger.log(source, "Evidence destroyed", {
         evidenceType = evidenceType,
-        biometricData = owner
-    }
-
-    if remove then
-        data[remove.fun] = json.encode(remove.arguments)
-    end
-
-    logger.log(source, "Evidence destroyed", data)
+        biometricData = owner,
+        [remove.fun] = json.encode(remove.arguments)
+    })
     return true
 end)
 
+---@param source number The collecting player
+---@param evidenceType string
+---@param owner number|string The evidence owner, or a player's server id when taking their biometrics directly
+---@param remove? { fun: string, arguments: table } Where to remove the evidence from once collected
+---@param metadata? table
 function actions.collect(source, evidenceType, owner, remove, metadata)
     if not framework.hasPermission(config.permissions.collect, source) then
         return false
@@ -49,6 +120,11 @@ function actions.collect(source, evidenceType, owner, remove, metadata)
         return false
     end
 
+    local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
+    if not object then
+        return false
+    end
+
     local lowestDurability = lib.array.reduce(lib.array:from(slots), function(accumulator, element)
         local accDurability = (accumulator.metadata and accumulator.metadata.durability) or 100
         local elemDurability = (element.metadata and element.metadata.durability) or 100
@@ -63,21 +139,19 @@ function actions.collect(source, evidenceType, owner, remove, metadata)
         return false
     end
 
-    local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
-
     if remove then
         object[remove.fun](object, table.unpack(remove.arguments))
     end
 
-    metadata = metadata or {}
-    metadata.description = require "server.evidences.evidence_information"(metadata.information or {})
+    metadata = sanitizeMetadata(metadata)
+    metadata.description = require "server.evidences.evidence_information"(metadata.information)
 
     object:atItem(source, response[1].slot, metadata)
 
 
     local data = {
         evidenceType = evidenceType,
-        biometricData = owner,
+        biometricData = object.owner,
         information = metadata.description:gsub("  \n ", "\n")
     }
 
@@ -90,6 +164,10 @@ function actions.collect(source, evidenceType, owner, remove, metadata)
 end
 
 Thistle.Callback.Register("evidences:collect", function(source, evidenceType, owner, remove, metadata)
+    if not evidenceTypes[evidenceType] or not isEvidenceInReach(source, evidenceType, owner, remove) then
+        return false
+    end
+
     return actions.collect(source, evidenceType, owner, remove, metadata)
 end)
 

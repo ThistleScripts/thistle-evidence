@@ -24,6 +24,10 @@ Thistle.Callback.Register("evidences:storeNote", function(source, arguments)
         }
     end
 
+    -- Set the author and time here, not from the laptop, so notes can't be signed with someone else's name
+    arguments.modifiedBy = framework.getPlayerName(source)
+    arguments.modifiedAt = os.time() * 1000
+
     return database.insert(
         [[
             INSERT INTO citizen_notes (id, identifier, modifiedAt, modifiedBy, title, text)
@@ -40,9 +44,10 @@ Thistle.Callback.Register("evidences:storeNote", function(source, arguments)
             if not arguments.id then
                 arguments.id = id
                 logger.log(source, "Note created", arguments)
+            else
+                logger.log(source, "Note edited", arguments)
             end
 
-            logger.log(source, "Note edited", arguments)
             return arguments
         end)
 end)

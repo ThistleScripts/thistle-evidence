@@ -35,7 +35,8 @@ RegisterNetEvent("evidences:destroySpyMicrophone", function(label)
     local playerId <const> = source
     local observableSpyMicrophone <const> = spyMicrophones[label]
 
-    if observableSpyMicrophone then
+    -- The microphone has to be within reach (the client only offers it from 2 m away)
+    if observableSpyMicrophone and #(GetEntityCoords(GetPlayerPed(playerId)) - vector3(observableSpyMicrophone.coords.x, observableSpyMicrophone.coords.y, observableSpyMicrophone.coords.z)) <= 5.0 then
         observableSpyMicrophone:destroy()
         spyMicrophones[label] = nil
 

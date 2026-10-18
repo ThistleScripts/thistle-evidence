@@ -9,6 +9,14 @@ Thistle.Callback.Register("evidences:takeBiometricData", function(playerId, targ
         return false
     end
 
+    -- The target has to be a player standing next to the officer (the client offers this from 3 m away)
+    targetId = tonumber(targetId)
+    local ped <const>, targetPed <const> = GetPlayerPed(playerId), targetId and GetPlayerPed(targetId) or 0
+    if (type ~= "dna" and type ~= "fingerprint") or not targetId or targetId == playerId or targetPed == 0
+        or #(GetEntityCoords(ped) - GetEntityCoords(targetPed)) > 5.0 then
+        return false
+    end
+
     if not enforce then
         TriggerClientEvent("evidences:notify", playerId, { key = "biometrics_taking.notifications.request_sent" }, "inform")
 

@@ -55,8 +55,102 @@ local function syncEvidence(evidenceClass, owner, fun, ...)
 end
 
 api.syncEvidence = syncEvidence
-
-RegisterNetEvent("evidences:syncEvidence", syncEvidence)
 exports("syncEvidence", syncEvidence)
+
+
+---@param playerId number
+---@param coords vector3|vector4|table
+---@param maxDistance number
+---@return boolean
+function api.isNear(playerId, coords, maxDistance)
+    local ped <const> = GetPlayerPed(playerId)
+    if ped == 0 or type(coords) ~= "vector3" and type(coords) ~= "vector4" then
+        return false
+    end
+
+    return #(GetEntityCoords(ped) - coords.xyz) <= maxDistance
+end
+
+---@param netId any
+---@return number? entity
+function api.entityFromNetId(netId)
+    if type(netId) ~= "number" then
+        return nil
+    end
+
+    local entity <const> = NetworkGetEntityFromNetworkId(netId)
+    return (entity ~= 0 and DoesEntityExist(entity)) and entity or nil
+end
+
+local function currentWeaponSerial(playerId)
+    local weapon <const> = exports.ox_inventory:GetCurrentWeapon(playerId)
+    local metadata <const> = weapon and weapon.metadata
+    return metadata and (metadata.serial or metadata.imperfections)
+end
+
+-- Clients report the traces they leave themselves (blood, fingerprints, shots), so anyone can send this event.
+-- Only the methods the client scripts use are accepted, and only for the sender's own biometrics or current weapon,
+-- their own inventory, and places near them.
+local reportRange <const> = 150.0
+
+local function isEntityInRange(source, netId)
+    local entity <const> = api.entityFromNetId(netId)
+    return entity ~= nil and api.isNear(source, GetEntityCoords(entity), reportRange)
+end
+
+local clientMethods <const> = {
+    atCoords = function(source, coords) return api.isNear(source, coords, reportRange) end,
+    atEntity = isEntityInRange,
+    atRelativeEntityCoords = isEntityInRange,
+    atVehicleSeat = isEntityInRange,
+    atVehicleDoor = isEntityInRange,
+    atPlayer = function(source, playerId) return playerId == source end,
+    atItem = function(source, inventory) return inventory == source end,
+    removeFromItem = function(source, inventory) return inventory == source end,
+    atWeaponOf = function(source, attacker)
+        attacker = tonumber(attacker)
+        return attacker ~= nil and attacker ~= source and DoesPlayerExist(attacker)
+            and api.isNear(source, GetEntityCoords(GetPlayerPed(attacker)), 10.0)
+    end
+}
+
+local biometricTypes <const> = { fingerprint = true, blood = true, saliva = true }
+
+local function isOwnerAllowed(source, className, owner, fun)
+    -- wiping someone's traces off a weapon in your own inventory (hydrogen peroxide)
+    if fun == "removeFromItem" then
+        return type(owner) == "string"
+    end
+
+    if biometricTypes[className] then
+        return owner == source
+    end
+
+    local serial <const> = currentWeaponSerial(source)
+    if not serial then
+        return false
+    end
+
+    if className == "gunshot_residue" then
+        return type(owner) == "table" and owner[1] == serial and tonumber(owner[2]) == source
+    end
+
+    return owner == serial
+end
+
+RegisterNetEvent("evidences:syncEvidence", function(className, owner, fun, ...)
+    local source <const> = source
+
+    if type(className) ~= "string" or not api.evidenceTypes[className] then
+        return
+    end
+
+    local isAllowed <const> = type(fun) == "string" and clientMethods[fun]
+    if not isAllowed or not isAllowed(source, ...) or not isOwnerAllowed(source, className, owner, fun) then
+        return
+    end
+
+    syncEvidence(className, owner, fun, ...)
+end)
 
 return api
