@@ -108,7 +108,7 @@ exports("copySerialNumber", function(slot)
             return
         end
 
-        config.notify({ key = "evidences.notifications.missing_serial" }, "success")
+        config.notify({ key = "evidences.notifications.missing_serial" }, "error")
     end
 end)
 

@@ -10,11 +10,11 @@ CreateThread(function() -- detects healing
             lastHealth = health
         end
 
-        for _, evidence in ipairs(EvidencesAtCoords) do
-            if evidence.evidenceType == "blood" then
-                if evidence:isExposedToRain() then
-                    evidence:destroy()
-                end
+        -- backwards, since destroy() removes the entry from the list
+        for i = #EvidencesAtCoords, 1, -1 do
+            local evidence <const> = EvidencesAtCoords[i]
+            if evidence.evidenceType == "blood" and evidence:isExposedToRain() then
+                evidence:destroy()
             end
         end
         

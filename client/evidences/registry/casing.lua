@@ -8,7 +8,7 @@ AddEventHandler("evidences:playerShot", function(weapon)
         local serial <const> = weapon.metadata.serial or weapon.metadata.imperfections
 
         -- vehicle casing
-        if cache.vehicle and cache.seat and not IsPedOnAnyBike(ped) then
+        if cache.vehicle and cache.seat and not IsPedOnAnyBike(cache.ped) then
             TriggerServerEvent("evidences:syncEvidence", "casing", serial,
                 "atVehicleSeat", NetworkGetNetworkIdFromEntity(cache.vehicle), cache.seat, {
                     plate = GetVehicleNumberPlateText(cache.vehicle),

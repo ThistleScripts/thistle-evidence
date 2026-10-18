@@ -66,18 +66,19 @@ end
 -- While destroying the evidence triggers the removeFromRelativeEntityCoords() function, collecting the evidence also transfers it to an item created for that purpose.
 ---@param entity number The netId of the entity the evidence should be bound to
 ---@param coords vector3 The relative coords of the evidence on the entity
----@param metadata? table
+---@param commonMetadata? table Metadata shared by all coords of this evidence on the entity
+---@param specificMetadata? table Metadata for this position only
 function evidence:atRelativeEntityCoords(entity, coords, commonMetadata, specificMetadata)
     if not DoesEntityExist(entity) then
         entity = NetworkGetEntityFromNetworkId(entity)
     end
 
     local currentEvidencesOfThisType = Entity(entity).state[string.format("evidences:%s", self.__name)] or {}
-    metadata = metadata or {}
+    local metadata <const> = commonMetadata or {}
     metadata.coords = (currentEvidencesOfThisType[self.owner] and currentEvidencesOfThisType[self.owner].coords) or {}
     metadata.coords[coords] = specificMetadata or {}
 
-    atEntityInternal(self, entity, Entity(entity).state[string.format("evidences:%s", self.__name)] or {}, metadata)
+    atEntityInternal(self, entity, currentEvidencesOfThisType, metadata)
 end
 
 -- Removes the evidence from the relative coords on the entity it is bound to.
@@ -90,6 +91,10 @@ function evidence:removeFromRelativeEntityCoords(entity, coords)
 
     local currentEvidencesOfThisType = Entity(entity).state[string.format("evidences:%s", self.__name)] or {}
     local evidenceCoords = (currentEvidencesOfThisType[self.owner] and currentEvidencesOfThisType[self.owner].coords) or {}
+    if not currentEvidencesOfThisType[self.owner] then
+        return
+    end
+
     for _, coord in pairs(type(coords) == "table" and coords or { coords }) do
         evidenceCoords[coord] = nil
     end
@@ -145,6 +150,10 @@ function evidence:removeFromVehicleSeats(vehicle, seatIds)
 
     local currentEvidencesOfThisType = Entity(vehicle).state[string.format("evidences:%s", self.__name)] or {}
     local evidenceSeatIds = (currentEvidencesOfThisType[self.owner] and currentEvidencesOfThisType[self.owner].seatIds) or {}
+    if not currentEvidencesOfThisType[self.owner] then
+        return
+    end
+
     for _, seatId in pairs(type(seatIds) == "table" and seatIds or { seatIds }) do
         evidenceSeatIds[seatId] = nil
     end
@@ -182,6 +191,10 @@ function evidence:removeFromVehicleDoors(vehicle, doorIds)
 
     local currentEvidencesOfThisType = Entity(vehicle).state[string.format("evidences:%s", self.__name)] or {}
     local evidenceDoorIds = (currentEvidencesOfThisType[self.owner] and currentEvidencesOfThisType[self.owner].doorIds) or {}
+    if not currentEvidencesOfThisType[self.owner] then
+        return
+    end
+
     for _, doorId in pairs(type(doorIds) == "table" and doorIds or { doorIds }) do
         evidenceDoorIds[doorId] = nil
     end
@@ -273,7 +286,7 @@ end
 function evidence:atItem(inventory, slot, data)
     local item <const> = exports.ox_inventory:GetSlot(inventory, slot)
 
-    if item or next(item) == nil then
+    if item then
         local metadata <const> = item.metadata or {}
 
         for key, value in pairs(data or {}) do
@@ -294,7 +307,7 @@ end
 function evidence:removeFromItem(inventory, slot)
     local item <const> = exports.ox_inventory:GetSlot(inventory, slot)
 
-    if item or next(item) == nil then
+    if item then
         local metadata <const> = item.metadata or {}
         metadata[self.superClassName] = nil
 

@@ -22,7 +22,7 @@ AddEventHandler("evidences:playerShot", function(weapon, hit, entityHit, impactC
                 "atRelativeEntityCoords", NetworkGetNetworkIdFromEntity(entityHit), localCoords, {
                     weaponType = weapon.label,
                     imperfections = serial,
-                    plate = GetVehicleNumberPlateText(entity),
+                    plate = entityType == 2 and GetVehicleNumberPlateText(entityHit) or nil,
                     type = "bullet"
                 }, { shooterCoords = shooterCoords })
 

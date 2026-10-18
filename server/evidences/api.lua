@@ -36,10 +36,13 @@ function api.get(evidenceClass, owner)
         if not owner then return end
     end
 
-    cache[evidenceClass] = cache[evidenceClass] or {}
-    cache[evidenceClass][owner] = cache[evidenceClass][owner] or evidenceClass:new(owner)
+    -- Gunshot residue owners are { serial, playerId } tables, which would be a new cache key on every shot
+    local cacheKey <const> = type(owner) == "table" and table.concat(owner, ":") or owner
 
-    return cache[evidenceClass][owner]
+    cache[evidenceClass] = cache[evidenceClass] or {}
+    cache[evidenceClass][cacheKey] = cache[evidenceClass][cacheKey] or evidenceClass:new(owner)
+
+    return cache[evidenceClass][cacheKey]
 end
 
 -- Binds evidence or removes it

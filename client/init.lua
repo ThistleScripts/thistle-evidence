@@ -55,8 +55,10 @@ exports.ox_target:addGlobalPlayer({
         end
 
         for _, options in pairs(evidenceTypes) do
-            local hasRequiredItemToCollect <const> = options.target.collect.requiredItem and (exports.ox_inventory:Search("count", options.target.collect.requiredItem) > 0) or true
-            local hasRequiredItemToDestroy <const> = options.target.destroy.requiredItem and (exports.ox_inventory:Search("count", options.target.destroy.requiredItem) > 0) or true
+            -- `a and b or true` is always true, so spell out "no item needed, or the player has it"
+            local collectItem <const>, destroyItem <const> = options.target.collect.requiredItem, options.target.destroy.requiredItem
+            local hasRequiredItemToCollect <const> = not collectItem or exports.ox_inventory:Search("count", collectItem) > 0
+            local hasRequiredItemToDestroy <const> = not destroyItem or exports.ox_inventory:Search("count", destroyItem) > 0
 
             requiredItemPresent = hasRequiredItemToCollect or hasRequiredItemToDestroy
             if requiredItemPresent then

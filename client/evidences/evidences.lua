@@ -270,6 +270,7 @@ end
 -- atRelativeEntityCoords
 local isThreadRunning = false
 local targettedRelativeEvidenceCoords = nil
+local startDisplayThread
 
 local function createRelativeEntityCoordsTarget(evidenceType, options, action)
     return {
@@ -459,7 +460,7 @@ CreateThread(function() -- detects shooting
 
         if IsPedShooting(cache.ped) then
             local weapon <const> = exports.ox_inventory:getCurrentWeapon()
-            if weapon.ammo then
+            if weapon and weapon.ammo and weapon.metadata then -- nil for weapons ox_inventory doesn't manage
                 local hit <const>, entityHit <const>, impactCoords <const> = lib.raycast.fromCamera(1 | 2 | 16 | 64, 4, 100)
                 TriggerEvent("evidences:playerShot", weapon, hit, entityHit, impactCoords)
             end

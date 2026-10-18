@@ -9,30 +9,40 @@ local logger <const> = require "server.logger"
 ---@field observers table
 local Observation = lib.class("Observation")
 
+-- Every live observation, shared by the two handlers below. Registering them per observation leaked a pair of
+-- handlers for each call and radio channel ever seen. Weak keys let the registries drop observations they're done with.
+local observations = setmetatable({}, { __mode = "k" })
+
+eventHandler.onLocal("playerDropped", function(event)
+    if event.source then
+        for observation in pairs(observations) do
+            observation:removeTarget(event.source)
+            observation:removeObserver(event.source)
+        end
+    end
+end)
+
+eventHandler.onNet("evidences:updateAudioWave", function(event)
+    local target <const> = event.source
+    local active <const> = event.arguments[1]
+
+    if target and (active ~= nil) then
+        for observation in pairs(observations) do
+            if observation.targets[target] then
+                for observer, _ in pairs(observation.observers) do
+                    TriggerClientEvent("evidences:setAudioWaveActive", observer, target, active)
+                end
+            end
+        end
+    end
+end)
+
 function Observation:constructor(targets, observers)
     self.type = self.__name
     self.targets = targets or {}
     self.observers = observers or {}
 
-    eventHandler.onLocal("playerDropped", function(event)
-        if event.source then
-            self:removeTarget(event.source)
-            self:removeObserver(event.source)
-        end
-    end)
-
-    eventHandler.onNet("evidences:updateAudioWave", function(event)
-        local target <const> = event.source
-        local active <const> = event.arguments[1]
-
-        if target and (active ~= nil) then
-            if self.targets[target] then
-                for observer, _ in pairs(self.observers) do
-                    TriggerClientEvent("evidences:setAudioWaveActive", observer, target, active)
-                end
-            end
-        end
-    end)
+    observations[self] = true
 end
 
 function Observation:addTarget(playerId, name)
@@ -99,7 +109,7 @@ function Observation:addObserver(playerId)
         label = self.label,
         coords = self.coords and tostring(self.coords) or nil,
         channel = self.channel,
-        targets = #self.targets > 0 and json.encode(self.targets) or nil
+        targets = next(self.targets) and json.encode(self.targets) or nil -- keyed by server id, so # is always 0
     })
 
     for target, _ in pairs(self.targets) do

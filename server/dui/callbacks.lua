@@ -49,17 +49,17 @@ local function getItemsMatchingFilter(source, filter)
             local containerData <const> = exports.ox_inventory:GetContainerFromSlot(source, slot)
             local filteredContainerItems = {}
 
-            for _, containerItem in pairs(containerData.items or {}) do
-                local matchesFilter, data = filter(containerItem)
+            for _, containerItem in pairs(containerData and containerData.items or {}) do
+                local containerItemMatchesFilter <const>, containerItemDetails <const> = filter(containerItem)
 
-                if matchesFilter then
+                if containerItemMatchesFilter then
                     local containerItemMetadata <const> = containerItem.metadata or {}
 
                     filteredContainerItems[#filteredContainerItems + 1] = {
                         imagePath = getItemImage(containerItem),
                         label = containerItemMetadata.label or containerItem.label,
                         slot = containerItem.slot,
-                        details = details or {}
+                        details = containerItemDetails or {} -- was the outer item's details, so evidence in boxes showed none
                     }
                 end
             end
@@ -78,7 +78,7 @@ local function getItemsMatchingFilter(source, filter)
     if #filteredItems > 0 then
         result[#result + 1] = {
             inventory = source,
-            label = playerInventory and playerInventory.label or "Deine Tasche",
+            label = playerInventory and playerInventory.label or GetPlayerName(source),
             items = filteredItems
         }
     end

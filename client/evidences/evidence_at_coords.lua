@@ -86,18 +86,6 @@ function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
 
     self:visualize(self.options.visualize)
 
-    eventHandler.onNet("evidences:remove:atCoords", function(event)
-        if event.arguments[1] == self.evidenceType and event.arguments[2] == self.coords then
-            self:destroy()
-        end
-    end)
-
-    eventHandler.onLocal("onResourceStop", function(event)
-        if event.arguments[1] == cache.resource then
-            self:destroy()
-        end
-    end)
-
     table.insert(EvidencesAtCoords, self)
 end
 
@@ -118,6 +106,27 @@ function EvidenceAtCoords:visualize(options)
         end
     })
 end
+
+-- One handler pair for all ground evidence. Registering them per evidence never removed them,
+-- so every blood drop or casing left two more handlers behind.
+eventHandler.onNet("evidences:remove:atCoords", function(event)
+    local evidenceType <const>, coords <const> = event.arguments[1], event.arguments[2]
+
+    for i = #EvidencesAtCoords, 1, -1 do
+        local evidence <const> = EvidencesAtCoords[i]
+        if evidence.evidenceType == evidenceType and evidence.coords == coords then
+            evidence:destroy()
+        end
+    end
+end)
+
+eventHandler.onLocal("onResourceStop", function(event)
+    if event.arguments[1] == cache.resource then
+        for i = #EvidencesAtCoords, 1, -1 do
+            EvidencesAtCoords[i]:destroy()
+        end
+    end
+end)
 
 function EvidenceAtCoords:destroy()
     exports.ox_target:removeZone(self.zone)

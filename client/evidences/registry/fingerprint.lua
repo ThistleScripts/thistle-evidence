@@ -16,7 +16,11 @@ lib.onCache("seat", function(value, oldValue)
 
         local seatId <const> = value or oldValue
         local vehicle <const> = cache.vehicle or lastEnteredVehicle
-        local entityModel <const> = GetEntityModel(cache.vehicle)
+        if not vehicle or not DoesEntityExist(vehicle) then
+            return
+        end
+
+        local entityModel <const> = GetEntityModel(vehicle) -- cache.vehicle is already false when getting out
 
         -- our own vehicle door targeting logic only works with vehicles that have at least two doors
         -- checking whether the number of seats is less than or equal to 4 is necessary as our logic doesn't work for busses
