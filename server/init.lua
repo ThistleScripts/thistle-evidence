@@ -1,10 +1,14 @@
 math.randomseed(os.time()) -- Seed the PRNG
 
 lib.locale()
-lib.versionCheck("noobsystems/evidences")
+
+if not Thistle.VersionAtLeast("0.3.0") then
+    lib.print.error("thistle-evidence requires thistle-lib 0.3.0 or newer. Please update thistle-lib.")
+    return
+end
 
 if not LoadResourceFile(cache.resource, "html/dui/laptop/dist/index.html") then
-    lib.print.error("Setup step missing: Download the script from the releases section (https://github.com/noobsystems/evidences/releases/latest) or build the laptop dui")
+    lib.print.error("Setup step missing: Use the release zip, or build the laptop DUI (cd html/dui/laptop && bun install && bun run build)")
     return
 end
 

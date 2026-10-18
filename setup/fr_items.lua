@@ -9,7 +9,7 @@
     stack = true,
     close = true,
     client = {
-        export = 'evidences.evidence_laptop'
+        export = 'thistle-evidence.evidence_laptop'
     }
 },
 ['evidence_box'] = {
@@ -21,7 +21,7 @@
     buttons = {{
         label = 'Étiqueter',
         action = function(slot)
-            exports.evidences:evidence_box(slot)
+            exports['thistle-evidence']:evidence_box(slot)
         end
     }}
 },
@@ -38,7 +38,7 @@
     weight = 500,
     stack = true,
     client = {
-        export = 'evidences.hydrogen_peroxide'
+        export = 'thistle-evidence.hydrogen_peroxide'
     }
 },
 ['fingerprint_scanner'] = {
@@ -49,7 +49,7 @@
     close = true,
     consume = 0,
     client = {
-        export = 'evidences.fingerprint_scanner',
+        export = 'thistle-evidence.fingerprint_scanner',
     }
 },
 ['collected_blood'] = {
@@ -59,7 +59,7 @@
     buttons = {{
         label = 'Copie d\'ADN',
         action = function(slot)
-            exports.evidences:copyEvidenceOwner(slot, "dna")
+            exports['thistle-evidence']:copyEvidenceOwner(slot, "dna")
         end
     }}
 },
@@ -70,7 +70,7 @@
     buttons = {{
         label = 'Copie d\'ADN',
         action = function(slot)
-            exports.evidences:copyEvidenceOwner(slot, "dna")
+            exports['thistle-evidence']:copyEvidenceOwner(slot, "dna")
         end
     }}
 },
@@ -81,7 +81,7 @@
     buttons = {{
         label = 'Copie d\'empreinte',
         action = function(slot)
-            exports.evidences:copyEvidenceOwner(slot, "fingerprint")
+            exports['thistle-evidence']:copyEvidenceOwner(slot, "fingerprint")
         end
     }}
 },
@@ -97,7 +97,7 @@
     buttons = {{
         label = 'Copier le numéro de série',
         action = function(slot)
-            exports.evidences:copySerialNumber(slot)
+            exports['thistle-evidence']:copySerialNumber(slot)
         end
     }}
 },
@@ -108,7 +108,7 @@
     buttons = {{
         label = 'Copier le numéro de série',
         action = function(slot)
-            exports.evidences:copySerialNumber(slot)
+            exports['thistle-evidence']:copySerialNumber(slot)
         end
     }}
 },
@@ -124,7 +124,7 @@
     decay = true,
     consume = 0.1,
     client = {
-        export = 'evidences.steel_file'
+        export = 'thistle-evidence.steel_file'
     }
 },
 ['spy_microphone'] = {
@@ -134,6 +134,6 @@
     stack = true,
     close = true,
     client = {
-        export = 'evidences.spy_microphone'
+        export = 'thistle-evidence.spy_microphone'
     }
 }

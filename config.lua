@@ -1,12 +1,6 @@
 --[[
-             _     _                          
-            (_)   | |                         
-   _____   ___  __| | ___ _ __   ___ ___  ___ 
-  / _ \ \ / / |/ _` |/ _ \ '_ \ / __/ _ \/ __|
- |  __/\ V /| | (_| |  __/ | | | (_|  __/\__ \
-  \___| \_/ |_|\__,_|\___|_| |_|\___\___||___/
-                                              
-  https://github.com/noobsystems/evidences
+  thistle-evidence · Thistle Scripts
+  Based on noobsystems/evidences (https://github.com/noobsystems/evidences), GPL-3.0
 ]]
 local config = {}
 

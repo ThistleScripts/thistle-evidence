@@ -2,9 +2,11 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-author 'noobsystems'
-description 'Advanced FiveM evidence script'
-version '1.3.1'
+-- Based on noobsystems/evidences (https://github.com/noobsystems/evidences), GPL-3.0
+name 'thistle-evidence'
+author 'Thistle Scripts'
+description 'Forensic evidence, evidence laptop and wiretaps. Powered by Thistle-Lib.'
+version '2.0.0'
 
 dependencies {
     '/onesync',

@@ -22,7 +22,6 @@ if lib.checkDependency("ox_inventory", "2.44.4") then
         maxWeight = 5000
     })
 elseif lib.checkDependency("ox_inventory", "2.34.3") then
-    -- https://github.com/noobsystems/evidences/discussions/1
     -- Create a temporary stash to check if the item evidence_box is a container.
     -- That's needed because old versions of ox_inventory don't return the item metadata via exports.ox_inventory:Items(itemName).metadata.
     local temporaryInv <const> = exports.ox_inventory:CreateTemporaryStash({
