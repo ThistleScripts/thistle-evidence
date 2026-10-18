@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local imagePath <const> = GetConvar("inventory:imagepath", "nui://ox_inventory/web/images") .. "/%s.png"
 
 -- https://github.com/overextended/ox_inventory/blob/6be13009eebc618b282f584782d98ff16ea2f9ed/web/src/helpers/index.ts#L140
@@ -86,7 +86,7 @@ local function getItemsMatchingFilter(source, filter)
     return result
 end
 
-lib.callback.register("evidences:getPlayersFirearms", function(source, arguments)
+Thistle.Callback.Register("evidences:getPlayersFirearms", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -110,7 +110,7 @@ lib.callback.register("evidences:getPlayersFirearms", function(source, arguments
     end)
 end)
 
-lib.callback.register("evidences:getPlayersItemsWithEvidence", function(source, arguments)
+Thistle.Callback.Register("evidences:getPlayersItemsWithEvidence", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -158,7 +158,7 @@ local function getItem(source, inventory, slot)
     return exports.ox_inventory:GetSlot(inventory, slot)
 end
 
-lib.callback.register("evidences:updateAdditionalData", function(source, arguments)
+Thistle.Callback.Register("evidences:updateAdditionalData", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -181,7 +181,7 @@ lib.callback.register("evidences:updateAdditionalData", function(source, argumen
     end
 end)
 
-lib.callback.register("evidences:setAnalysed", function(source, arguments)
+Thistle.Callback.Register("evidences:setAnalysed", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,

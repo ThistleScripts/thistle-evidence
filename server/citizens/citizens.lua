@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local logger <const> = require "server.logger"
 
@@ -19,7 +19,7 @@ if not config.citizens.synced then
         ]]
     )
 
-    lib.callback.register("evidences:storeCitizen", function(source, arguments)
+    Thistle.Callback.Register("evidences:storeCitizen", function(source, arguments)
         if not framework.hasPermission(config.permissions.access, source) then
             return {
                 success = false,
@@ -59,7 +59,7 @@ if not config.citizens.synced then
         )
     end)
 
-    lib.callback.register("evidences:deleteCitizen", function(source, arguments)
+    Thistle.Callback.Register("evidences:deleteCitizen", function(source, arguments)
         if not framework.hasPermission(config.permissions.access, source) then
             return {
                 success = false,
@@ -83,7 +83,7 @@ if not config.citizens.synced then
     end)
 end
 
-lib.callback.register("evidences:getCitizens", function(source, arguments)
+Thistle.Callback.Register("evidences:getCitizens", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -122,7 +122,7 @@ function citizens.getCitizen(identifier)
     return nil
 end
 
-lib.callback.register("evidences:getCitizen", function(source, arguments)
+Thistle.Callback.Register("evidences:getCitizen", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,

@@ -135,18 +135,16 @@ exports.ox_target:addModel(`p_cs_cam_phone`, {
                 return
             end
 
-            lib.callback("evidences:scanFingerprint", false, function(success)
-                if success then
-                    local pedCoords <const> = GetEntityCoords(cache.ped)
-                    local coords <const> = GetEntityCoords(data.entity)
-                    SetEntityHeading(cache.ped, GetHeadingFromVector_2d(coords.x - pedCoords.x, coords.y - pedCoords.y))
+            if Thistle.Callback.Await("evidences:scanFingerprint", GetPlayerServerId(NetworkGetPlayerIndexFromPed(pedHoldingScanner))) then
+                local pedCoords <const> = GetEntityCoords(cache.ped)
+                local coords <const> = GetEntityCoords(data.entity)
+                SetEntityHeading(cache.ped, GetHeadingFromVector_2d(coords.x - pedCoords.x, coords.y - pedCoords.y))
 
-                    lib.playAnim(cache.ped, "gestures@f@standing@casual", "gesture_point", 8.0, 8.0, 2000)
-                    return
-                end
+                lib.playAnim(cache.ped, "gestures@f@standing@casual", "gesture_point", 8.0, 8.0, 2000)
+                return
+            end
 
-                config.notify({ key = "fingerprint_scanner.scan_error" }, "error")
-            end, GetPlayerServerId(NetworkGetPlayerIndexFromPed(pedHoldingScanner)))
+            config.notify({ key = "fingerprint_scanner.scan_error" }, "error")
         end
     end
 })

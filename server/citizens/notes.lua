@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local logger <const> = require "server.logger"
 
@@ -16,7 +16,7 @@ MySQL.update.await(
     ]]
 )
 
-lib.callback.register("evidences:storeNote", function(source, arguments)
+Thistle.Callback.Register("evidences:storeNote", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -47,7 +47,7 @@ lib.callback.register("evidences:storeNote", function(source, arguments)
         end)
 end)
 
-lib.callback.register("evidences:deleteNote", function(source, arguments)
+Thistle.Callback.Register("evidences:deleteNote", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -59,7 +59,7 @@ lib.callback.register("evidences:deleteNote", function(source, arguments)
     return database.update("DELETE FROM citizen_notes WHERE id = ?", arguments.id)
 end)
 
-lib.callback.register("evidences:getNotes", function(source, arguments)
+Thistle.Callback.Register("evidences:getNotes", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,

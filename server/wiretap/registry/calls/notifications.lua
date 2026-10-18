@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local eventHandler <const> = require "common.events.handler"
 
 local subscribers = {}
@@ -20,7 +20,7 @@ eventHandler.on("observationTargetAdded", function(event)
     end
 end)
 
-lib.callback.register("evidences:subscribe", function(source, arguments)
+Thistle.Callback.Register("evidences:subscribe", function(source, arguments)
     if not framework.hasPermission(config.wiretap.calls.permissions, source) then
         return {
             success = false,
@@ -33,7 +33,7 @@ lib.callback.register("evidences:subscribe", function(source, arguments)
     end
 end)
 
-lib.callback.register("evidences:getSubscriptionTarget", function(source, arguments)
+Thistle.Callback.Register("evidences:getSubscriptionTarget", function(source, arguments)
     return subscribers[source] or ""
 end)
 

@@ -34,25 +34,25 @@ function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
                 end,
                 onSelect = function(data)
                     local metadata <const> = self.options.target.collect.createMetadata(self.evidenceType, self.data, data.coords)
-                    lib.callback("evidences:collect", false, function(success)
-                        if not success then
-                            config.notify({ key = "evidences.notifications.common.errors.collect" }, "error")
-                            return
-                        end
-
-                        local ped <const> = cache.ped
-                        local pedCoords <const> = GetEntityCoords(ped)
-                        SetEntityHeading(ped, GetHeadingFromVector_2d(self.coords.x - pedCoords.x, self.coords.y - pedCoords.y)) -- make player look at the evidence
-
-                        lib.playAnim(ped, "random@domestic", "pickup_low")
-                        config.notify({
-                            key = "evidences.notifications.collect",
-                            arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
-                        }, "success")
-                    end, self.evidenceType, self.owner, {
+                    local success <const> = Thistle.Callback.Await("evidences:collect", self.evidenceType, self.owner, {
                         fun = "removeFromCoords",
                         arguments = { self.coords }
                     }, metadata)
+
+                    if not success then
+                        config.notify({ key = "evidences.notifications.common.errors.collect" }, "error")
+                        return
+                    end
+
+                    local ped <const> = cache.ped
+                    local pedCoords <const> = GetEntityCoords(ped)
+                    SetEntityHeading(ped, GetHeadingFromVector_2d(self.coords.x - pedCoords.x, self.coords.y - pedCoords.y)) -- make player look at the evidence
+
+                    lib.playAnim(ped, "random@domestic", "pickup_low")
+                    config.notify({
+                        key = "evidences.notifications.collect",
+                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
+                    }, "success")
                 end
             },
             {
@@ -64,21 +64,21 @@ function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
                     return not config.isPedDead(cache.ped)
                 end,
                 onSelect = function(data)
-                    lib.callback("evidences:destroy", false, function(success)
-                        if not success then
-                            config.notify({ key = "evidences.notifications.common.errors.destroy" }, "error")
-                            return
-                        end
-
-                        lib.playAnim(cache.ped, "random@domestic", "pickup_low")
-                        config.notify({
-                            key = "evidences.notifications.destroy",
-                            arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
-                        }, "success")
-                    end, self.evidenceType, self.owner, {
+                    local success <const> = Thistle.Callback.Await("evidences:destroy", self.evidenceType, self.owner, {
                         fun = "removeFromCoords",
-                        arguments = { coords }
+                        arguments = { self.coords }
                     })
+
+                    if not success then
+                        config.notify({ key = "evidences.notifications.common.errors.destroy" }, "error")
+                        return
+                    end
+
+                    lib.playAnim(cache.ped, "random@domestic", "pickup_low")
+                    config.notify({
+                        key = "evidences.notifications.destroy",
+                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
+                    }, "success")
                 end
             }
         }

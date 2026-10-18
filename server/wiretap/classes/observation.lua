@@ -1,4 +1,4 @@
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local eventHandler <const> = require "common.events.handler"
 local eventClass <const> = require "common.events.classes.event"
 local logger <const> = require "server.logger"

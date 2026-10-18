@@ -3,7 +3,7 @@ local logger <const> = require "server.logger"
 
 local biometricsProvider = {}
 
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local cache = {}
 
 MySQL.update.await(

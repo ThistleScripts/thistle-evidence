@@ -1,16 +1,16 @@
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
-local framework <const> = require "common.frameworks.framework"
+local player <const> = require "client.player"
 
 local tempObject = nil
 
 exports("evidence_laptop", function(data, slot)
-    if not framework.hasPermission(config.permissions.place) then
-        config.notify({ key = "laptop.notifications.no_permission" }, "error")
+    if tempObject then
         return
     end
 
-    if tempObject then
+    if not player.getInfo().permissions.place then
+        config.notify({ key = "laptop.notifications.no_permission" }, "error")
         return
     end
 
@@ -60,15 +60,9 @@ exports("evidence_laptop", function(data, slot)
 
         config.inputHelp.hide()
 
-        if confirmed then
-            lib.callback("evidences:placeLaptop", false, function(success)
-                if success then
-                    exports.ox_inventory:useItem(data, function(data)
-                        lib.playAnim(cache.ped, "mp_common", "givetake1_a")
-                    end)
-                    return
-                end
-            end, finalCoords)
+        -- The server takes the item, so a laptop can't be placed without one
+        if confirmed and Thistle.Callback.Await("evidences:placeLaptop", finalCoords) then
+            lib.playAnim(cache.ped, "mp_common", "givetake1_a")
         end
     end)
 end)

@@ -62,7 +62,7 @@ local function createPlayerTarget(evidenceType, options, action)
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords, { player = true }) or nil
 
-                local success <const> = lib.callback.await(string.format("evidences:%s", action), false, evidenceType, evidence.owner, {
+                local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
                     fun = "removeFromPlayer",
                     arguments = { player }
                 }, metadata)
@@ -129,7 +129,7 @@ local function createVehicleDoorTarget(evidenceType, options, action)
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords, { door = targetedDoorId }) or nil
 
-                local success <const> = lib.callback.await(string.format("evidences:%s", action), false, evidenceType, evidence.owner, {
+                local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
                     fun = "removeFromVehicleDoors",
                     arguments = { VehToNet(data.entity), targetedDoorId }
                 }, metadata)
@@ -188,7 +188,7 @@ local function createVehicleSeatTarget(evidenceType, options, action)
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords, { seat = cache.seat }) or nil
 
-                local success <const> = lib.callback.await(string.format("evidences:%s", action), false, evidenceType, evidence.owner, {
+                local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
                     fun = "removeFromVehicleSeats",
                     arguments = { VehToNet(cache.vehicle), cache.seat }
                 }, metadata)
@@ -246,7 +246,7 @@ local function createEntityTarget(evidenceType, options, action)
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords) or nil
 
-                local success <const> = lib.callback.await(string.format("evidences:%s", action), false, evidenceType, evidence.owner, {
+                local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
                     fun = "removeFromEntity",
                     arguments = { NetworkGetNetworkIdFromEntity(data.entity) }
                 }, metadata)
@@ -323,7 +323,7 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords) or nil
 
-                local success <const> = lib.callback.await(string.format("evidences:%s", action), false, evidenceType, evidence.owner, {
+                local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
                     fun = "removeFromRelativeEntityCoords",
                     arguments = { NetworkGetNetworkIdFromEntity(data.entity), targettedRelativeEvidenceCoords }
                 }, metadata)

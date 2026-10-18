@@ -2,7 +2,7 @@ local eventHandler <const> = require "common.events.handler"
 
 -- This event handels dui <-> server communication by redirecting data and returning the response
 eventHandler.onNui("triggerServerCallback", function(event)
-    event.response = lib.callback.await(event.data.name, false, event.data.arguments)
+    event.response = Thistle.Callback.Await(event.data.name, event.data.arguments)
 end)
 
 -- For creating a dui, we use ox_lib's built-in dui class (https://oxdocs.dev/ox_lib/Modules/Dui/Lua/Client).

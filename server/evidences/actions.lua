@@ -1,12 +1,12 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local evidenceTypes <const> = require "common.evidence_types"
 local api <const> = require "server.evidences.api"
 local logger <const> = require "server.logger"
 
 local actions = {}
 
-lib.callback.register("evidences:destroy", function(source, evidenceType, owner, remove)
+Thistle.Callback.Register("evidences:destroy", function(source, evidenceType, owner, remove)
     local requiredItem <const> = evidenceTypes[evidenceType].target.destroy.requiredItem or nil
 
     if requiredItem then
@@ -89,7 +89,7 @@ function actions.collect(source, evidenceType, owner, remove, metadata)
     return true
 end
 
-lib.callback.register("evidences:collect", function(source, evidenceType, owner, remove, metadata)
+Thistle.Callback.Register("evidences:collect", function(source, evidenceType, owner, remove, metadata)
     return actions.collect(source, evidenceType, owner, remove, metadata)
 end)
 

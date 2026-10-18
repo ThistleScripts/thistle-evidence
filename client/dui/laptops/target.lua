@@ -53,12 +53,9 @@ exports.ox_target:addModel(`p_laptop_02_s`, {
         onSelect = function(data)
             for coords, point in pairs(sync.points) do
                 if point.entity == data.entity then
-                    lib.callback("evidences:pickupLaptop", false, function(success)
-                        if success then
-                            lib.playAnim(cache.ped, "mp_common", "givetake1_a")
-                            return
-                        end
-                    end, coords)
+                    if Thistle.Callback.Await("evidences:pickupLaptop", coords) then
+                        lib.playAnim(cache.ped, "mp_common", "givetake1_a")
+                    end
 
                     break
                 end

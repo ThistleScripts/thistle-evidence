@@ -56,7 +56,7 @@ exports("spy_microphone", function(data, slot)
         config.inputHelp.hide()
 
         if confirmed then
-            local input = lib.inputDialog(locale("spy_microphone.spy_microphone_label_dialog.title"), {
+            local input = Thistle.Input(locale("spy_microphone.spy_microphone_label_dialog.title"), {
                 {
                     type = "input",
                     label = locale("spy_microphone.spy_microphone_label_dialog.label_textfield_title"),
@@ -68,16 +68,13 @@ exports("spy_microphone", function(data, slot)
             })
 
             if input and input[1] then
-                lib.callback("evidences:placeSpyMicrophone", false, function(success)
-                    if success then
-                        exports.ox_inventory:useItem(data, function(data)
-                            lib.playAnim(cache.ped, "mp_common", "givetake1_a")
-                        end)
-                        return
-                    end
+                -- The server takes the item, so a microphone can't be placed without one
+                if Thistle.Callback.Await("evidences:placeSpyMicrophone", input[1], finalCoords) then
+                    lib.playAnim(cache.ped, "mp_common", "givetake1_a")
+                    return
+                end
 
-                    config.notify({ key = "spy_microphone.error_spy_microphone_creation" }, "error")
-                end, input[1], finalCoords)
+                config.notify({ key = "spy_microphone.error_spy_microphone_creation" }, "error")
             end
         end
     end)

@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local logger <const> = require "server.logger"
 local eventHandler <const> = require "common.events.handler"
 local phoneNumber <const> = require "server.wiretap.registry.calls.bridge.phone_number"
@@ -56,7 +56,7 @@ eventHandler.on("observationTargetRemoved", function(event)
     end
 end)
 
-lib.callback.register("evidences:getActiveCalls", function(source)
+Thistle.Callback.Register("evidences:getActiveCalls", function(source)
     if not framework.hasPermission(config.wiretap.calls.permissions, source) then
         return {
             success = false,
@@ -67,7 +67,7 @@ lib.callback.register("evidences:getActiveCalls", function(source)
     return activeCalls
 end)
 
-lib.callback.register("evidences:observeObservableCall", function(observer, arguments)
+Thistle.Callback.Register("evidences:observeObservableCall", function(observer, arguments)
     if not framework.hasPermission(config.wiretap.calls.permissions, observer) then
         return {
             success = false,
@@ -81,7 +81,7 @@ lib.callback.register("evidences:observeObservableCall", function(observer, argu
     end
 end)
 
-lib.callback.register("evidences:ignoreObservableCall", function(observer, arguments)
+Thistle.Callback.Register("evidences:ignoreObservableCall", function(observer, arguments)
     if arguments and arguments.channel then
         local observableCall <const> = activeCalls[arguments.channel]
         return observableCall and observableCall:removeObserver(observer)

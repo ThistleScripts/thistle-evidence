@@ -1,4 +1,4 @@
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local config <const> = require "config"
 local logger <const> = require "server.logger"
@@ -82,7 +82,7 @@ exports("registerFirearm", function(data)
     return registerFirearm(data)
 end)
 
-lib.callback.register("evidences:registerFirearm", function(source, arguments)
+Thistle.Callback.Register("evidences:registerFirearm", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -99,7 +99,7 @@ lib.callback.register("evidences:registerFirearm", function(source, arguments)
     return result
 end)
 
-lib.callback.register("evidences:unregisterFirearm", function(source, arguments)
+Thistle.Callback.Register("evidences:unregisterFirearm", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -111,7 +111,7 @@ lib.callback.register("evidences:unregisterFirearm", function(source, arguments)
     return database.update("DELETE FROM firearms_registry WHERE serial = ?", arguments.serial)
 end)
 
-lib.callback.register("evidences:getRegisteredFirearms", function(source, arguments)
+Thistle.Callback.Register("evidences:getRegisteredFirearms", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -142,7 +142,7 @@ lib.callback.register("evidences:getRegisteredFirearms", function(source, argume
     )
 end)
 
-lib.callback.register("evidences:getRegisteredFirearmFromSerial", function(source, arguments)
+Thistle.Callback.Register("evidences:getRegisteredFirearmFromSerial", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,

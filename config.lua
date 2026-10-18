@@ -163,7 +163,7 @@ config.inputHelp = {
 
 
 -- Replace the body of this function if you want to use a different notification system.
--- By default, notifications are handeled by ox_lib (https://overextended.dev/docs/ox_lib/Interface/Client/notify)
+-- By default, notifications go through thistle-lib (Thistle.NotifyClient, which uses ox_lib's notify)
 ---@param translation { key: string, arguments: string[] }
 ---@param notifyType? string The type of the notification (e.g. "success" or "error")
 ---@param duration? number The duration for the notify ui in milliseconds
@@ -174,7 +174,7 @@ function config.notify(translation, notifyType, duration)
 
     local arguments <const> = translation.arguments or {}
 
-    lib.notify({
+    Thistle.NotifyClient({
         title = locale(translation.key .. ".title"),
         description = locale(translation.key .. ".description", table.unpack(arguments)),
         type = notifyType or "inform",
@@ -210,13 +210,21 @@ config.logging = {
     },
 
     -- Define which logging service you want to use if enabled.
-    -- You can choose between "ox_lib" (it supports Datadog, Grafana Loki and Fivemanage, see https://overextended.dev/docs/ox_lib/Logger/Server) and "discord".
+    -- You can choose between "discord" (sent through thistle-lib's Thistle.Webhook) and "ox_lib" (it supports Datadog, Grafana Loki and Fivemanage, see https://overextended.dev/docs/ox_lib/Logger/Server).
     service = "discord",
 
-    -- If the logging service is set to "discord", you have to define a webhook url and your txAdmin web interface url.
-    -- Refer to https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks.
-    webhook = "https://discord.com/api/webhooks/YOUR-WEBHOOK-ID/YOUR-WEBHOOK-TOKEN",
-    txAdminUrl = "https://YOUR-IP.NET:40120/players?playerModal="
+    -- Discord webhooks (https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
+    -- Each category falls back to `default` when left empty; leave everything empty to send nothing.
+    webhooks = {
+        default = "",
+        evidences = "", -- collecting, destroying and clearing evidence, taking biometrics, fingerprint scans
+        citizens = "", -- citizens, notes and linked biometric data
+        wiretap = "", -- observations and spy microphones
+        firearms = "" -- firearms registry
+    },
+
+    -- Optional: your txAdmin players page, so each log links to the player (e.g. "https://YOUR-IP.NET:40120/players?playerModal=")
+    txAdminUrl = ""
 }
 
 return config

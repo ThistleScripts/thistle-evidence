@@ -1,5 +1,4 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
 local eventHandler <const> = require "common.events.handler"
 
 local sync = {
@@ -49,7 +48,7 @@ RegisterNetEvent("evidences:spawnLaptops", function(coords)
     spawnLaptops(coords)
 end)
 
-spawnLaptops(lib.callback.await("evidences:getLaptops", false) or {})
+spawnLaptops(Thistle.Callback.Await("evidences:getLaptops") or {})
 
 local function destroyLaptop(point)
     point:onExit()
