@@ -1,0 +1,1 @@
+export type AppArgs = { [key: string]: unknown };

@@ -1,0 +1,460 @@
+{
+    "commands": {
+        "invalid_radius": {
+            "title": "Pruebas",
+            "description": "La eliminación de pruebas falló, el radio proporcionado es inválido. (Debe ser un entero entre 1-500)"
+        },
+        "no_evidences": {
+            "title": "Pruebas",
+            "description": "La eliminación de pruebas falló, no hay pruebas dentro del radio proporcionado."
+        },
+        "evidences_deleted": {
+            "title": "Pruebas",
+            "description": "Todas las pruebas en el radio de %s fueron eliminadas. (Cantidad: %s)"
+        }
+    },
+    "evidences": {
+        "evidence_box_label_dialog": {
+            "title": "Etiqueta de caja",
+            "name_textfield_title": "Nombre",
+            "name_textfield_details": "Nombre que se muestra en el inventario",
+            "description_textfield_title": "Descripción",
+            "description_textfield_details": "Descripción corta que verá en el inventario debajo del objeto"
+        },
+        "fingerprint": {
+            "collecting_label": "Asegurar huella dactilar",
+            "destroying_label": "Eliminar huella dactilar"
+        },
+        "blood": {
+            "collecting_label": "Asegurar rastro de sangre",
+            "destroying_label": "Eliminar rastro de sangre"
+        },
+        "saliva": {
+            "collecting_label": "Asegurar saliva",
+            "destroying_label": "Eliminar saliva"
+        },
+        "magazine": {
+            "collecting_label": "Asegurar cargador",
+            "destroying_label": "Eliminar cargador"
+        },
+        "casing": {
+            "collecting_label": "Recoger casquillo",
+            "destroying_label": "Eliminar casquillo"
+        },
+        "bullet": {
+            "collecting_label": "Recoger bala",
+            "destroying_label": "Eliminar bala"
+        },
+        "gunshot_residue": {
+            "collecting_label": "Recoger residuos de disparo",
+            "destroying_label": "Eliminar residuos de disparo"
+        },
+        "information": {
+            "in_vehicle": "en %s (matricula: %s)",
+            "at_vehicle": "en el vehículo (matricula: %s)",
+            "at_coords": "en el suelo",
+            "at_player": "de un jugador",
+            "metadata": {
+                "crime_scene": "Lugar del delito",
+                "collection_time": "Hora de recopilación",
+                "additionalData": "Información",
+                "weapon_type": "Tipo de arma",
+                "serial": "Número de serie"
+            },
+            "seats": {
+                "-1": "asiento delantero del conductor",
+                "0": "asiento delantero del pasajero",
+                "1": "asiento trasero del conductor",
+                "2": "asiento trasero del pasajero"
+            },
+            "doors": {
+                "0": "puerta delantera del conductor",
+                "1": "puerta delantera del pasajero",
+                "2": "puerta trasera del conductor",
+                "3": "puerta trasera del pasajero"
+            }
+        },
+        "notifications": {
+            "common": {
+                "placeholders": {
+                    "at_coords": "en el suelo",
+                    "at_player": "en este jugador",
+                    "at_vehicle_door": "en esta puerta del vehículo",
+                    "at_vehicle_seat": "en el asiento de su vehículo",
+                    "at_entity": "en esta entidad",
+                    "at_weapon": "en el arma"
+                },
+                "errors": {
+                    "collect": {
+                        "title": "Pruebas",
+                        "description": "Error durante la recolección de pruebas"
+                    },
+                    "destroy": {
+                        "title": "Pruebas",
+                        "description": "Error durante la destrucción de pruebas"
+                    }
+                }
+            },
+            "collect": {
+                "title": "Pruebas",
+                "description": "Las pruebas %s fueron recopiladas"
+            },
+            "destroy": {
+                "title": "Pruebas",
+                "description": "Las pruebas %s fueron destruidas"
+            },
+            "biometrics_pasted": {
+                "title": "Evidencias",
+                "description": "Los datos biométricos se han copiado al portapapeles"
+            },
+            "serial_pasted": {
+                "title": "Evidencias",
+                "description": "El número de serie se ha copiado al portapapeles"
+            },
+            "missing_serial": {
+                "title": "Evidencias",
+                "description": "El elemento de evidencia no contiene un número de serie"
+            },
+            "not_analysed": {
+                "title": "Evidencias",
+                "description": "La pieza de prueba aún no ha sido analizada"
+            }
+        }
+    },
+    "fingerprint_scanner": {
+        "target": "Coloque su dedo en el escáner",
+        "input_help": "Use %s para cancelar esta acción",
+        "scan_match": {
+            "title": "Huella escaneada",
+            "description": "Coincidencia en la base de datos: %s (%s • %s)"
+        },
+        "scan_no_match": {
+            "title": "Huella escaneada",
+            "description": "Sin coincidencias en la base de datos"
+        },
+        "scan_gloves": {
+            "title": "Error de escaneo",
+            "description": "Llevas guantes puestos"
+        },
+        "scan_error": {
+            "title": "Error de escaneo",
+            "description": "No se pudo escanear la huella"
+        }
+    },
+    "steel_file": {
+        "serial_removed": {
+            "title": "Número de serie borrado",
+            "description": "El número de serie se ha eliminado con éxito del arma"
+        }
+    },
+    "biometrics_taking": {
+        "description": "El oficial %s quiere tomar una %s. ¿Das tu consentimiento?",
+        "deny": "Denegar",
+        "accept": "Aceptar",
+        "target": {
+            "take_fingerprint": "Tomar huella dactilar",
+            "take_dna": "Tomar muestra de ADN",
+            "force_take_fingerprint": "Forzar toma de huella",
+            "force_take_dna": "Forzar toma de ADN"
+        },
+        "notifications": {
+            "request_sent": {
+                "title": "Pruebas",
+                "description": "La solicitud ha sido enviada"
+            },
+            "error": {
+                "title": "Pruebas",
+                "description": "No fue exitoso"
+            },
+            "no_consent": {
+                "title": "Pruebas",
+                "description": "El jugador lo rechazó"
+            },
+            "consent": {
+                "title": "Evidencias",
+                "description": "El jugador ha dado su consentimiento"
+            },
+            "no_permission": {
+                "title": "Evidences",
+                "description": "No tienes permisos"
+            }
+        }
+    },
+    "laptop": {
+        "notifications": {
+            "error_laptop_creation": {
+                "title": "Pruebas",
+                "description": "Error al colocar la computadora portátil"
+            },
+            "error_laptop_pickup": {
+                "title": "Pruebas",
+                "description": "Error al recibir la computadora portátil"
+            },
+            "input_help": "Presione %s para colocar el portátil.%sUse %s para cancelar esta acción",
+            "no_permission": {
+                "title": "Evidences",
+                "description": "No tienes permisos"
+            }
+        },
+        "target": {
+            "interact": "Interactuar",
+            "pickup": "Recibir"
+        },
+        "login_screen": {
+            "title": "Otro usuario",
+            "username_placeholder": "Nombre de usuario",
+            "password_placeholder": "Contraseña",
+            "welcome": "Bienvenido",
+            "missing_permission": "Nombre de usuario o contraseña incorrecto"
+        },
+        "desktop_screen": {
+            "common": {
+                "date_locales": "es-ES",
+                "evidence_placeholder": "Prueba",
+                "crime_scene_placeholder": "Lugar del delito",
+                "collection_time_placeholder": "Hora de recopilación",
+                "additional_data_placeholder": "Información adicional",
+                "name_placeholder": "Nombre",
+                "firstname_placeholder": "Nombre",
+                "lastname_placeholder": "Apellido",
+                "fullname_placeholder": "Nombre Apellido",
+                "birthdate_placeholder": "Fecha de nacimiento",
+                "gender_placeholder": "Género",
+                "from": "de",
+                "by": "por",
+                "fingerprint": "Huella digital",
+                "dna": "ADN",
+                "statuses": {
+                    "search": "Buscar...",
+                    "loading": "Cargando...",
+                    "error": "Error",
+                    "no_data": "Sin datos",
+                    "delete": "Eliminar",
+                    "save": "Guardar",
+                    "cancel": "Cancelar",
+                    "unknown": "desconocido",
+                    "analysed": "analizado",
+                    "no_selection": "Nada que seleccionar...",
+                    "select_evidence": "Por favor, seleccione una prueba.",
+                    "select_citizen": "Por favor, seleccione un ciudadano.",
+                    "select_firearm": "Por favor, seleccione un arma.",
+                    "fill_all_fields": "¡Por favor, complete todos los campos!"
+                },
+                "dropdowns": {
+                    "select_citizen": "Seleccionar ciudadano",
+                    "select_firearm": "Seleccionar arma"
+                }
+            },
+            "citizens_app": {
+                "name": "Ciudadanos",
+                "create_citizen": "Crear ciudadano",
+                "personal_data": "Datos Personales",
+                "biometric_data": "Datos Biométricos",
+                "notes": {
+                    "header": "Notas",
+                    "create": "Crear nueva nota",
+                    "edit": "Editar nota",
+                    "title": "Título",
+                    "text": "Texto"
+                },
+                "registered_firearms": "Armas Registradas",
+                "statuses": {
+                    "no_citizens_found": "No se encontraron ciudadanos",
+                    "no_notes_found": "No se encontraron notas",
+                    "no_registered_firearms": "No hay armas de fuego registradas",
+                    "select_evidence": "Seleccionar prueba"
+                },
+                "status_messages": {
+                    "citizen_creation_success": "¡Ciudadano creado!",
+                    "citizen_creation_error": "¡Error al crear!",
+                    "citizen_update_success": "¡Ciudadano actualizado!",
+                    "citizen_update_error": "¡No se pudo guardar el ciudadano!",
+                    "citizen_deletion_success": "¡Ciudadano eliminado!",
+                    "citizen_deletion_error": "¡No se pudo eliminar al ciudadano!",
+                    "note_save_success": "¡Nota guardada!",
+                    "note_save_error": "¡No se pudo guardar la nota!",
+                    "note_deletion_success": "¡Nota eliminada!",
+                    "note_deletion_error": "¡No se pudo eliminar la nota!",
+                    "biometric_data_link_success": "¡%s vinculado al ciudadano seleccionado!",
+                    "biometric_data_unlink_success": "¡%s desvinculado del ciudadano seleccionado!",
+                    "biometric_data_link_error": "¡No se pudo vincular %s al ciudadano!"
+                },
+                "gender": {
+                    "header": "Seleccionar género",
+                    "male": "Masculino",
+                    "female": "Femenino",
+                    "non_binary": "No binario"
+                }
+            },
+            "fingerprint_app": {
+                "name": "Análisis de Huellas",
+                "no_items_with_fingerprints": "No hay objetos con huellas digitales en su inventario."
+            },
+            "dna_app": {
+                "name": "Análisis de ADN",
+                "no_items_with_dna": "No hay objetos con ADN en su inventario."
+            },
+            "evidence_analysis": {
+                "start_analyzation": "Iniciar análisis",
+                "matching_biometric_data": "Comparando %s con la base de datos...",
+                "database_match": {
+                    "header": "¡Coincidencia en la base de datos!",
+                    "description": "El rastro de %s en la prueba pertenece a la siguiente persona:",
+                    "open_citizens_app": "Abrir en aplicación de Ciudadanos"
+                },
+                "no_database_match": {
+                    "header": "¡Sin coincidencia!",
+                    "description": "El rastro de %s en la prueba pertenece a una persona desconocida. Si conoce a la persona, puede asignarle el rastro de esta prueba en la aplicación de ciudadanos."
+                }
+            },
+            "firearms_registry_app": {
+                "name": "Registro de armas",
+                "firearm_information": "Información",
+                "firearm_type": "Tipo",
+                "firearm_serial": "Número de serie",
+                "firearm_owner": "Propietario",
+                "registered_by": "Registrado por",
+                "registered_at": "Registrado el",
+                "firearm_registration": "Registro",
+                "firearm_status": "Estado",
+                "registration_reason": "Motivo de registro",
+                "no_firearms_found": "No se encontraron armas de fuego",
+                "registration_popup": {
+                    "header": "Registrar arma de fuego",
+                    "citizen": "Ciudadano",
+                    "firearm": "Arma",
+                    "reason": "Motivo de registro",
+                    "status": "Estado del arma"
+                },
+                "status": {
+                    "header": "Seleccionar estado",
+                    "unknown": "Desconocido",
+                    "registered": "Registrada",
+                    "lost": "Perdida",
+                    "stolen": "Robada",
+                    "confiscated": "Confiscada",
+                    "destroyed": "Destruida",
+                    "suspended": "Suspendida"
+                },
+                "status_messages": {
+                    "firearm_registration_success": "¡Arma registrada!",
+                    "firearm_registration_error": "¡Error al registrar el arma!",
+                    "firearm_already_registered": "¡El arma ya está registrada!",
+                    "firearm_update_success": "¡Arma actualizada!",
+                    "firearm_update_error": "¡No se pudo guardar el arma!",
+                    "firearm_deletion_success": "¡Arma eliminada!",
+                    "firearm_deletion_error": "¡No se pudo eliminar el arma!"
+                }
+            },
+            "ballistics_app": {
+                "name": "Análisis balístico",
+                "no_ballistics_evidence_items": "No tienes objetos con pruebas balísticas en tu inventario.",
+                "start_analyzation": "Iniciar análisis",
+                "matching_serial": "Analizando pruebas balísticas...",
+                "registry_match": {
+                    "header": "¡Coincidencia en el registro de armas de fuego!",
+                    "description": "La prueba balística pertenece a la siguiente arma de fuego:",
+                    "open_firearms_registry": "Abrir en el registro de armas de fuego"
+                },
+                "no_registry_match": {
+                    "header": "¡Sin coincidencias en el registro de armas de fuego!",
+                    "casing_description": "Este casquillo no tiene un número de serie que coincida con ningún arma del registro de armas de fuego. Sin embargo, los casquillos aún pueden identificarse por las marcas de herramientas microscópicas únicas que dejan las imperfecciones dentro de un arma. Al seleccionar un arma de tu inventario, puedes comprobar si la evidencia del casquillo proviene del arma seleccionada (o, al menos, de un arma del mismo tipo).",
+                    "bullet_description": "Balas disparadas pueden ser identificadas por las marcas microscópicas únicas que dejan las imperfecciones dentro del cañón de un arma de fuego. Al seleccionar un arma de tu inventario, puedes comprobar si la evidencia de la bala proviene del arma seleccionada (o, al menos, de un arma del mismo tipo).",
+                    "inventory_match": {
+                        "microstamp": "La prueba balística proviene exactamente del arma seleccionada, ya que el número de serie quedó micrograbado en la pieza de evidencia.",
+                        "imperfections": "La evidencia balística proviene exactamente de la herramienta seleccionada, ya que comparten las mismas imperfecciones únicas.",
+                        "type": "La evidencia balística proviene de un arma del mismo tipo que la seleccionada.",
+                        "none": "La evidencia balística no coincide con el arma seleccionada."
+                    }
+                },
+                "show_type": {
+                    "header": "Análisis exitoso",
+                    "magazine_description": "Cargadores pueden ser claramente asociados con un tipo de arma. Sin embargo, no es posible asignarlos a un arma específica. Este cargador pertenece a un arma de este tipo:",
+                    "gunshot_residue_description": "Los residuos de disparo permiten extraer conclusiones sobre el tipo de arma utilizada. Según su concentración, es posible calcular cuándo fue disparada el arma. El análisis de los residuos de disparo seleccionados ha arrojado lo siguiente:",
+                    "fired_at": "Disparado a las"
+                }
+            },
+            "wiretap_app": {
+                "name": "Escuchas",
+                "warning_popup": {
+                    "title": "Aviso importante",
+                    "warning": "Las comunicaciones telefónicas o por radio solo pueden ser interceptadas en conformidad con una orden judicial de escucha. Se pueden tomar medidas sin orden judicial en circunstancias de urgencia.",
+                    "accept_button": "Entendido"
+                },
+                "phone_calls": {
+                    "header": "Llamadas telefónicas",
+                    "no_calls_running": "No hay llamadas telefónicas en curso",
+                    "lacking_permissions": "Sin permisos para interceptar llamadas telefónicas",
+                    "notifications": {
+                        "popup_header": "Notificaciones de llamadas telefónicas",
+                        "status_subscribed": "Recibirá notificaciones cuando %s participe en una llamada telefónica. Puede dejar de recibir notificaciones o cambiar su objetivo aquí:",
+                        "status_unsubscribed": "Ingrese el %s de un ciudadano para ser notificado cuando participe en una llamada telefónica:",
+                        "placeholder_full_name": "nombre completo",
+                        "placeholder_phone_number": "número de teléfono",
+                        "subscribe_button": "Suscribirse",
+                        "unsubscribe_button": "Cancelar suscripción",
+                        "status_messages": {
+                            "subscribed": "Se ha suscrito con éxito",
+                            "unsubscribed": "Se ha cancelado la suscripción con éxito"
+                        },
+                        "notification": {
+                            "title": "Interceptación de llamada telefónica",
+                            "description": "%s está participando en una llamada telefónica que puede ser interceptada"
+                        }
+                    }
+                },
+                "spy_microphones": {
+                    "header": "Micrófonos espía",
+                    "no_spy_microphones_placed": "No hay micrófonos espía colocados",
+                    "lacking_permissions": "Sin permisos para escuchar micrófonos espía"
+                },
+                "radio": {
+                    "header": "Radio",
+                    "lacking_permissions": "Sin permisos para interceptar canales de radio"
+                },
+                "latest_actions": {
+                    "header": "Últimas acciones",
+                    "no_actions_available": "No hay acciones protocolizadas",
+                    "end_reached": "Se llegó al final de la lista",
+                    "action_duration": "%s de %s a %s",
+                    "actions": {
+                        "ObservableCall": "%s interceptó una llamada telefónica entre %s",
+                        "ObservableRadioFreq": "%s interceptó el canal de radio en %s MHz",
+                        "ObservableSpyMicrophone": "%s escuchó al micrófono espía %s"
+                    }
+                },
+                "running_observation_popup": {
+                    "ObservableCall": "Interceptación en curso de la llamada telefónica #%s",
+                    "ObservableRadioFreq": "Interceptación en curso del canal de radio en %s MHz",
+                    "ObservableSpyMicrophone": "Escuchando al micrófono espía %s",
+                    "status_messages": {
+                        "protocol_save_success": "¡Protocolo de interceptación guardado con éxito!",
+                        "protocol_save_error": "¡No se pudo guardar el protocolo de interceptación!"
+                    }
+                },
+                "protocol_popup": {
+                    "header": {
+                        "ObservableCall": "Protocolo de interceptación de llamada telefónica #%s",
+                        "ObservableRadioFreq": "Protocolo de interceptación de canal de radio #%s",
+                        "ObservableSpyMicrophone": "Protocolo de observación de micrófono espía #%s"
+                    },
+                    "observation_started": "La observación comenzó.",
+                    "observation_ended": "La observación terminó."
+                }
+            }
+        }
+    },
+    "spy_microphone": {
+        "input_help": "Presione %s para colocar el micrófono espía.%sUse %s para cancelar esta acción",
+        "error_spy_microphone_creation": {
+            "title": "Pruebas",
+            "description": "Ya existe un micrófono espía con esta etiqueta"
+        },
+        "spy_microphone_label_dialog": {
+            "title": "Etiquetar micrófono espía",
+            "label_textfield_title": "Etiqueta",
+            "label_textfield_details": "Elije un nombre único para identificar este micrófono espía en la aplicación de escuchas en la computadora portátil de pruebas"
+        },
+        "target_collect": "Recopilar micrófono espía"
+    }
+}

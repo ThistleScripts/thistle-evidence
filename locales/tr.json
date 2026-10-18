@@ -1,0 +1,460 @@
+{
+    "commands": {
+        "invalid_radius": {
+            "title": "Deliller",
+            "description": "Delillerin silinmesi başarısız, belirtilen yarıçap geçersiz. (1-500 arası bir tam sayı olmalıdır)"
+        },
+        "no_evidences": {
+            "title": "Deliller",
+            "description": "Delillerin silinmesi başarısız, belirtilen yarıçap içinde delil bulunmuyor."
+        },
+        "evidences_deleted": {
+            "title": "Deliller",
+            "description": "%s yarıçapındaki tüm deliller silindi. (Miktar: %s)"
+        }
+    },
+    "evidences": {
+        "evidence_box_label_dialog": {
+            "title": "Kutu etiketi",
+            "name_textfield_title": "İsim",
+            "name_textfield_details": "Envanterde görüntülenen isim",
+            "description_textfield_title": "Açıklama",
+            "description_textfield_details": "Envanterde öğenin altında göreceğiniz kısa açıklama"
+        },
+        "fingerprint": {
+            "collecting_label": "Parmak izini güvenceye al",
+            "destroying_label": "Parmak izini yok et"
+        },
+        "blood": {
+            "collecting_label": "Kan izini güvenceye al",
+            "destroying_label": "Kan izini yok et"
+        },
+        "saliva": {
+            "collecting_label": "Tükürüğü güvenceye al",
+            "destroying_label": "Tükürüğü yok et"
+        },
+        "magazine": {
+            "collecting_label": "Şarjörü güvenceye al",
+            "destroying_label": "Şarjörü yok et"
+        },
+        "casing": {
+            "collecting_label": "Kovanı topla",
+            "destroying_label": "Kovanı yok et"
+        },
+        "bullet": {
+            "collecting_label": "Mermiyi topla",
+            "destroying_label": "Mermiyi yok et"
+        },
+        "gunshot_residue": {
+            "collecting_label": "Atış artıklarını topla",
+            "destroying_label": "Atış artıklarını yok et"
+        },
+        "information": {
+            "in_vehicle": "%s üzerinde (plaka: %s)",
+            "at_vehicle": "araç üzerinde (plaka: %s)",
+            "at_coords": "yerde",
+            "at_player": "bir oyuncudan",
+            "metadata": {
+                "crime_scene": "Suç mahali",
+                "collection_time": "Toplama zamanı",
+                "additionalData": "Bilgi",
+                "weapon_type": "Silah türü",
+                "serial": "Seri numarası"
+            },
+            "seats": {
+                "-1": "ön sürücü koltuğu",
+                "0": "ön yolcu koltuğu",
+                "1": "arka sürücü koltuğu",
+                "2": "arka yolcu koltuğu"
+            },
+            "doors": {
+                "0": "ön sürücü kapısı",
+                "1": "ön yolcu kapısı",
+                "2": "arka sürücü kapısı",
+                "3": "arka yolcu kapısı"
+            }
+        },
+        "notifications": {
+            "common": {
+                "placeholders": {
+                    "at_coords": "yerde",
+                    "at_player": "bu oyuncuda",
+                    "at_vehicle_door": "bu araç kapısında",
+                    "at_vehicle_seat": "araç koltuğunuzda",
+                    "at_entity": "bu varlık üzerinde",
+                    "at_weapon": "silah üzerinde"
+                },
+                "errors": {
+                    "collect": {
+                        "title": "Deliller",
+                        "description": "Delil toplama sırasında hata oluştu"
+                    },
+                    "destroy": {
+                        "title": "Deliller",
+                        "description": "Delil imhası sırasında hata oluştu"
+                    }
+                }
+            },
+            "collect": {
+                "title": "Deliller",
+                "description": "%s delilleri toplandı"
+            },
+            "destroy": {
+                "title": "Deliller",
+                "description": "%s delilleri yok edildi"
+            },
+            "biometrics_pasted": {
+                "title": "Kanıtlar",
+                "description": "Biyometrik veriler panoya kopyalandı"
+            },
+            "serial_pasted": {
+                "title": "Kanıtlar",
+                "description": "Seri numarası panoya kopyalandı"
+            },
+            "missing_serial": {
+                "title": "Kanıtlar",
+                "description": "L'élément de preuve ne contient pas de numéro de série"
+            },
+            "not_analysed": {
+                "title": "Kanıtlar",
+                "description": "Delil henüz analiz edilmedi"
+            }
+        }
+    },
+    "fingerprint_scanner": {
+        "target": "Parmağınızı tarayıcıya yerleştirin",
+        "input_help": "Bu işlemi iptal etmek için %s kullanın",
+        "scan_match": {
+            "title": "Parmak izi tarandı",
+            "description": "Veritabanı eşleşmesi: %s (%s • %s)"
+        },
+        "scan_no_match": {
+            "title": "Parmak izi tarandı",
+            "description": "Veritabanında eşleşme bulunamadı"
+        },
+        "scan_gloves": {
+            "title": "Tarama başarısız",
+            "description": "Elinizde eldiven var"
+        },
+        "scan_error": {
+            "title": "Tarama başarısız",
+            "description": "Parmak izi taranamadı"
+        }
+    },
+    "steel_file": {
+        "serial_removed": {
+            "title": "Seri numarası kazındı",
+            "description": "Seri numarası silahtan başarıyla kaldırıldı"
+        }
+    },
+    "biometrics_taking": {
+        "description": "Polis memuru %s sizden %s örneği almak istiyor. Onaylıyor musunuz?",
+        "deny": "Reddet",
+        "accept": "Kabul Et",
+        "target": {
+            "take_fingerprint": "Parmak izi al",
+            "take_dna": "DNA örneği al",
+            "force_take_fingerprint": "Zorla parmak izi al",
+            "force_take_dna": "Zorla DNA örneği al"
+        },
+        "notifications": {
+            "request_sent": {
+                "title": "Deliller",
+                "description": "Talep gönderildi"
+            },
+            "error": {
+                "title": "Deliller",
+                "description": "Başarılı olamadı"
+            },
+            "no_consent": {
+                "title": "Deliller",
+                "description": "Oyuncu reddetti"
+            },
+            "consent": {
+                "title": "Kanıtlar",
+                "description": "Oyuncu onay verdi"
+            },
+            "no_permission": {
+                "title": "Evidences",
+                "description": "Yetkiniz yok"
+            }
+        }
+    },
+    "laptop": {
+        "notifications": {
+            "error_laptop_creation": {
+                "title": "Deliller",
+                "description": "Dizüstü bilgisayar yerleştirilirken hata oluştu"
+            },
+            "error_laptop_pickup": {
+                "title": "Deliller",
+                "description": "Dizüstü bilgisayar alınırken hata oluştu"
+            },
+            "input_help": "Dizüstü bilgisayarı yerleştirmek için %s tuşuna basın.%sBu işlemi iptal etmek için %s kullanın",
+            "no_permission": {
+                "title": "Evidences",
+                "description": "Yetkiniz yok"
+            }
+        },
+        "target": {
+            "interact": "Etkileşim",
+            "pickup": "Al"
+        },
+        "login_screen": {
+            "title": "Diğer kullanıcı",
+            "username_placeholder": "Kullanıcı adı",
+            "password_placeholder": "Şifre",
+            "welcome": "Hoş geldiniz",
+            "missing_permission": "Yanlış kullanıcı adı veya şifre"
+        },
+        "desktop_screen": {
+            "common": {
+                "date_locales": "tr-TR",
+                "evidence_placeholder": "Kanıt",
+                "crime_scene_placeholder": "Suç mahali",
+                "collection_time_placeholder": "Toplama zamanı",
+                "additional_data_placeholder": "Ek bilgi",
+                "name_placeholder": "İsim",
+                "firstname_placeholder": "Ad",
+                "lastname_placeholder": "Soyad",
+                "fullname_placeholder": "Ad Soyad",
+                "birthdate_placeholder": "Doğum tarihi",
+                "gender_placeholder": "Cinsiyet",
+                "from": "kimden",
+                "by": "tarafından",
+                "fingerprint": "Parmak izi",
+                "dna": "DNA",
+                "statuses": {
+                    "search": "Ara...",
+                    "loading": "Yükleniyor...",
+                    "error": "Hata",
+                    "no_data": "Veri yok",
+                    "delete": "Sil",
+                    "save": "Kaydet",
+                    "cancel": "İptal",
+                    "unknown": "bilinmiyor",
+                    "analysed": "analiz edildi",
+                    "no_selection": "Seçilecek bir şey yok...",
+                    "select_evidence": "Lütfen bir kanıt seçin.",
+                    "select_citizen": "Lütfen bir vatandaş seçin.",
+                    "select_firearm": "Lütfen bir silah seçin.",
+                    "fill_all_fields": "Lütfen her alanı doldurun!"
+                },
+                "dropdowns": {
+                    "select_citizen": "Vatandaş seçin",
+                    "select_firearm": "Silah seçin"
+                }
+            },
+            "citizens_app": {
+                "name": "Vatandaşlar",
+                "create_citizen": "Vatandaş oluştur",
+                "personal_data": "Kişisel Veriler",
+                "biometric_data": "Biyometrik Veriler",
+                "notes": {
+                    "header": "Notlar",
+                    "create": "Yeni not oluştur",
+                    "edit": "Notu düzenle",
+                    "title": "Başlık",
+                    "text": "Metin"
+                },
+                "registered_firearms": "Kayıtlı Silahlar",
+                "statuses": {
+                    "no_citizens_found": "Vatandaş bulunamadı",
+                    "no_notes_found": "Not bulunamadı",
+                    "no_registered_firearms": "Kayıtlı ateşli silah yok",
+                    "select_evidence": "Kanıt seç"
+                },
+                "status_messages": {
+                    "citizen_creation_success": "Vatandaş oluşturuldu!",
+                    "citizen_creation_error": "Oluşturma başarısız!",
+                    "citizen_update_success": "Vatandaş güncellendi!",
+                    "citizen_update_error": "Vatandaş kaydedilemedi!",
+                    "citizen_deletion_success": "Vatandaş silindi!",
+                    "citizen_deletion_error": "Vatandaş silinemedi!",
+                    "note_save_success": "Not kaydedildi!",
+                    "note_save_error": "Not kaydedilemedi!",
+                    "note_deletion_success": "Not silindi!",
+                    "note_deletion_error": "Not silinemedi!",
+                    "biometric_data_link_success": "%s seçili vatandaşa bağlandı!",
+                    "biometric_data_unlink_success": "%s seçili vatandaştan ayrıldı!",
+                    "biometric_data_link_error": "%s vatandaşa bağlanamadı!"
+                },
+                "gender": {
+                    "header": "Cinsiyet seçin",
+                    "male": "Erkek",
+                    "female": "Kadın",
+                    "non_binary": "Non-binary"
+                }
+            },
+            "fingerprint_app": {
+                "name": "Parmak İzi Analizi",
+                "no_items_with_fingerprints": "Envanterinizde parmak izi içeren öğe yok."
+            },
+            "dna_app": {
+                "name": "DNA Analizi",
+                "no_items_with_dna": "Envanterinizde DNA içeren öğe yok."
+            },
+            "evidence_analysis": {
+                "start_analyzation": "Analizi başlat",
+                "matching_biometric_data": "%s veritabanı ile eşleştiriliyor...",
+                "database_match": {
+                    "header": "Veritabanı eşleşmesi!",
+                    "description": "Kanıt üzerindeki %s izi aşağıdaki kişiye aittir:",
+                    "open_citizens_app": "Vatandaş Uygulamasında Aç"
+                },
+                "no_database_match": {
+                    "header": "Veritabanı eşleşmesi yok!",
+                    "description": "Bu kanıt parçasındaki %s izi henüz bilinmeyen bir kişiye aittir. Söz konusu kişiyi tanıyorsanız, bu kanıt parçasındaki %s izini vatandaş uygulamasında ona atayabilirsiniz."
+                }
+            },
+            "firearms_registry_app": {
+                "name": "Silah Kayıt Sistemi",
+                "firearm_information": "Bilgiler",
+                "firearm_type": "Tür",
+                "firearm_serial": "Seri Numarası",
+                "firearm_owner": "Sahibi",
+                "registered_by": "Kaydeden",
+                "registered_at": "Kayıt Tarihi",
+                "firearm_registration": "Kayıt",
+                "firearm_status": "Durum",
+                "registration_reason": "Kayıt Nedeni",
+                "no_firearms_found": "Ateşli silah bulunamadı",
+                "registration_popup": {
+                    "header": "Silah Kaydet",
+                    "citizen": "Vatandaş",
+                    "firearm": "Silah",
+                    "reason": "Kayıt Nedeni",
+                    "status": "Silah Durumu"
+                },
+                "status": {
+                    "header": "Durum seçin",
+                    "unknown": "Bilinmiyor",
+                    "registered": "Kayıtlı",
+                    "lost": "Kayıp",
+                    "stolen": "Çalıntı",
+                    "confiscated": "El Konuldu",
+                    "destroyed": "İmha Edildi",
+                    "suspended": "Askıya Alındı"
+                },
+                "status_messages": {
+                    "firearm_registration_success": "Silah başarıyla kaydedildi!",
+                    "firearm_registration_error": "Silah kaydı başarısız oldu!",
+                    "firearm_already_registered": "Bu silah zaten kayıtlı!",
+                    "firearm_update_success": "Silah güncellendi!",
+                    "firearm_update_error": "Silah kaydedilemedi!",
+                    "firearm_deletion_success": "Silah silindi!",
+                    "firearm_deletion_error": "Silah silinemedi!"
+                }
+            },
+            "ballistics_app": {
+                "name": "Balistik Analizi",
+                "no_ballistics_evidence_items": "Envanterinizde balistik kanıt içeren herhangi bir eşya yok.",
+                "start_analyzation": "Analizi Başlat",
+                "matching_serial": "Balistik kanıtlar analiz ediliyor...",
+                "registry_match": {
+                    "header": "Ateşli silah kaydında eşleşme bulundu!",
+                    "description": "Balistik kanıt aşağıdaki ateşli silaha ait:",
+                    "open_firearms_registry": "Ateşli Silah Kaydında Aç"
+                },
+                "no_registry_match": {
+                    "header": "Ateşli silah kaydında eşleşme bulunamadı!",
+                    "casing_description": "Bu kovan, ateşli silahlar sicilindeki bir silahla eşleşen bir seri numarası taşımıyor. Ancak kovanlar, bir silahın içindeki kusurların bıraktığı benzersiz mikroskobik alet izleri sayesinde yine de tanımlanabilir. Envanterinizden bir silah seçerek, kovan kanıtının seçilen silahtan (veya en azından aynı türden bir silahtan) gelip gelmediğini kontrol edebilirsiniz.",
+                    "bullet_description": "Ateşlenmiş mermiler, bir ateşli silahın namlusunun içindeki kusurların bıraktığı benzersiz mikroskobik izler sayesinde tanımlanabilir. Envanterinizden bir silah seçerek, mermi kanıtının seçilen silahtan (veya en azından aynı türden bir silahtan) gelip gelmediğini kontrol edebilirsiniz.",
+                    "inventory_match": {
+                        "microstamp": "Seri numarası delil parçası üzerine mikro baskı ile işlendiği için, balistik delil kesin olarak seçilen silahtan kaynaklanmaktadır.",
+                        "imperfections": "Balistik kanıt tam olarak seçilen silahtan kaynaklanmaktadır, çünkü aynı benzersiz kusurları paylaşmaktadırlar.",
+                        "type": "Balistik delil, seçilen silahla aynı tipte bir silaha ait.",
+                        "none": "Balistik delil, seçilen silahla uyuşmuyor."
+                    }
+                },
+                "show_type": {
+                    "header": "Analiz başarılı",
+                    "magazine_description": "Şarjörler net bir şekilde bir silah türüyle ilişkilendirilebilir. Ancak bunları belirli bir kişisel silaha atamak mümkün değildir. Bu şarjör şu türde bir silaha aittir:",
+                    "gunshot_residue_description": "Barut artığı, ateşlenen silahın türü hakkında çıkarımlar yapılmasını sağlar. Yoğunluğuna bağlı olarak silahın ne zaman ateşlendiğini hesaplamak mümkündür. Seçilen barut artığı analizi şu sonuçları vermiştir:",
+                    "fired_at": "Ateşlenme zamanı"
+                }
+            },
+            "wiretap_app": {
+                "name": "Gizli Dinleme",
+                "warning_popup": {
+                    "title": "Önemli Uyarı",
+                    "warning": "Telefon veya radyo iletişimi yalnızca geçerli bir dinleme emri kapsamında izlenebilir. Acil durumlarda mahkeme onayı olmadan da işlem yapılabilir.",
+                    "accept_button": "Onayla"
+                },
+                "phone_calls": {
+                    "header": "Telefon Görüşmeleri",
+                    "no_calls_running": "Devam eden telefon görüşmesi yok",
+                    "lacking_permissions": "Telefon görüşmelerini dinleme izni yok",
+                    "notifications": {
+                        "popup_header": "Telefon Görüşmesi Bildirimleri",
+                        "status_subscribed": "%s bir telefon görüşmesine katıldığında bildirim alacaksınız. Bildirimleri durdurabilir veya hedefi buradan değiştirebilirsiniz:",
+                        "status_unsubscribed": "Bir vatandaşın %s bilgisini girin, telefon görüşmesine katıldığında bildirim alın:",
+                        "placeholder_full_name": "ad soyad",
+                        "placeholder_phone_number": "telefon numarası",
+                        "subscribe_button": "Abone Ol",
+                        "unsubscribe_button": "Abonelikten Çık",
+                        "status_messages": {
+                            "subscribed": "Başarıyla abone oldunuz",
+                            "unsubscribed": "Abonelikten başarıyla çıktınız"
+                        },
+                        "notification": {
+                            "title": "Telefon görüşmesi dinleme",
+                            "description": "%s şu anda dinlenebilecek bir telefon görüşmesine katılıyor"
+                        }
+                    }
+                },
+                "spy_microphones": {
+                    "header": "Casus Mikrofonlar",
+                    "no_spy_microphones_placed": "Yerleştirilmiş casus mikrofon yok",
+                    "lacking_permissions": "Casus mikrofonları dinlemek için izin eksikliği"
+                },
+                "radio": {
+                    "header": "Radyo",
+                    "lacking_permissions": "Radyo kanallarını dinlemek için gerekli izinler eksik"
+                },
+                "latest_actions": {
+                    "header": "Son Eylemler",
+                    "no_actions_available": "Protokollenmiş eylem yok",
+                    "end_reached": "Listenin sonuna ulaşıldı",
+                    "action_duration": "%s, %s'den %s'ye kadar",
+                    "actions": {
+                        "ObservableCall": "%s, %s arasındaki telefon görüşmesini ele geçirdi",
+                        "ObservableRadioFreq": "%s, %s MHz'deki radyo kanalını ele geçirdi",
+                        "ObservableSpyMicrophone": "%s, %s casus mikrofonunu dinledi"
+                    }
+                },
+                "running_observation_popup": {
+                    "ObservableCall": "Devam eden telefon görüşmesi ele geçirme #%s",
+                    "ObservableRadioFreq": "%s MHz'deki radyo kanalının devam eden ele geçirilmesi",
+                    "ObservableSpyMicrophone": "%s casus mikrofonu dinleniyor",
+                    "status_messages": {
+                        "protocol_save_success": "Ele geçirme protokolü başarıyla kaydedildi!",
+                        "protocol_save_error": "Ele geçirme protokolü kaydedilemedi!"
+                    }
+                },
+                "protocol_popup": {
+                    "header": {
+                        "ObservableCall": "Telefon görüşmesi ele geçirme protokolü #%s",
+                        "ObservableRadioFreq": "Radyo kanalı ele geçirme protokolü #%s",
+                        "ObservableSpyMicrophone": "Casus mikrofon gözlem protokolü #%s"
+                    },
+                    "observation_started": "Gözlem başladı.",
+                    "observation_ended": "Gözlem sona erdi."
+                }
+            }
+        }
+    },
+    "spy_microphone": {
+        "input_help": "Casus mikrofonu yerleştirmek için %s tuşuna basın.%sBu işlemi iptal etmek için %s tuşunu kullanın",
+        "error_spy_microphone_creation": {
+            "title": "Evidences",
+            "description": "Bu etikete sahip bir casus mikrofon zaten mevcuttur"
+        },
+        "spy_microphone_label_dialog": {
+            "title": "Etiketli casus mikrofon",
+            "label_textfield_title": "Ad",
+            "label_textfield_details": "Kanıt dizüstü bilgisayarındaki dinleme uygulamasında bu casus mikrofonu tanımlamak için benzersiz bir ad seçin"
+        },
+        "target_collect": "Casus mikrofonu topla"
+    }
+}

@@ -1,0 +1,460 @@
+{
+    "commands": {
+        "invalid_radius": {
+            "title": "Evidences",
+            "description": "Löschen der Beweise fehlgeschlagen, der angegebene Radius ist ungültig. (Muss eine Zahl zwischen 1 und 500 sein)"
+        },
+        "no_evidences": {
+            "title": "Evidences",
+            "description": "Löschen der Beweise fehlgeschlagen, es gibt keine Beweise innerhalb des angegebenen Radius."
+        },
+        "evidences_deleted": {
+            "title": "Evidences",
+            "description": "Alle Beweise im Radius von %s wurden gelöscht. (Anzahl: %s)"
+        }
+    },
+    "evidences": {
+        "evidence_box_label_dialog": {
+            "title": "Box beschriften",
+            "name_textfield_title": "Name",
+            "name_textfield_details": "Angezeigter Name im Inventar",
+            "description_textfield_title": "Beschreibung",
+            "description_textfield_details": "Kurze Beschreibung, die du im Inventar unter dem Item siehst"
+        },
+        "fingerprint": {
+            "collecting_label": "Fingerabdruck sichern",
+            "destroying_label": "Fingerabdruck beseitigen"
+        },
+        "blood": {
+            "collecting_label": "Blutspur sichern",
+            "destroying_label": "Blutspur beseitigen"
+        },
+        "saliva": {
+            "collecting_label": "Speichel sichern",
+            "destroying_label": "Speichel beseitigen"
+        },
+        "magazine": {
+            "collecting_label": "Magazin sichern",
+            "destroying_label": "Magazin beseitigen"
+        },
+        "casing": {
+            "collecting_label": "Patronenhülse einsammeln",
+            "destroying_label": "Patronenhülse beseitigen"
+        },
+        "bullet": {
+            "collecting_label": "Kugel einsammeln",
+            "destroying_label": "Kugel beseitigen"
+        },
+        "gunshot_residue": {
+            "collecting_label": "Schmauchspuren einsammeln",
+            "destroying_label": "Schmauchspuren beseitigen"
+        },
+        "information": {
+            "in_vehicle": "auf %s (Kfz-Kennzeichen: %s)",
+            "at_vehicle": "auf Kfz (Kennzeichen: %s)",
+            "at_coords": "auf dem Boden",
+            "at_player": "von einem Spieler",
+            "metadata": {
+                "crime_scene": "Tatort",
+                "collection_time": "Sammelzeit",
+                "additionalData": "Informationen",
+                "weapon_type": "Waffentyp",
+                "serial": "Seriennummer"
+            },
+            "seats": {
+                "-1": "vorderem Fahrersitz",
+                "0": "vorderem Beifahrersitz",
+                "1": "hinterem Fahrersitz",
+                "2": "hinterem Beifahrersitz"
+            },
+            "doors": {
+                "0": "vorderer Fahrertür",
+                "1": "vorderer Beifahrertür",
+                "2": "hinterer Fahrertür",
+                "3": "hinterer Beifahrertür"
+            }
+        },
+        "notifications": {
+            "common": {
+                "placeholders": {
+                    "at_coords": "auf dem Boden",
+                    "at_player": "auf diesem Menschen",
+                    "at_vehicle_door": "auf dieser Fahrzeugtür",
+                    "at_vehicle_seat": "auf deinem Sitzplatz",
+                    "at_entity": "auf diesem Objekt",
+                    "at_weapon": "auf der Waffe"
+                },
+                "errors": {
+                    "collect": {
+                        "title": "Evidences",
+                        "description": "Fehler beim Sicherstellen des Beweisstücks"
+                    },
+                    "destroy": {
+                        "title": "Evidences",
+                        "description": "Fehler beim Zerstören des Beweisstücks"
+                    }
+                }
+            },
+            "collect": {
+                "title": "Evidences",
+                "description": "Beweisstücke %s wurden sichergestellt"
+            },
+            "destroy": {
+                "title": "Evidences",
+                "description": "Beweisstücke %s wurden beseitigt"
+            },
+            "biometrics_pasted": {
+                "title": "Evidences",
+                "description": "Biometrische Daten wurden in die Zwischenablage kopiert"
+            },
+            "serial_pasted": {
+                "title": "Evidences",
+                "description": "Seriennummer wurde in die Zwischenablage kopiert"
+            },
+            "missing_serial": {
+                "title": "Evidences",
+                "description": "Das Beweismittel enthält keine Seriennummer"
+            },
+            "not_analysed": {
+                "title": "Evidences",
+                "description": "Das Beweisstück wurde noch nicht analysiert"
+            }
+        }
+    },
+    "fingerprint_scanner": {
+        "target": "Finger auflegen",
+        "input_help": "Benutze %s um abzubrechen",
+        "scan_match": {
+            "title": "Fingerabdruck eingescannt",
+            "description": "Treffer in der Datenbank: %s (%s • %s)"
+        },
+        "scan_no_match": {
+            "title": "Fingerabdruck eingescannt",
+            "description": "Kein Treffer in der Datenbank"
+        },
+        "scan_gloves": {
+            "title": "Scan fehlgeschlagen",
+            "description": "Du hast Handschuhe an"
+        },
+        "scan_error": {
+            "title": "Scan fehlgeschlagen",
+            "description": "Fingerabdruck konnte nicht gescannt werden"
+        }
+    },
+    "steel_file": {
+        "serial_removed": {
+            "title": "Seriennummer abgekratzt",
+            "description": "Seriennummer erfolgreich von der Waffe entfernt"
+        }
+    },
+    "biometrics_taking": {
+        "description": "Polizeibeamter %s möchte eine %s-Probe von dir nehmen. Bist du einverstanden?",
+        "deny": "Ablehnen",
+        "accept": "Akzeptieren",
+        "target": {
+            "take_fingerprint": "Fingerabdruck nehmen",
+            "take_dna": "DNS-Probe entnehmen",
+            "force_take_fingerprint": "Fingerabdruck erzwingen",
+            "force_take_dna": "DNS-Probe erzwingen"
+        },
+        "notifications": {
+            "request_sent": {
+                "title": "Evidences",
+                "description": "Anfrage wurde geschickt"
+            },
+            "error": {
+                "title": "Evidences",
+                "description": "Es war nicht erfolgreich"
+            },
+            "no_consent": {
+                "title": "Evidences",
+                "description": "Der Spieler hat abgelehnt"
+            },
+            "consent": {
+                "title": "Evidences",
+                "description": "Der Spieler hat zugestimmt"
+            },
+            "no_permission": {
+                "title": "Evidences",
+                "description": "Keine Rechte"
+            }
+        }
+    },
+    "laptop": {
+        "notifications": {
+            "error_laptop_creation": {
+                "title": "Evidences",
+                "description": "Fehler beim Abstellen des Laptops"
+            },
+            "error_laptop_pickup": {
+                "title": "Evidences",
+                "description": "Fehler beim Aufheben des Laptops"
+            },
+            "input_help": "Drücke %s, um den Laptop zu platzieren.%sBenutze %s um abzubrechen",
+            "no_permission": {
+                "title": "Evidences",
+                "description": "Keine Rechte"
+            }
+        },
+        "target": {
+            "interact": "Zugreifen",
+            "pickup": "Aufheben"
+        },
+        "login_screen": {
+            "title": "Anderer Benutzer",
+            "username_placeholder": "Nutzername",
+            "password_placeholder": "Passwort",
+            "welcome": "Willkommen",
+            "missing_permission": "Falscher Benutzername oder Passwort"
+        },
+        "desktop_screen": {
+            "common": {
+                "date_locales": "de-DE",
+                "evidence_placeholder": "Beweismittel",
+                "crime_scene_placeholder": "Tatort",
+                "collection_time_placeholder": "Sammelzeit",
+                "additional_data_placeholder": "Informationen",
+                "name_placeholder": "Name",
+                "firstname_placeholder": "Vorname",
+                "lastname_placeholder": "Nachname",
+                "fullname_placeholder": "Vorname Nachname",
+                "birthdate_placeholder": "Geburtsdatum",
+                "gender_placeholder": "Geschlecht",
+                "from": "von",
+                "by": "von",
+                "fingerprint": "Fingerabdruck",
+                "dna": "DNS",
+                "statuses": {
+                    "search": "Suche...",
+                    "loading": "Laden...",
+                    "error": "Fehler",
+                    "no_data": "Keine Daten",
+                    "delete": "Löschen",
+                    "save": "Speichern",
+                    "cancel": "Abbrechen",
+                    "unknown": "unbekannt",
+                    "analysed": "analysiert",
+                    "no_selection": "Nichts auszuwählen...",
+                    "select_evidence": "Bitte wähle ein Beweismittel aus.",
+                    "select_citizen": "Bitte wähle eine Person aus.",
+                    "select_firearm": "Bitte wähle eine Waffe aus.",
+                    "fill_all_fields": "Bitte fülle alle Felder aus!"
+                },
+                "dropdowns": {
+                    "select_citizen": "Bürger auswählen",
+                    "select_firearm": "Waffe auswählen"
+                }
+            },
+            "citizens_app": {
+                "name": "Bürger",
+                "create_citizen": "Bürger erstellen",
+                "personal_data": "Persönliche Daten",
+                "biometric_data": "Biometrische Daten",
+                "registered_firearms": "Registrierte Waffen",
+                "notes": {
+                    "header": "Notizen",
+                    "create": "Neue Notiz erstellen",
+                    "edit": "Notiz bearbeiten",
+                    "title": "Titel",
+                    "text": "Text"
+                },
+                "statuses": {
+                    "no_citizens_found": "Keine Bürger gefunden",
+                    "no_notes_found": "Keine Notizen gefunden",
+                    "no_registered_firearms": "Keine registrierten Waffen",
+                    "select_evidence": "Beweismittel auswählen"
+                },
+                "status_messages": {
+                    "citizen_creation_success": "Bürger angelegt!",
+                    "citizen_creation_error": "Erstellung fehlgeschlagen!",
+                    "citizen_update_success": "Bürger aktualisiert!",
+                    "citizen_update_error": "Bürger konnte nicht gespeichert werden!",
+                    "citizen_deletion_success": "Bürger gelöscht!",
+                    "citizen_deletion_error": "Bürger konnte nicht gelöscht werden!",
+                    "note_save_success": "Notiz gespeichert!",
+                    "note_save_error": "Notiz konnte nicht gespeichert werden!",
+                    "note_deletion_success": "Notiz gelöscht!",
+                    "note_deletion_error": "Notiz konnte nicht gelöscht werden!",
+                    "biometric_data_link_success": "%s wurde mit dem ausgewählten Bürger verknüpft!",
+                    "biometric_data_unlink_success": "%s wurde vom ausgewählten Bürger entfernt!",
+                    "biometric_data_link_error": "%s konnte nicht verknüpft werden!"
+                },
+                "gender": {
+                    "header": "Geschlecht auswählen",
+                    "male": "männlich",
+                    "female": "weiblich",
+                    "non_binary": "divers"
+                }
+            },
+            "fingerprint_app": {
+                "name": "Fingerabdruck Analyse",
+                "no_items_with_fingerprints": "Es befinden sich keine Items mit Fingerabdrücken in deinem Inventar."
+            },
+            "dna_app": {
+                "name": "DNS Analyse",
+                "no_items_with_dna": "Es befinden sich keine Items mit DNA in deinem Inventar."
+            },
+            "evidence_analysis": {
+                "start_analyzation": "Analyse starten",
+                "matching_biometric_data": "Gleiche %s mit Datenbank ab...",
+                "database_match": {
+                    "header": "Treffer in der Datenbank!",
+                    "description": "Die %s-Spur auf dem Beweismittel gehört zu der folgenden Person:",
+                    "open_citizens_app": "In Bürger-App öffnen"
+                },
+                "no_database_match": {
+                    "header": "Kein Treffer in der Datenbank!",
+                    "description": "Die %s-Spur auf dem Beweismittel gehört zu einer noch unbekannten Person. Wenn du die zugehörige Person kennst, kannst du ihr die %s-Spur von diesem Beweismittel in der Bürger-App zuweisen."
+                }
+            },
+            "firearms_registry_app": {
+                "name": "Waffenregister",
+                "firearm_information": "Informationen",
+                "firearm_type": "Typ",
+                "firearm_serial": "Seriennummer",
+                "firearm_owner": "Besitzer",
+                "registered_by": "Registriert von",
+                "registered_at": "Registriert am",
+                "firearm_registration": "Registrierung",
+                "firearm_status": "Status",
+                "registration_reason": "Registrierungsgrund",
+                "no_firearms_found": "Keine Waffen gefunden",
+                "registration_popup": {
+                    "header": "Waffe registrieren",
+                    "citizen": "Bürger",
+                    "firearm": "Waffe",
+                    "reason": "Registrierungsgrund",
+                    "status": "Waffenstatus"
+                },
+                "status": {
+                    "header": "Status auswählen",
+                    "unknown": "Unbekannt",
+                    "registered": "Registriert",
+                    "lost": "Verloren",
+                    "stolen": "Gestohlen",
+                    "confiscated": "Beschlagnahmt",
+                    "destroyed": "Zerstört",
+                    "suspended": "Gesperrt"
+                },
+                "status_messages": {
+                    "firearm_registration_success": "Waffe erfolgreich registriert!",
+                    "firearm_registration_error": "Waffenregistrierung fehlgeschlagen!",
+                    "firearm_already_registered": "Waffe ist bereits registriert!",
+                    "firearm_update_success": "Waffe aktualisiert!",
+                    "firearm_update_error": "Waffe konnte nicht gespeichert werden!",
+                    "firearm_deletion_success": "Waffe gelöscht!",
+                    "firearm_deletion_error": "Waffe konnte nicht gelöscht werden!"
+                }
+            },
+            "ballistics_app": {
+                "name": "Ballistische Analyse",
+                "no_ballistics_evidence_items": "Keine Gegenstände mit ballistischen Beweismitteln in deinem Inventar.",
+                "start_analyzation": "Analyse starten",
+                "matching_serial": "Ballistisches Beweismittel wird analysiert...",
+                "registry_match": {
+                    "header": "Treffer im Waffenregister!",
+                    "description": "Das ballistische Beweismittel gehört zu folgender Schusswaffe:",
+                    "open_firearms_registry": "Im Waffenregister öffnen"
+                },
+                "no_registry_match": {
+                    "header": "Kein Treffer im Waffenregister!",
+                    "casing_description": "Diese Patronenhülse trägt keine Seriennummer, die mit einer Waffe im Waffenregister übereinstimmt. Patronenhülsen können jedoch anhand der einzigartigen mikroskopischen Spuren identifiziert werden, die durch Unebenheiten im Inneren einer Waffe hinterlassen werden. Wenn du eine Waffe aus deinem Inventar auswählst, kannst du überprüfen, ob die Patronenhülse von der ausgewählten Waffe (oder zumindest von einer Waffe desselben Typs) stammt.",
+                    "bullet_description": "Abgefeuerte Projektile können anhand der einzigartigen mikroskopischen Spuren identifiziert werden, die durch Unvollkommenheiten im Lauf einer Schusswaffe hinterlassen werden. Indem du eine Waffe aus deinem Inventar auswählst, kannst du überprüfen, ob dieses Projektil als Beweismittel von der ausgewählten Waffe stammt (oder zumindest von einer Waffe desselben Typs).",
+                    "inventory_match": {
+                        "microstamp": "Der ballistische Beweis stammt exakt von der ausgewählten Waffe, da die Seriennummer als Mikrostempel auf dem Beweisstück hinterlassen wurde.",
+                        "imperfections": "Der ballistische Beweis stammt exakt von der ausgewählten Waffe, da sie die gleichen einzigartigen Prägungen teilen.",
+                        "type": "Der ballistische Beweis stammt von einer Waffe desselben Typs wie die ausgewählte Waffe.",
+                        "none": "Der ballistische Beweis stammt nicht mit der ausgewählten Waffe überein."
+                    }
+                },
+                "show_type": {
+                    "header": "Analyse erfolgreich",
+                    "magazine_description": "Magazine können eindeutig einem Waffentyp zugeordnet werden. Eine darüberhinausgehende Zuordnung zu einer konkreten Waffe ist hingegen nicht möglich. Dieses Magazin gehört zu einer Waffe dieses Typs:",
+                    "gunshot_residue_description": "Schmauchspuren lassen einen Rückschluss auf den Typ der abgefeuerten Waffe zu. Anhand ihrer Konzentration kann berechnet werden, wann die Waffe abgefeuert wurde. Die Analyse hat für die ausgewählt Schmauchspur folgendes ergeben:",
+                    "fired_at": "Gefeuert am"
+                }
+            },
+            "wiretap_app": {
+                "name": "Abhören",
+                "warning_popup": {
+                    "title": "Wichtiger Hinweis",
+                    "warning": "Tele- und Fernkommunikation darf nur aufgrund eines Gerichtsbeschlusses überwacht werden. Ist Gefahr im Verzug können Maßnahmen auch ohne richterliche Anordnung getroffen werden.",
+                    "accept_button": "Verstanden"
+                },
+                "phone_calls": {
+                    "header": "Anrufe",
+                    "no_calls_running": "Keine laufenden Anrufe",
+                    "lacking_permissions": "Fehlende Berechtigungen zum Abhören von Telefonaten",
+                    "notifications": {
+                        "popup_header": "Anruf Bemachrichtigungen",
+                        "status_subscribed": "Du wirst benachrichtigt, wenn %s an einem Telefonat teilnimmt. Du kannst hier den Empfang von Benachrichtigungen beenden oder die Zielperson ändern:",
+                        "status_unsubscribed": "%s des Bürgers eingeben, um benachrichtigt zu werden, wenn er an einem Telefonat teilnimmt:",
+                        "placeholder_full_name": "Name",
+                        "placeholder_phone_number": "Handynummer",
+                        "subscribe_button": "Benachrichtigen",
+                        "unsubscribe_button": "Deaktivieren",
+                        "status_messages": {
+                            "subscribed": "Anruf Benachrichtigen aktiviert",
+                            "unsubscribed": "Anruf Benachrichtigungen deaktiviert"
+                        },
+                        "notification": {
+                            "title": "Telekommunikationsüberwachung",
+                            "description": "%s nimmt nun in einem Anruf teil, der abgehört werden kann"
+                        }
+                    }
+                },
+                "spy_microphones": {
+                    "header": "Abhör-Wanzen",
+                    "no_spy_microphones_placed": "Keine Wanzen vorhanden",
+                    "lacking_permissions": "Fehlende Berechtigungen um Wanzen zu überwachen"
+                },
+                "radio": {
+                    "header": "Funk",
+                    "lacking_permissions": "Fehlende Berechtigungen zum Abhören von Funkkanälen"
+                },
+                "latest_actions": {
+                    "header": "Letzte Aktionen",
+                    "no_actions_available": "Keine protokollierten Aktionen vorhanden",
+                    "end_reached": "Ende der Liste erreicht",
+                    "action_duration": "%s von %s bis %s",
+                    "actions": {
+                        "ObservableCall": "%s hat einen Anruf zwischen %s abgehört",
+                        "ObservableRadioFreq": "%s hat den Funkkanal %s MHz abgehört",
+                        "ObservableSpyMicrophone": "%s hat die Wanze %s überwacht"
+                    }
+                },
+                "running_observation_popup" : {
+                    "ObservableCall": "Laufende Telekommunikationsüberwachung #%s",
+                    "ObservableRadioFreq": "Laufende Überwachung des Funkkanals %s MHz",
+                    "ObservableSpyMicrophone": "Laufende Überwachung der Wanze %s",
+                    "status_messages": {
+                        "protocol_save_success": "Überwachungsprotokoll erfolgreich gespeichert!",
+                        "protocol_save_error": "Überwachungsprotokoll konnte nicht gespeichert werden!"
+                    }
+                },
+                "protocol_popup": {
+                    "header": {
+                        "ObservableCall": "Protokoll der Telekommunikationsüberwachung #%s",
+                        "ObservableRadioFreq": "Protokoll der Funküberwachung #%s",
+                        "ObservableSpyMicrophone": "Protokoll der Wanzen-Überwachung #%s"
+                    },
+                    "observation_started": "Überwachung gestartet.",
+                    "observation_ended": "Überwachung beendet."
+                }
+            }
+        }
+    },
+    "spy_microphone": {
+        "input_help": "Drücke %s, um die Wanze zu platzieren.%sBenutze %s um abzubrechen",
+        "error_spy_microphone_creation": {
+            "title": "Evidences",
+            "description": "Es existiert bereits eine Wanze mit diesem Namen"
+        },
+        "spy_microphone_label_dialog": {
+            "title": "Wanze benennen",
+            "label_textfield_title": "Name",
+            "label_textfield_details": "Anhand dieses Namens kannst du die Wanze in der Abhör-App auf dem Laptop finden"
+        },
+        "target_collect": "Wanze aufheben"
+    }
+}

@@ -1,0 +1,58 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+        working-directory: html/dui/laptop
+
+      - name: Build DUI
+        run: bun run build
+        working-directory: html/dui/laptop
+      
+      - name: Bundle Files
+        run: |
+          mkdir -p ./temp/evidences
+          mkdir -p ./temp/evidences/html
+          mkdir -p ./temp/evidences/html/dui
+          mkdir -p ./temp/evidences/html/dui/laptop
+          cp ./{config.lua,fxmanifest.lua,LICENSE,README.md} ./temp/evidences
+          cp -r ./{client,common,locales,server} ./temp/evidences
+          cp -r html/nui ./temp/evidences/html
+          cp -r html/dui/scanner ./temp/evidences/html/dui
+          cp -r html/dui/laptop/dist ./temp/evidences/html/dui/laptop
+
+          mkdir -p ./temp/item_images
+          cp ./.github/setup/images/* ./temp/item_images
+
+          cd ./temp
+          zip -r evidences.zip ./evidences
+          cd item_images && zip -r ../item_images.zip ./*
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v3
+        with:
+          prerelease: false
+          make_latest: true
+          files: |
+            ./temp/evidences.zip
+            ./temp/item_images.zip

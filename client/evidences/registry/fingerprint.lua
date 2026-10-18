@@ -1,0 +1,44 @@
+local config <const> = require "config"
+
+local lastEnteredVehicle = nil
+
+lib.onCache("vehicle", function(value, oldValue)
+    lastEnteredVehicle = value or lastEnteredVehicle
+end)
+
+-- vehicle(door) fingerprint
+lib.onCache("seat", function(value, oldValue)
+    if (not oldValue and value) or (oldValue and not value) then
+        -- player is entering or exiting a vehicle
+        if config.isPedWearingGloves() then
+            return
+        end
+
+        local seatId <const> = value or oldValue
+        local vehicle <const> = cache.vehicle or lastEnteredVehicle
+        local entityModel <const> = GetEntityModel(cache.vehicle)
+
+        -- our own vehicle door targeting logic only works with vehicles that have at least two doors
+        -- checking whether the number of seats is less than or equal to 4 is necessary as our logic doesn't work for busses
+        if GetNumberOfVehicleDoors(vehicle) >= 2 and GetVehicleModelNumberOfSeats(entityModel) <= 4 then
+            -- vehicle door fingerprint
+            TriggerServerEvent("evidences:syncEvidence", "fingerprint", cache.serverId,
+                "atVehicleDoor", NetworkGetNetworkIdFromEntity(vehicle), seatId + 1 --[[doorId]], { plate = GetVehicleNumberPlateText(vehicle) })
+        else
+            -- vehicle fingerprint
+            TriggerServerEvent("evidences:syncEvidence", "fingerprint", cache.serverId,
+                "atEntity", NetworkGetNetworkIdFromEntity(vehicle), { plate = GetVehicleNumberPlateText(vehicle) })
+        end
+    end
+end)
+
+-- weapon fingerprint
+-- Only add fingerprints to weapons, as adding them to other items would prevent stacking them
+-- This is because fingerprints are stored in the item's metadata and item's with different metadata cannot be stacked
+AddEventHandler("ox_inventory:usedItem", function(name, slotId)
+    if string.sub(string.lower(name), 1, #"weapon") == "weapon" then
+        if not config.isPedWearingGloves() then
+            TriggerServerEvent("evidences:syncEvidence", "fingerprint", cache.serverId, "atItem", cache.serverId, slotId)
+        end
+    end
+end)

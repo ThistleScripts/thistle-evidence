@@ -1,0 +1,48 @@
+labels:
+  - help wanted
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thank you for taking the time to report an error and helping us improve our project!
+        Please take a moment to answer the questions below so that we don't have to bother you with lots of follow-up questions.
+        We will do our best to respond within a few minutes.
+
+        Many errors can be avoided through a few simple steps:
+        1. Did you follow all setup steps?
+        2. Did the error occure when using the latest version of the script?
+        3. Did you download the script from the releases section?
+        
+        <p align="center">
+            <a href="https://github.com/noobsystems/evidences/releases/latest/">
+                <img src="https://img.shields.io/github/v/release/noobsystems/evidences?style=flat&label=latest%20release" />
+            </a>
+        </p>
+
+        > [!WARNING]
+        > Please note that we can only provide support if the instructions above are followed.
+        > Discussions that do not meet these requirements may not receive a response.
+
+        <br>
+  
+  - type: textarea
+    id: error
+    attributes:
+      label: What error did occur?
+      description: |
+        Check your client and server console for error messages.
+        If you received an error, paste it (or a screenshot of it) into this field.
+        If you did not receive an error, explain the issue you want to report.
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: How can this error be reproduced?
+      description: |
+        Please take a moment to describe what happened.
+        The more precisely you tell us what we need to do to reproduce the error, the faster we’ll be able to fix it.
+    validations:
+      required: true

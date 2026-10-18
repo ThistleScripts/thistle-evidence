@@ -1,0 +1,107 @@
+local database <const> = require "server.database"
+local logger <const> = require "server.logger"
+
+local biometricsProvider = {}
+
+local framework <const> = require "common.frameworks.framework"
+local cache = {}
+
+MySQL.update.await(
+    [[
+        CREATE TABLE IF NOT EXISTS biometric_data (
+            identifier VARCHAR(500) PRIMARY KEY NOT NULL,
+            fingerprint VARCHAR(16) UNIQUE NOT NULL,
+            dna VARCHAR(16) UNIQUE NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ]]
+)
+
+-- Creates a 16-char fingerprint string
+local function createFingerprint(identifier)
+    local salt <const> = ("%s_%s"):format(identifier, GetGameTimer())
+    local hash1 <const> = joaat("fp_" .. salt)
+    local hash2 <const> = joaat("salt_" .. tostring(math.random(1, 1e9)))
+
+    local mask <const> = 0xFFFFFFFF
+    return string.format("%08X%08X", hash1 & mask, hash2 & mask)
+end
+
+-- Creates a 16-char DNA string
+local function createDNA()
+    local bases <const> = { "A", "T", "G", "C" }
+    local dna = ""
+
+    for i = 1, 16 do
+        dna = dna .. bases[math.random(1, #bases)]
+    end
+
+    return dna
+end
+
+---@param identifier number The frameworks identifier of the player
+---@param fingerprint string The fingerprint of the player
+---@param dna string The DNA of the player
+---@return boolean Returns true in case the insertion has been successfull, otherwise false
+local function insertBiometricData(identifier, fingerprint, dna)
+    return database.insert("INSERT INTO biometric_data (identifier, fingerprint, dna) VALUES (?, ?, ?)", identifier, fingerprint, dna).success
+end
+
+
+---@param identifier string The frameworks identifier of the player
+---@return { fingerprint: string, dna: string }
+local function getBiometricData(identifier)
+    if identifier then
+        if cache[identifier] then
+            return cache[identifier]
+        end
+
+        local result <const> = database.selectFirstRow("SELECT fingerprint, dna FROM biometric_data WHERE identifier = ?", tostring(identifier))
+
+        if result.success and result.response then
+            cache[identifier] = result.response
+            return result.response
+        end
+
+        for i = 1, 5 do
+            local fingerprint <const> = createFingerprint(identifier)
+            local dna <const> = createDNA()
+
+            if insertBiometricData(identifier, fingerprint, dna) then
+                local data <const> = {
+                    fingerprint = fingerprint,
+                    dna = dna
+                }
+
+                cache[identifier] = data
+                return data
+            end
+
+            Wait(0)
+        end
+    end
+end
+
+---@param playerId number The serverId of the player
+---@param type? string The biometric data type to return
+---@return string|{ fingerprint: string, dna: string }
+function biometricsProvider.getBiometricData(playerId, type)
+    local identifier <const> = framework.getIdentifier(playerId)
+    if identifier then
+        local data <const> = getBiometricData(identifier)
+        if data then
+            return data[type]
+        end
+    end
+end
+
+function biometricsProvider.getFingerprint(playerId)
+    return biometricsProvider.getBiometricData(playerId, "fingerprint")
+end
+
+exports("getFingerprint", biometricsProvider.getFingerprint)
+
+exports("getDNA", function(playerId)
+    return biometricsProvider.getBiometricData(playerId, "dna")
+end)
+
+return biometricsProvider

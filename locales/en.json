@@ -1,0 +1,460 @@
+{
+    "commands": {
+        "invalid_radius": {
+            "title": "Evidences",
+            "description": "Deletion of evidences failed, the provided radius is invalid. (Must be an integer between 1-500)"
+        },
+        "no_evidences": {
+            "title": "Evidences",
+            "description": "Deletion of evidences failed, there are no evidences within the provided radius."
+        },
+        "evidences_deleted": {
+            "title": "Evidences",
+            "description": "All evidences in the radius of %s were deleted. (Amount: %s)"
+        }
+    },
+    "evidences": {
+        "evidence_box_label_dialog": {
+            "title": "Label box",
+            "name_textfield_title": "Name",
+            "name_textfield_details": "Name displayed in inventory",
+            "description_textfield_title": "Description",
+            "description_textfield_details": "Short description that you will see in the inventory below the item"
+        },
+        "fingerprint": {
+            "collecting_label": "Collect fingerprint",
+            "destroying_label": "Remove fingerprint"
+        },
+        "blood": {
+            "collecting_label": "Collect blood trace",
+            "destroying_label": "Remove blood trace"
+        },
+        "saliva": {
+            "collecting_label": "Collect saliva",
+            "destroying_label": "Remove saliva"
+        },
+        "magazine": {
+            "collecting_label": "Collect magazine",
+            "destroying_label": "Remove magazine"
+        },
+        "casing": {
+            "collecting_label": "Collect bullet casing",
+            "destroying_label": "Remove bullet casing"
+        },
+        "bullet": {
+            "collecting_label": "Collect bullet",
+            "destroying_label": "Remove bullet"
+        },
+        "gunshot_residue": {
+            "collecting_label": "Collect gunshot residue",
+            "destroying_label": "Remove gunshot residue"
+        },
+        "information": {
+            "in_vehicle": "on %s (license plate: %s)",
+            "at_vehicle": "on vehicle (license plate: %s)",
+            "at_coords": "on ground",
+            "at_player": "from a player",
+            "metadata": {
+                "crime_scene": "Crime scene",
+                "collection_time": "Time of collection",
+                "additionalData": "Information",
+                "weapon_type": "Weapon type",
+                "serial": "Serial number"
+            },
+            "seats": {
+                "-1": "front driver's seat",
+                "0": "front passenger's seat",
+                "1": "rear driver's seat",
+                "2": "rear passenger's seat"
+            },
+            "doors": {
+                "0": "front driver's door",
+                "1": "front passenger's door",
+                "2": "rear driver's door",
+                "3": "rear passenger's door"
+            }
+        },
+        "notifications": {
+            "common": {
+                "placeholders": {
+                    "at_coords": "on the ground",
+                    "at_player": "at this player",
+                    "at_vehicle_door": "at this vehicle door",
+                    "at_vehicle_seat": "on your vehicle seat",
+                    "at_entity": "on this entity",
+                    "at_weapon": "on the weapon"
+                },
+                "errors": {
+                    "collect": {
+                        "title": "Evidences",
+                        "description": "Error during evidence collection"
+                    },
+                    "destroy": {
+                        "title": "Evidences",
+                        "description": "Error during evidence destruction"
+                    }
+                }
+            },
+            "collect": {
+                "title": "Evidences",
+                "description": "Evidences %s were collected"
+            },
+            "destroy": {
+                "title": "Evidences",
+                "description": "Evidences %s were destroyed"
+            },
+            "biometrics_pasted": {
+                "title": "Evidences",
+                "description": "Biometric data has been copied to the clipboard"
+            },
+            "serial_pasted": {
+                "title": "Evidences",
+                "description": "Serial number has been copied to the clipboard"
+            },
+            "missing_serial": {
+                "title": "Evidences",
+                "description": "The evidence item doesn't hold a serial number"
+            },
+            "not_analysed": {
+                "title": "Evidences",
+                "description": "The evidence has not yet been analysed"
+            }
+        }
+    },
+    "fingerprint_scanner": {
+        "target": "Place your finger on the scanner",
+        "input_help": "Use %s to cancel this action",
+        "scan_match": {
+            "title": "Fingerprint scanned",
+            "description": "Database match: %s (%s • %s)"
+        },
+        "scan_no_match": {
+            "title": "Fingerprint scanned",
+            "description": "No match in the database"
+        },
+        "scan_gloves": {
+            "title": "Scan failed",
+            "description": "You are wearing gloves"
+        },
+        "scan_error": {
+            "title": "Scan failed",
+            "description": "Fingerprint could not be scanned"
+        }
+    },
+    "steel_file": {
+        "serial_removed": {
+            "title": "Serial scratched off",
+            "description": "Serial successfully removed from the weapon"
+        }
+    },
+    "biometrics_taking": {
+        "description": "Police Officer %s wants to take your %s. Do you consent?",
+        "deny": "Deny",
+        "accept": "Accept",
+        "target": {
+            "take_fingerprint": "Take fingerprint",
+            "take_dna": "Take DNA",
+            "force_take_fingerprint": "Force take fingerprint",
+            "force_take_dna": "Force take DNA"
+        },
+        "notifications": {
+            "request_sent": {
+                "title": "Evidences",
+                "description": "Request was sent"
+            },
+            "error": {
+                "title": "Evidences",
+                "description": "It was not successful"
+            },
+            "no_consent": {
+                "title": "Evidences",
+                "description": "The player declined"
+            },
+            "consent": {
+                "title": "Evidences",
+                "description": "The player has consented"
+            },
+            "no_permission": {
+                "title": "Evidences",
+                "description": "No permissions"
+            }
+        }
+    },
+    "laptop": {
+        "notifications": {
+            "error_laptop_creation": {
+                "title": "Evidences",
+                "description": "Error while placing the laptop"
+            },
+            "error_laptop_pickup": {
+                "title": "Evidences",
+                "description": "Error picking up the laptop"
+            },
+            "input_help": "Press %s to place the laptop.%sUse %s to cancel this action",
+            "no_permission": {
+                "title": "Evidences",
+                "description": "No permissions"
+            }
+        },
+        "target": {
+            "interact": "Interact",
+            "pickup": "Pick up"
+        },
+        "login_screen": {
+            "title": "Other user",
+            "username_placeholder": "Username",
+            "password_placeholder": "Password",
+            "welcome": "Welcome",
+            "missing_permission": "Wrong username or password"
+        },
+        "desktop_screen": {
+            "common": {
+                "date_locales": "en-US",
+                "evidence_placeholder": "Evidence",
+                "crime_scene_placeholder": "Crime scene",
+                "collection_time_placeholder": "Time of collection",
+                "additional_data_placeholder": "Additional information",
+                "name_placeholder": "Name",
+                "firstname_placeholder": "First name",
+                "lastname_placeholder": "Last name",
+                "fullname_placeholder": "Firstname Lastname",
+                "birthdate_placeholder": "Birthdate",
+                "gender_placeholder": "Gender",
+                "from": "from",
+                "by": "by",
+                "fingerprint": "Fingerprint",
+                "dna": "DNA",
+                "statuses": {
+                    "search": "Search...",
+                    "loading": "Loading...",
+                    "error": "Error",
+                    "no_data": "No data",
+                    "delete": "Delete",
+                    "save": "Save",
+                    "cancel": "Cancel",
+                    "unknown": "unknown",
+                    "analysed": "analysed",
+                    "no_selection": "Nothing to select...",
+                    "select_evidence": "Please select a piece of evidence.",
+                    "select_citizen": "Please select a citizen.",
+                    "select_firearm": "Please select a firearm.",
+                    "fill_all_fields": "Please fill out every field!"
+                },
+                "dropdowns": {
+                    "select_citizen": "Select citizen",
+                    "select_firearm": "Select firearm"
+                }
+            },
+            "citizens_app": {
+                "name": "Citizens",
+                "create_citizen": "Create citizen",
+                "personal_data": "Personal Data",
+                "biometric_data": "Biometric Data",
+                "notes": {
+                    "header": "Notes",
+                    "create": "Create new note",
+                    "edit": "Edit note",
+                    "title": "Title",
+                    "text": "Text"
+                },
+                "registered_firearms": "Registered Firearms",
+                "statuses": {
+                    "no_citizens_found": "No citizens found",
+                    "no_notes_found": "No notes found",
+                    "no_registered_firearms": "No registered firearms",
+                    "select_evidence": "Select evidence"
+                },
+                "status_messages": {
+                    "citizen_creation_success": "Citizen created!",
+                    "citizen_creation_error": "Creation failed!",
+                    "citizen_update_success": "Citizen updated!",
+                    "citizen_update_error": "Could not save citizen!",
+                    "citizen_deletion_success": "Citizen deleted!",
+                    "citizen_deletion_error": "Could not delete citizen!",
+                    "note_save_success": "Note saved!",
+                    "note_save_error": "Could not save note!",
+                    "note_deletion_success": "Note deleted!",
+                    "note_deletion_error": "Could not delete note!",
+                    "biometric_data_link_success": "%s linked to selected citizen!",
+                    "biometric_data_unlink_success": "%s unlinked from selected citizen!",
+                    "biometric_data_link_error": "&s could not be linked to citizen!"
+                },
+                "gender": {
+                    "header": "Select gender",
+                    "male": "Male",
+                    "female": "Female",
+                    "non_binary": "Non binary"
+                }
+            },
+            "fingerprint_app": {
+                "name": "Fingerprint Analysis",
+                "no_items_with_fingerprints": "No items holding fingerprints in your inventory."
+            },
+            "dna_app": {
+                "name": "DNA Analysis",
+                "no_items_with_dna": "No items holding DNA in your inventory."
+            },
+            "evidence_analysis": {
+                "start_analyzation": "Start analyzation",
+                "matching_biometric_data": "Matching %s with database...",
+                "database_match": {
+                    "header": "Database match!",
+                    "description": "The %s trace on the evidence belongs to the following person:",
+                    "open_citizens_app": "Open in Citizens App"
+                },
+                "no_database_match": {
+                    "header": "No database match!",
+                    "description": "The %s trace on the piece of evidence belongs to a person who is still unknown. If you know the person in question, you can assign the %s trace from this piece of evidence to them in the citizen app."
+                }
+            },
+            "firearms_registry_app": {
+                "name": "Firearms Registry",
+                "firearm_information": "Information",
+                "firearm_type": "Type",
+                "firearm_serial": "Serial number",
+                "firearm_owner": "Owner",
+                "registered_by": "Registered by",
+                "registered_at": "Registered at",
+                "firearm_registration": "Registration",
+                "firearm_status": "Status",
+                "registration_reason": "Registration reason",
+                "no_firearms_found": "No firearms found",
+                "registration_popup": {
+                    "header": "Register firearm",
+                    "citizen": "Citizen",
+                    "firearm": "Firearm",
+                    "reason": "Registration reason",
+                    "status": "Firearm status"
+                },
+                "status": {
+                    "header": "Select status",
+                    "unknown": "Unknown",
+                    "registered": "Registered",
+                    "lost": "Lost",
+                    "stolen": "Stolen",
+                    "confiscated": "Confiscated",
+                    "destroyed": "Destroyed",
+                    "suspended": "Suspended"
+                },
+                "status_messages": {
+                    "firearm_registration_success": "Firearm registered!",
+                    "firearm_registration_error": "Firearm registration failed!",
+                    "firearm_already_registered": "Firearm is already registered!",
+                    "firearm_update_success": "Firearm updated!",
+                    "firearm_update_error": "Could not save firearm!",
+                    "firearm_deletion_success": "Firearm deleted!",
+                    "firearm_deletion_error": "Could not delete firearm!"
+                }
+            },
+            "ballistics_app": {
+                "name": "Ballistics Analysis",
+                "no_ballistics_evidence_items": "No items holding ballistics evidences in your inventory.",
+                "start_analyzation": "Start analyzation",
+                "matching_serial": "Analysing ballistics evidence...",
+                "registry_match": {
+                    "header": "Match in firearms registry!",
+                    "description": "The ballistics evidence belongs to the following firearm:",
+                    "open_firearms_registry": "Open in Firearms Registry"
+                },
+                "no_registry_match": {
+                    "header": "No match in firearms registry!",
+                    "casing_description": "This bullet casing doesn't hold a serial number that matches with a weapon in the firearms registry. However, bullet cases can still be identified by the unique microscopic toolmarks left by imperfections inside a firearm. By selecting a weapon from your inventory, you can check whether the bullet case evidence originates from the selected weapon (or at least from a weapon of the same type).",
+                    "bullet_description": "Fired bullets can be identified by the unique microscopic markings left by imperfections inside a firearm's barrel. By selecting a weapon from your inventory, you can check wheter the bullet evidence originates from the selected weapon (or at least from a weapon of the same type).",
+                    "inventory_match": {
+                        "microstamp": "The ballistics evidence originates exactly from the selected weapon as the serial number was microstamped onto the piece of evidence.",
+                        "imperfections": "The ballistics evidence originates exactly from the selected weapon as they share the same unique imperfections.",
+                        "type": "The ballistics evidence originates from a weapon of the same type as the selected weapon.",
+                        "none": "The ballistics evidence doesn't match with the selected weapon."
+                    }
+                },
+                "show_type": {
+                    "header": "Analysis successful",
+                    "magazine_description": "Magazines can be clearly associated with a weapon type. However, assigning them to a specific individual weapon is not possible. This magazine belongs to a weapon of this type:",
+                    "gunshot_residue_description": "Gunshot residue allows conclusions to be drawn about the type of weapon fired. Based on its concentration, it is possible to calculate when the weapon was fired. The analysis for the selected gunshot residue has yielded the following:",
+                    "fired_at": "Fired at"
+                }
+            },
+            "wiretap_app": {
+                "name": "Wiretap",
+                "warning_popup": {
+                    "title": "Important Notice",
+                    "warning": "Phone or radio communication may be intercepted only pursuant to a wiretap warrant. Actions may be taken without a court order in exigent circumstances.",
+                    "accept_button": "Acknowledge"
+                },
+                "phone_calls": {
+                    "header": "Phone calls",
+                    "no_calls_running": "No phone calls running",
+                    "lacking_permissions": "Lacking permissions to intercept phone calls",
+                    "notifications": {
+                        "popup_header": "Phone Call Notifications",
+                        "status_subscribed": "You're receving notifications when %s enters a phone call. You can stop receiving notifications or change your target here:",
+                        "status_unsubscribed": "Enter a citizen's %s to get notified when they enter a phone call:",
+                        "placeholder_full_name": "full name",
+                        "placeholder_phone_number": "phone number",
+                        "subscribe_button": "Subscribe",
+                        "unsubscribe_button": "Unsubscribe",
+                        "status_messages": {
+                            "subscribed": "You successfully subscribed",
+                            "unsubscribed": "You successfully unsubscibed"
+                        },
+                        "notification": {
+                            "title": "Phone call interception",
+                            "description": "%s is now participating in a phone call that can be intercepted"
+                        }
+                    }
+                },
+                "spy_microphones": {
+                    "header": "Spy microphones",
+                    "no_spy_microphones_placed": "No spy microphones placed",
+                    "lacking_permissions": "Lacking permissions to listen to spy microphones"
+                },
+                "radio": {
+                    "header": "Radio",
+                    "lacking_permissions": "Lacking permissions to intercept radio channels"
+                },
+                "latest_actions": {
+                    "header": "Latest actions",
+                    "no_actions_available": "No protocolized actions",
+                    "end_reached": "End of the list reached",
+                    "action_duration": "%s from %s to %s",
+                    "actions": {
+                        "ObservableCall": "%s intercepted a phone call between %s",
+                        "ObservableRadioFreq": "%s intercepted the radio channel at %s MHz",
+                        "ObservableSpyMicrophone": "%s listend to spy microphone %s"
+                    }
+                },
+                "running_observation_popup" : {
+                    "ObservableCall": "Running interception of phone call #%s",
+                    "ObservableRadioFreq": "Running interception of radio channel at %s MHz",
+                    "ObservableSpyMicrophone": "Listening to spy microphone %s",
+                    "status_messages": {
+                        "protocol_save_success": "Interception protocol successfully saved!",
+                        "protocol_save_error": "Interception protocol could not be saved!"
+                    }
+                },
+                "protocol_popup": {
+                    "header": {
+                        "ObservableCall": "Protocol of phone call interception #%s",
+                        "ObservableRadioFreq": "Protocol of radio channel inteception #%s",
+                        "ObservableSpyMicrophone": "Protocol of spy microphone observation #%s"
+                    },
+                    "observation_started": "Observation started.",
+                    "observation_ended": "Observation ended."
+                }
+            }
+        }
+    },
+    "spy_microphone": {
+        "input_help": "Press %s to place the spy microphone.%sUse %s to cancel this action",
+        "error_spy_microphone_creation": {
+            "title": "Evidences",
+            "description": "A spy microphone with this label does already exist"
+        },
+        "spy_microphone_label_dialog": {
+            "title": "Label spy microphone",
+            "label_textfield_title": "Label",
+            "label_textfield_details": "Choose a unique name to identify this spy microphone in the wiretap app on the evidence laptop"
+        },
+        "target_collect": "Collect spy microphone"
+    }
+}

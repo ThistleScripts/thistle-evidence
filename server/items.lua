@@ -1,0 +1,92 @@
+local config <const> = require "config"
+local logger <const> = require "server.logger"
+
+for _, item in pairs({"evidence_laptop", "evidence_box", "forensic_kit", "hydrogen_peroxide", "fingerprint_scanner", "collected_blood", "collected_saliva", "collected_fingerprint", "collected_magazine", "collected_casing", "collected_bullet", "collected_gunshot_residue"}) do
+    if not exports.ox_inventory:Items(item) then
+        lib.print.error("Setup step missing: The script requires you to create the " .. item .. " item")
+        return false
+    end
+end
+
+if config.wiretap.enabled and not exports.ox_inventory:Items("spy_microphone") then
+    lib.print.error("Setup step missing: The script requires you to create the spy_microphone item")
+    return false
+end
+
+
+-- https://github.com/overextended/ox_inventory/commit/c7dee27c97a3ef2dc9e5ea402346cf6ea4cc1b16
+-- https://github.com/overextended/ox_inventory/commit/895cca3c9f0cd140e75bdb050dc88843119b4418
+if lib.checkDependency("ox_inventory", "2.44.4") then
+    exports.ox_inventory:setContainerProperties("evidence_box", {
+        slots = 20,
+        maxWeight = 5000
+    })
+elseif lib.checkDependency("ox_inventory", "2.34.3") then
+    -- https://github.com/noobsystems/evidences/discussions/1
+    -- Create a temporary stash to check if the item evidence_box is a container.
+    -- That's needed because old versions of ox_inventory don't return the item metadata via exports.ox_inventory:Items(itemName).metadata.
+    local temporaryInv <const> = exports.ox_inventory:CreateTemporaryStash({
+        label = "Evidences",
+        slots = 1,
+        maxWeight = 0,
+        groups = {},
+        items = {{"evidence_box", 1}}
+    })
+
+    local evidenceBox <const> = exports.ox_inventory:GetSlot(temporaryInv, 1)
+    exports.ox_inventory:RemoveInventory(temporaryInv)
+
+    if evidenceBox and evidenceBox.metadata and (not evidenceBox.metadata.container) then
+        lib.print.error("Setup step missing: Make the evidence_box a container item (https://overextended.dev/docs/ox_inventory/Guides/creatingItems#creating-container-items) or use ox_inventory version 2.44.4 or higher")
+        return false
+    end
+else
+    lib.print.warn("Your ox_inventory version is outdated. We do not guarantee compatibility and highly recommend updating ox_inventory!")
+end
+
+
+-- This event renames the item on the specified slot in the player's inventory
+RegisterNetEvent("evidences:renameEvidenceBox", function(slot, input)
+    local playerId <const> = source
+    local item <const> = exports.ox_inventory:GetSlot(playerId, slot)
+
+    if item and item.name == "evidence_box" then
+        local metadata <const> = item.metadata or {}
+        metadata.label = input[1] or nil
+        metadata.description = input[2] or nil
+        exports.ox_inventory:SetMetadata(playerId, slot, metadata)
+    end
+end)
+
+
+-- Set durability = 100 for newly created forensic_kit and steel_file items
+exports.ox_inventory:registerHook("createItem", function(payload)
+    local metadata <const> = payload.metadata
+    metadata.durability = 100
+    return metadata
+end, {
+    itemFilter = {
+        forensic_kit = true,
+        steel_file = true
+    }
+})
+
+
+RegisterNetEvent("evidences:removeSerialNumber", function()
+    local playerId <const> = source
+    local weapon <const> = exports.ox_inventory:GetCurrentWeapon(playerId)
+
+    if weapon and weapon.slot and weapon.metadata then
+        if weapon.metadata.serial then
+            -- remove serial from weapon
+            local metadata <const> = weapon.metadata
+            metadata.imperfections = metadata.serial
+            metadata.serial = nil
+            exports.ox_inventory:SetMetadata(playerId, weapon.slot, metadata)
+        end
+    end
+
+    TriggerClientEvent("evidences:notify", source, {key = "steel_file.serial_removed"}, "success")
+end)
+
+return true

@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@layer base {
+    * {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    [lang="ja"] {
+        word-break: keep-all;
+        overflow-wrap: break-word;
+    }
+
+    input::placeholder {
+        opacity: 0.5;
+        color: inherit;
+    }
+}
+
+@layer utilities {
+    .scrollbar {
+        &::-webkit-scrollbar {
+            width: 25px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+            margin-block: 5px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgb(174, 174, 178);
+            background-clip: content-box;
+            border: 5px solid transparent;
+            border-radius: 20px;
+        }
+
+        scrollbar-width: thin;
+        scrollbar-color: rgb(174, 174, 178) transparent;
+    }
+}
+
+@layer components {
+    .input {
+        @apply w-full p-2.5 bg-white/20 shadow-glass border-2 border-white/80 rounded-10 text-30 leading-none;
+    }
+}
+
+@theme {
+    --spacing: 5px;
+
+    --text-15: 15px;
+    --text-20: 20px;
+    --text-22.5: 22.5px;
+    --text-24: 24px;
+    --text-25: 25px;
+    --text-30: 30px;
+    --text-35: 35px;
+    --text-40: 40px;
+    --text-45: 45px;
+    --text-50: 50px;
+    --text-100: 100px;
+    --text-150: 150px;
+
+    --radius-10: 10px;
+    --radius-16: 16px;
+    --radius-20: 20px;
+
+    --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.1);
+    --shadow-button: 0 4px 30px rgba(0, 0, 0, 0.2);
+
+    --color-window: #c0c0c0ff;
+    --color-button: rgb(174, 174, 178);
+
+    @keyframes orbit {
+        from {
+            transform: rotate(0deg) translateX(30px) rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg) translateX(30px) rotate(-360deg);
+        }
+    }
+
+    --animate-orbit: orbit 1s linear infinite;
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    --animate-skeleton-pulse: pulse 3s ease-in-out infinite;
+}
