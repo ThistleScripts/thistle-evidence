@@ -1,3 +1,4 @@
+local framework <const> = require "server.framework"
 local phoneNumber = {}
 
 function phoneNumber.getPhoneNumber(playerId)

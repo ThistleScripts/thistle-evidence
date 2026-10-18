@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 
 MySQL.update.await(
@@ -13,7 +13,7 @@ MySQL.update.await(
     ]]
 )
 
-lib.callback.register("evidences:getLaptops", function(source)
+Thistle.Callback.Register("evidences:getLaptops", function(source)
     local result <const> = database.query("SELECT * FROM evidence_laptops")
     local laptops = {}
 
@@ -32,9 +32,18 @@ lib.callback.register("evidences:getLaptops", function(source)
     return laptops
 end)
 
-lib.callback.register("evidences:placeLaptop", function(source, coords)
+Thistle.Callback.Register("evidences:placeLaptop", function(source, coords)
     if not framework.hasPermission(config.permissions.place, source) then
-        TriggerClientEvent("evidences:notify", playerId, { key = "laptop.notifications.no_permission" }, "error")
+        TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
+        return false
+    end
+
+    if type(coords) ~= "vector4" or #(GetEntityCoords(GetPlayerPed(source)) - coords.xyz) > 15.0 then
+        return false
+    end
+
+    -- Take the laptop from the player here rather than trusting the client to use it up
+    if not exports.ox_inventory:RemoveItem(source, "evidence_laptop", 1) then
         return false
     end
 
@@ -49,17 +58,28 @@ lib.callback.register("evidences:placeLaptop", function(source, coords)
         return true
     end
 
-    TriggerClientEvent("evidences:notify", playerId, { key = "laptop.notifications.error_laptop_creation" }, "error")
+    exports.ox_inventory:AddItem(source, "evidence_laptop", 1)
+    TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.error_laptop_creation" }, "error")
     return false
 end)
 
-lib.callback.register("evidences:pickupLaptop", function(source, coords)
+Thistle.Callback.Register("evidences:pickupLaptop", function(source, coords)
     if not framework.hasPermission(config.permissions.pickup, source) then
-        TriggerClientEvent("evidences:notify", playerId, { key = "laptop.notifications.no_permission" }, "success")
+        TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end
 
-    if database.update(
+    if type(coords) ~= "vector4" or #(GetEntityCoords(GetPlayerPed(source)) - coords.xyz) > 5.0 then
+        return false
+    end
+
+    if not exports.ox_inventory:CanCarryItem(source, "evidence_laptop", 1) then
+        TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.error_laptop_pickup" }, "error")
+        return false
+    end
+
+    -- Only hand out a laptop when one was actually removed, otherwise repeating the call would duplicate it
+    local result <const> = database.update(
         [[
             DELETE FROM evidence_laptops
                 WHERE x = ?
@@ -68,13 +88,14 @@ lib.callback.register("evidences:pickupLaptop", function(source, coords)
                 AND w = ?
         ]],
         tostring(coords.x), tostring(coords.y), tostring(coords.z), tostring(coords.w)
-    ).success then
-        if exports.ox_inventory:AddItem(source, "evidence_laptop", 1) then
-            TriggerClientEvent("evidences:destroyLaptop", -1, coords)
-            return true
-        end
+    )
+
+    if result.success and (tonumber(result.response) or 0) > 0 then
+        TriggerClientEvent("evidences:destroyLaptop", -1, coords)
+        exports.ox_inventory:AddItem(source, "evidence_laptop", 1)
+        return true
     end
 
-    TriggerClientEvent("evidences:notify", playerId, { key = "laptop.notifications.error_laptop_pickup" }, "error")
+    TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.error_laptop_pickup" }, "error")
     return false
 end)

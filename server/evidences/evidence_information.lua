@@ -15,7 +15,7 @@ local translations <const> = {
 
 local order <const> = {"additionalData", "crimeScene", "dna", "fingerprint",  "collectionTime", "weaponType", "serial"}
 
-function createInformation(evidenceInformation)
+local function createInformation(evidenceInformation)
     local information = ""
 
     for _, key in pairs(order) do

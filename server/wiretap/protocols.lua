@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local logger <const> = require "server.logger"
 local actionStorageDuration <const> = config.wiretap.actionStorageDuration
@@ -23,13 +23,16 @@ if actionStorageDuration and type(actionStorageDuration) == "number" and actionS
     MySQL.update.await("DELETE FROM wiretaps WHERE (? - endedAt) > ?", { currentMillis, actionStorageDuration })
 end
 
-lib.callback.register("evidences:storeWiretap", function(source, arguments)
+Thistle.Callback.Register("evidences:storeWiretap", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"
         }
     end
+
+    -- The log exists so wiretaps can be checked later, so the observer is always the player who ran it
+    arguments.observer = framework.getPlayerName(source)
 
     return database.insert(
         [[
@@ -44,7 +47,7 @@ lib.callback.register("evidences:storeWiretap", function(source, arguments)
         end)
 end)
 
-lib.callback.register("evidences:getWiretaps", function(source, arguments)
+Thistle.Callback.Register("evidences:getWiretaps", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,

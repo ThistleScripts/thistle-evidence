@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local imagePath <const> = GetConvar("inventory:imagepath", "nui://ox_inventory/web/images") .. "/%s.png"
 
 -- https://github.com/overextended/ox_inventory/blob/6be13009eebc618b282f584782d98ff16ea2f9ed/web/src/helpers/index.ts#L140
@@ -49,17 +49,17 @@ local function getItemsMatchingFilter(source, filter)
             local containerData <const> = exports.ox_inventory:GetContainerFromSlot(source, slot)
             local filteredContainerItems = {}
 
-            for _, containerItem in pairs(containerData.items or {}) do
-                local matchesFilter, data = filter(containerItem)
+            for _, containerItem in pairs(containerData and containerData.items or {}) do
+                local containerItemMatchesFilter <const>, containerItemDetails <const> = filter(containerItem)
 
-                if matchesFilter then
+                if containerItemMatchesFilter then
                     local containerItemMetadata <const> = containerItem.metadata or {}
 
                     filteredContainerItems[#filteredContainerItems + 1] = {
                         imagePath = getItemImage(containerItem),
                         label = containerItemMetadata.label or containerItem.label,
                         slot = containerItem.slot,
-                        details = details or {}
+                        details = containerItemDetails or {} -- was the outer item's details, so evidence in boxes showed none
                     }
                 end
             end
@@ -78,7 +78,7 @@ local function getItemsMatchingFilter(source, filter)
     if #filteredItems > 0 then
         result[#result + 1] = {
             inventory = source,
-            label = playerInventory and playerInventory.label or "Deine Tasche",
+            label = playerInventory and playerInventory.label or GetPlayerName(source),
             items = filteredItems
         }
     end
@@ -86,7 +86,7 @@ local function getItemsMatchingFilter(source, filter)
     return result
 end
 
-lib.callback.register("evidences:getPlayersFirearms", function(source, arguments)
+Thistle.Callback.Register("evidences:getPlayersFirearms", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -110,7 +110,7 @@ lib.callback.register("evidences:getPlayersFirearms", function(source, arguments
     end)
 end)
 
-lib.callback.register("evidences:getPlayersItemsWithEvidence", function(source, arguments)
+Thistle.Callback.Register("evidences:getPlayersItemsWithEvidence", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -147,10 +147,23 @@ lib.callback.register("evidences:getPlayersItemsWithEvidence", function(source, 
 end)
 
 
+-- Players may only change items in their own inventory or in a container (e.g. evidence box) they carry
 local function getItem(source, inventory, slot)
-    if type(inventory) == "number" then
-        if source ~= inventory then
-            -- player may not request changing metadata of an item in another player's inventory
+    if type(slot) ~= "number" then
+        return false
+    end
+
+    if inventory ~= source then
+        local isCarriedContainer = false
+
+        for _, item in pairs(exports.ox_inventory:GetInventoryItems(source) or {}) do
+            if item.metadata and item.metadata.container and item.metadata.container == inventory then
+                isCarriedContainer = true
+                break
+            end
+        end
+
+        if not isCarriedContainer then
             return false
         end
     end
@@ -158,7 +171,7 @@ local function getItem(source, inventory, slot)
     return exports.ox_inventory:GetSlot(inventory, slot)
 end
 
-lib.callback.register("evidences:updateAdditionalData", function(source, arguments)
+Thistle.Callback.Register("evidences:updateAdditionalData", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -170,7 +183,7 @@ lib.callback.register("evidences:updateAdditionalData", function(source, argumen
 
     if item then
         local evidenceInformation <const> = item.metadata and item.metadata.information or {}
-        evidenceInformation.additionalData = arguments.additionalData
+        evidenceInformation.additionalData = type(arguments.additionalData) == "string" and arguments.additionalData:sub(1, 500) or nil
         local description <const> = require "server.evidences.evidence_information"(evidenceInformation)
 
         item.metadata = item.metadata or {}
@@ -181,7 +194,7 @@ lib.callback.register("evidences:updateAdditionalData", function(source, argumen
     end
 end)
 
-lib.callback.register("evidences:setAnalysed", function(source, arguments)
+Thistle.Callback.Register("evidences:setAnalysed", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -191,24 +204,31 @@ lib.callback.register("evidences:setAnalysed", function(source, arguments)
 
     local item <const> = getItem(source, arguments.inventory, arguments.slot)
 
-    if item then
-        if item.metadata[arguments.type] then
-            item.metadata[arguments.type].analysed = true
+    local evidenceType <const> = arguments.type
+    if evidenceType ~= "dna" and evidenceType ~= "fingerprint" and evidenceType ~= "ballistics" then
+        return
+    end
 
-            -- Update the description of the evidence item
-            item.metadata.information = item.metadata.information or {}
-            item.metadata.information[arguments.type] = item.metadata[arguments.type].owner -- for biometric evidences (dna, fingerprint)
+    if item and item.metadata and type(item.metadata[evidenceType]) == "table" then
+        item.metadata[evidenceType].analysed = true
 
-            local information <const> = arguments.information
-            for key, value in pairs(information) do
-                item.metadata.information[key] = value
+        -- Update the description of the evidence item
+        item.metadata.information = item.metadata.information or {}
+        item.metadata.information[evidenceType] = item.metadata[evidenceType].owner -- for biometric evidences (dna, fingerprint)
+
+        -- Only the analysis results shown in the description can be set (see evidence_information.lua).
+        -- Biometric analyses send none.
+        local information <const> = type(arguments.information) == "table" and arguments.information or {}
+        for _, key in ipairs({ "weaponType", "serial" }) do
+            if type(information[key]) == "string" then
+                item.metadata.information[key] = information[key]:sub(1, 100)
             end
-
-            item.metadata.description = require "server.evidences.evidence_information"(item.metadata.information)
-
-            exports.ox_inventory:SetMetadata(arguments.inventory, arguments.slot, item.metadata)
-
-            TriggerEvent("evidences:evidenceItemAnalysed", source, item)
         end
+
+        item.metadata.description = require "server.evidences.evidence_information"(item.metadata.information)
+
+        exports.ox_inventory:SetMetadata(arguments.inventory, arguments.slot, item.metadata)
+
+        TriggerEvent("evidences:evidenceItemAnalysed", source, item)
     end
 end)

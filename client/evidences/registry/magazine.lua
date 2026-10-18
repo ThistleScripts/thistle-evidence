@@ -39,9 +39,13 @@ AddEventHandler("ox_inventory:currentWeapon", function(weapon)
         return
     end
 
+    if not weapon.metadata then
+        return
+    end
+
     -- If the serial number has been scratched off the weapon, it is stored in imperfections
     local serial <const> = weapon.metadata.serial or weapon.metadata.imperfections
-    if not (weapon.metadata and weapon.metadata.ammo and serial) then
+    if not (weapon.metadata.ammo and serial) then
         return
     end
 
@@ -54,7 +58,7 @@ AddEventHandler("ox_inventory:currentWeapon", function(weapon)
             local naturallySpawnedMagazine <const> = getNaturallySpawnedMagazine(magazineModel)
             if naturallySpawnedMagazine then
 
-                if cache.vehicle and cache.seat and not IsPedOnAnyBike(ped) then -- vehicle magazine
+                if cache.vehicle and cache.seat and not IsPedOnAnyBike(cache.ped) then -- vehicle magazine
                     SetEntityAsMissionEntity(naturallySpawnedMagazine)
                     DeleteObject(naturallySpawnedMagazine)
 

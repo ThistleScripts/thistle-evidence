@@ -242,9 +242,7 @@ return {
                 end
             end,
             hide = function(point)
-                if not no_thread then
-                    point.isThreadRunning = false 
-                end
+                point.isThreadRunning = false
             end
         }
     },

@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local logger <const> = require "server.logger"
 
@@ -16,13 +16,17 @@ MySQL.update.await(
     ]]
 )
 
-lib.callback.register("evidences:storeNote", function(source, arguments)
+Thistle.Callback.Register("evidences:storeNote", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"
         }
     end
+
+    -- Set the author and time here, not from the laptop, so notes can't be signed with someone else's name
+    arguments.modifiedBy = framework.getPlayerName(source)
+    arguments.modifiedAt = os.time() * 1000
 
     return database.insert(
         [[
@@ -40,14 +44,15 @@ lib.callback.register("evidences:storeNote", function(source, arguments)
             if not arguments.id then
                 arguments.id = id
                 logger.log(source, "Note created", arguments)
+            else
+                logger.log(source, "Note edited", arguments)
             end
 
-            logger.log(source, "Note edited", arguments)
             return arguments
         end)
 end)
 
-lib.callback.register("evidences:deleteNote", function(source, arguments)
+Thistle.Callback.Register("evidences:deleteNote", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -59,7 +64,7 @@ lib.callback.register("evidences:deleteNote", function(source, arguments)
     return database.update("DELETE FROM citizen_notes WHERE id = ?", arguments.id)
 end)
 
-lib.callback.register("evidences:getNotes", function(source, arguments)
+Thistle.Callback.Register("evidences:getNotes", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,

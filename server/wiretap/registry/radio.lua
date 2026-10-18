@@ -1,6 +1,6 @@
 local config <const> = require "config"
 local logger <const> = require "server.logger"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local ObservableRadioFreq <const> = require "server.wiretap.classes.observable_radio_freq"
 local knownRadioFrequencies = {}
 
@@ -20,7 +20,7 @@ RegisterNetEvent("pma-voice:setTalkingOnRadio", function(talking)
     end
 end)
 
-lib.callback.register("evidences:observeObservableRadioFreq", function(observer, arguments)
+Thistle.Callback.Register("evidences:observeObservableRadioFreq", function(observer, arguments)
     if not framework.hasPermission(config.wiretap.radio.permissions, observer) then
         return {
             success = false,
@@ -36,7 +36,7 @@ lib.callback.register("evidences:observeObservableRadioFreq", function(observer,
 
 end)
 
-lib.callback.register("evidences:ignoreObservableRadioFreq", function(observer, arguments)
+Thistle.Callback.Register("evidences:ignoreObservableRadioFreq", function(observer, arguments)
     if arguments and arguments.channel then
         local observableRadioFreq <const> = knownRadioFrequencies[arguments.channel]
         return observableRadioFreq and observableRadioFreq:removeObserver(observer)

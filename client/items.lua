@@ -15,7 +15,7 @@ exports("evidence_box", function(slot)
 
         -- we have to close the inventory to prevent the player from moving while focussing the input dialog after closing the inventory by himself
         exports.ox_inventory:closeInventory()
-        local input <const> = lib.inputDialog(locale("evidences.evidence_box_label_dialog.title"), {
+        local input <const> = Thistle.Input(locale("evidences.evidence_box_label_dialog.title"), {
             {
                 type = "input",
                 label = locale("evidences.evidence_box_label_dialog.name_textfield_title"),
@@ -108,7 +108,7 @@ exports("copySerialNumber", function(slot)
             return
         end
 
-        config.notify({ key = "evidences.notifications.missing_serial" }, "success")
+        config.notify({ key = "evidences.notifications.missing_serial" }, "error")
     end
 end)
 

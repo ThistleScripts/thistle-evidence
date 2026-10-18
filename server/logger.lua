@@ -1,20 +1,79 @@
 local config <const> = require "config"
-local licenses = {}
 
 local logger = {}
 
--- Returns and caches the license of a player or nil
--- https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/
-local function getLicense(source)
-    if not licenses[source] then
-        local license <const> = GetPlayerIdentifierByType(source, "license")
-        licenses[source] = license and license:gsub("license:", "")
+-- Which webhook category each logged event is posted to (see config.logging.webhooks)
+local categories <const> = {
+    ["Evidences cleared"] = "evidences",
+    ["Evidence destroyed"] = "evidences",
+    ["Evidence collected"] = "evidences",
+    ["Biometric data taken"] = "evidences",
+    ["Fingerprint scanned"] = "evidences",
+    ["Biometric data linked to citizen"] = "citizens",
+    ["Citizen created"] = "citizens",
+    ["Citizen updated"] = "citizens",
+    ["Citizen deletion requested"] = "citizens",
+    ["Note created"] = "citizens",
+    ["Note edited"] = "citizens",
+    ["Note deletion requested"] = "citizens",
+    ["Observation started"] = "wiretap",
+    ["Observation ended"] = "wiretap",
+    ["Spy microphone placed"] = "wiretap",
+    ["Spy microphone picked up"] = "wiretap",
+    ["Firearm registered"] = "firearms",
+    ["Firearm unregistering requested"] = "firearms"
+}
+
+if config.logging and config.logging.service == "discord" then
+    local webhooks <const> = config.logging.webhooks or {}
+    Thistle.Webhook.configure({
+        default = webhooks.default,
+        evidences = webhooks.evidences,
+        citizens = webhooks.citizens,
+        wiretap = webhooks.wiretap,
+        firearms = webhooks.firearms,
+        botName = "Thistle Evidence"
+    })
+end
+
+-- Builds the embed fields: who did it first, then the event's own data (short values side by side)
+local function createFields(source, arguments)
+    local license <const> = Thistle.GetLicense(source)
+    local txAdminUrl <const> = config.logging.txAdminUrl
+    local fields = Thistle.Webhook.fields(
+        { "Player", ("%s (%s)"):format(GetPlayerName(source) or "unknown", source) },
+        { "License", license or "n/a" }
+    )
+
+    if license and txAdminUrl and txAdminUrl ~= "" then
+        fields[#fields + 1] = { name = "txAdmin", value = ("[View player](%s%s)"):format(txAdminUrl, (license:gsub("license:", ""))), inline = true }
     end
 
-    return licenses[source]
+    local keys = {}
+    for key in pairs(arguments or {}) do
+        keys[#keys + 1] = key
+    end
+
+    table.sort(keys, function(a, b)
+        return #tostring(arguments[a]) < #tostring(arguments[b])
+    end)
+
+    for _, key in ipairs(keys) do
+        local value <const> = tostring(arguments[key]):sub(1, 1000) -- Discord rejects field values over 1024 characters
+        fields[#fields + 1] = {
+            name = key,
+            value = "```" .. value .. "```",
+            inline = #value <= 25
+        }
+    end
+
+    return fields
 end
 
 -- Log an event to the configured logging service
+---@param source number The player who caused the event
+---@param event string The event name, as listed in config.logging.loggedEvents
+---@param arguments? table<string, any> Event details
 function logger.log(source, event, arguments)
     if not config.logging
         or not config.logging.enabled
@@ -25,86 +84,21 @@ function logger.log(source, event, arguments)
     local service <const> = config.logging.service
 
     if service == "ox_lib" then
-        lib.logger(source, event, "", fields)
+        local tags = {}
+        for key, value in pairs(arguments or {}) do
+            tags[#tags + 1] = ("%s:%s"):format(key, tostring(value))
+        end
+
+        lib.logger(source, event, "", table.unpack(tags))
         return
     end
 
     if service == "discord" then
-        local webhook <const> = config.logging.webhook
-        if not webhook then
-            lib.print.error("Logging is set to 'discord' but no webhook url is defined in config.")
-            return
-        end
-        
-        local fields = {}
-        local keys = {}
-        
-        for key in pairs(arguments) do
-            keys[#keys + 1] = key
-        end
-
-        table.sort(keys, function(a, b)
-            return #tostring(arguments[a]) < #tostring(arguments[b])
-        end)
-
-        for _, key in ipairs(keys) do
-            local value <const> = arguments[key]
-            fields[#fields + 1] = {
-                name = key,
-                value = "```" .. value .. "```",
-                inline = not (#tostring(value) > 25)
-            }
-        end
-
-        local components = {}
-        local license <const> = getLicense(source)
-        local txAdminUrl <const> = config.logging.txAdminUrl
-
-        if license then
-            components = {
-                {
-                    type = 1,
-                    components = {
-                        {
-                            type = 2,
-                            style = 5,
-                            label = txAdminUrl and "View actor in txAdmin" or "No txAdmin url defined in config.lua",
-                            emoji = not txAdminUrl and { name = "⚠️" } or nil,
-                            url = txAdminUrl and (txAdminUrl .. license) or "https://github.com/noobsystems/evidences/blob/main/config.lua",
-                            disabled = not txAdminUrl
-                        }
-                    }
-                }
-            }
-        end
-
-        local body <const> = {
-            username = "noobsystems/evidences",
-            avatar_url = "https://avatars.githubusercontent.com/u/202514064",
-            with_components = true,
-            embeds = {
-                {
-                    title = event,
-                    timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
-                    color = 0x113962,
-                    fields = fields
-                }
-            },
-            components = components
-        }
-
-        -- To match the Discord logging with the logging of ox_lib, the same response check is done here:
-        -- https://github.com/overextended/ox_lib/blob/b4e3bcdad75f91eaa6d4e75063de4a281ebd36d9/imports/logger/server.lua#L112-L119
-        SetTimeout(500, function()
-            PerformHttpRequest(webhook .. "?with_components=true", function(status, _, _, response)
-                if status < 200 or status > 299 then
-                    if type(response) == "string" then
-                        response = json.decode(response) or response
-                        lib.print.warn(("unable to submit logs to %s (status: %s)\n%s"):format(webhook, status, json.encode(response, { indent = true })))
-                    end
-                end
-            end, "POST", json.encode(body), { ["Content-Type"] = "application/json" })
-        end)
+        Thistle.Webhook.send(categories[event] or "default", {
+            title = event,
+            color = 0x113962,
+            fields = createFields(source, arguments)
+        })
     end
 end
 

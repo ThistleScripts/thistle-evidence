@@ -1,18 +1,26 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local actions <const> = require "server.evidences.actions"
 local logger <const> = require "server.logger"
 
-lib.callback.register("evidences:takeBiometricData", function(playerId, targetId, type, enforce, metadata)
+Thistle.Callback.Register("evidences:takeBiometricData", function(playerId, targetId, type, enforce, metadata)
     if not framework.hasPermission(config.permissions.collect, playerId) then
         TriggerClientEvent("evidences:notify", playerId, { key = "biometrics_taking.notifications.no_permission" }, "error")
+        return false
+    end
+
+    -- The target has to be a player standing next to the officer (the client offers this from 3 m away)
+    targetId = tonumber(targetId)
+    local ped <const>, targetPed <const> = GetPlayerPed(playerId), targetId and GetPlayerPed(targetId) or 0
+    if (type ~= "dna" and type ~= "fingerprint") or not targetId or targetId == playerId or targetPed == 0
+        or #(GetEntityCoords(ped) - GetEntityCoords(targetPed)) > 5.0 then
         return false
     end
 
     if not enforce then
         TriggerClientEvent("evidences:notify", playerId, { key = "biometrics_taking.notifications.request_sent" }, "inform")
 
-        if not lib.callback.await("evidences:requestConsent", targetId, framework.getPlayerName(playerId), type) then
+        if not Thistle.Callback.Await("evidences:requestConsent", targetId, framework.getPlayerName(playerId), type) then
             TriggerClientEvent("evidences:notify", playerId, { key = "biometrics_taking.notifications.no_consent" }, "error")
             return false
         end

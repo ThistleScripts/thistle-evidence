@@ -22,7 +22,6 @@ if lib.checkDependency("ox_inventory", "2.44.4") then
         maxWeight = 5000
     })
 elseif lib.checkDependency("ox_inventory", "2.34.3") then
-    -- https://github.com/noobsystems/evidences/discussions/1
     -- Create a temporary stash to check if the item evidence_box is a container.
     -- That's needed because old versions of ox_inventory don't return the item metadata via exports.ox_inventory:Items(itemName).metadata.
     local temporaryInv <const> = exports.ox_inventory:CreateTemporaryStash({
@@ -48,12 +47,16 @@ end
 -- This event renames the item on the specified slot in the player's inventory
 RegisterNetEvent("evidences:renameEvidenceBox", function(slot, input)
     local playerId <const> = source
+    if type(slot) ~= "number" or type(input) ~= "table" then
+        return
+    end
+
     local item <const> = exports.ox_inventory:GetSlot(playerId, slot)
 
     if item and item.name == "evidence_box" then
         local metadata <const> = item.metadata or {}
-        metadata.label = input[1] or nil
-        metadata.description = input[2] or nil
+        metadata.label = type(input[1]) == "string" and input[1]:sub(1, 30) or nil
+        metadata.description = type(input[2]) == "string" and input[2]:sub(1, 500) or nil
         exports.ox_inventory:SetMetadata(playerId, slot, metadata)
     end
 end)
@@ -74,19 +77,23 @@ end, {
 
 RegisterNetEvent("evidences:removeSerialNumber", function()
     local playerId <const> = source
-    local weapon <const> = exports.ox_inventory:GetCurrentWeapon(playerId)
 
-    if weapon and weapon.slot and weapon.metadata then
-        if weapon.metadata.serial then
-            -- remove serial from weapon
-            local metadata <const> = weapon.metadata
-            metadata.imperfections = metadata.serial
-            metadata.serial = nil
-            exports.ox_inventory:SetMetadata(playerId, weapon.slot, metadata)
-        end
+    -- The client sends this after using a steel file, so the player has to actually carry one
+    if (exports.ox_inventory:Search(playerId, "count", "steel_file") or 0) < 1 then
+        return
     end
 
-    TriggerClientEvent("evidences:notify", source, {key = "steel_file.serial_removed"}, "success")
+    local weapon <const> = exports.ox_inventory:GetCurrentWeapon(playerId)
+
+    if weapon and weapon.slot and weapon.metadata and weapon.metadata.serial then
+        -- remove serial from weapon
+        local metadata <const> = weapon.metadata
+        metadata.imperfections = metadata.serial
+        metadata.serial = nil
+        exports.ox_inventory:SetMetadata(playerId, weapon.slot, metadata)
+
+        TriggerClientEvent("evidences:notify", playerId, {key = "steel_file.serial_removed"}, "success")
+    end
 end)
 
 return true

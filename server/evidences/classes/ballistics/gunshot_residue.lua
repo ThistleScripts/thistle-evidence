@@ -24,8 +24,12 @@ end
 if config.gunshotResidues.decayCron then
     lib.cron.new(config.gunshotResidues.decayCron, function(task, date)
         for player, residues in pairs(gunshot_residues) do
-            for _, residue in pairs(residues) do
-                residue:removeFromPlayer(player)
+            if DoesPlayerExist(player) then
+                for _, residue in pairs(residues) do
+                    residue:removeFromPlayer(player)
+                end
+            else
+                gunshot_residues[player] = nil
             end
         end
     end)

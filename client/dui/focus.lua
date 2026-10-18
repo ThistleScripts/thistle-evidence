@@ -1,6 +1,6 @@
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
-local framework <const> = require "common.frameworks.framework"
+local player <const> = require "client.player"
 local dui <const> = require "client.dui.dui"
 local texture <const> = require "client.dui.laptops.texture.texture"
 
@@ -81,17 +81,19 @@ function focus.start(laptop)
             table.insert(disabledApps, "firearms_registry")
         end
 
+        local info <const> = player.getInfo()
+
         dui:sendMessage({
             action = "focus",
             language = GetConvar("ox:locale", "en"),
-            playerName = framework.getPlayerName(),
-            canAccess = framework.hasPermission(config.permissions.access),
+            playerName = info.name,
+            canAccess = info.permissions.access or false,
             options = {
                 areCitizensSynced = config.citizens.synced,
                 displayPhoneNumbers = config.wiretap.calls.displayPhoneNumbers or false,
-                mayInterceptCalls = framework.hasPermission(config.wiretap.calls.permissions),
-                mayInterceptRadio = framework.hasPermission(config.wiretap.radio.permissions),
-                mayListenToSpyMicrophones = framework.hasPermission(config.wiretap.spyMicrophones.permissions),
+                mayInterceptCalls = info.permissions.interceptCalls or false,
+                mayInterceptRadio = info.permissions.interceptRadio or false,
+                mayListenToSpyMicrophones = info.permissions.listenToSpyMicrophones or false,
                 disabledApps = disabledApps
             }
         })

@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local citizens <const> = require "server.citizens.citizens"
 local allowedTypes <const> = { "fingerprint", "dna" }
@@ -27,7 +27,7 @@ MySQL.update.await(
     ]]
 )
 
-lib.callback.register("evidences:linkBiometricDataToIdentifier", function(source, arguments)
+Thistle.Callback.Register("evidences:linkBiometricDataToIdentifier", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -72,7 +72,7 @@ function linkedBiometrics.getCitizenLinkedToBiometricData(type, biometricData)
     end
 end
 
-lib.callback.register("evidences:getCitizenLinkedToBiometricData", function(source, arguments)
+Thistle.Callback.Register("evidences:getCitizenLinkedToBiometricData", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,
@@ -83,7 +83,7 @@ lib.callback.register("evidences:getCitizenLinkedToBiometricData", function(sour
     return linkedBiometrics.getCitizenLinkedToBiometricData(arguments.type, arguments.biometricData)
 end)
 
-lib.callback.register("evidences:getBiometricDataLinkedToIdentifier", function(source, arguments)
+Thistle.Callback.Register("evidences:getBiometricDataLinkedToIdentifier", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {
             success = false,

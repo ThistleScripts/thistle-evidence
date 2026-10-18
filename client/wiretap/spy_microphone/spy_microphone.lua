@@ -1,5 +1,4 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
 local model <const> = `prop_spycam`
 
 local SpyMicrophone = lib.class("SpyMicrophone")
@@ -28,8 +27,6 @@ function SpyMicrophone:register()
                     SetEntityHeading(entity, this.coords.w)
                     SetModelAsNoLongerNeeded(model)
 
-                    local mayCollectSpyMicrophone <const> = framework.hasPermission(config.wiretap.spyMicrophones.permissions)
-                    
                     exports.ox_target:addLocalEntity(entity, {
                         name = "spy_microphone_" .. this.label,
                         label = locale("spy_microphone.target_collect"),

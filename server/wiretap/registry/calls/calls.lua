@@ -1,5 +1,5 @@
 local config <const> = require "config"
-local framework <const> = require "common.frameworks.framework"
+local framework <const> = require "server.framework"
 local logger <const> = require "server.logger"
 local eventHandler <const> = require "common.events.handler"
 local phoneNumber <const> = require "server.wiretap.registry.calls.bridge.phone_number"
@@ -23,7 +23,7 @@ AddStateBagChangeHandler("callChannel", nil, function(bagName, key, newCallChann
     local playerId <const> = GetPlayerFromStateBagName(bagName)
     if playerId ~= 0 then
 
-        if newCallChannel == 0 then -- player has left the current call
+        if not newCallChannel or newCallChannel == 0 then -- player has left the current call
             local previousCallChannel <const> = Player(playerId).state.callChannel
             if previousCallChannel then
                 local observableCall <const> = activeCalls[previousCallChannel]
@@ -34,6 +34,12 @@ AddStateBagChangeHandler("callChannel", nil, function(bagName, key, newCallChann
             end
 
         else -- player entered a call
+            -- leave the previous call first when switching straight from one call to another
+            local previousCallChannel <const> = Player(playerId).state.callChannel
+            if previousCallChannel and previousCallChannel ~= 0 and previousCallChannel ~= newCallChannel and activeCalls[previousCallChannel] then
+                activeCalls[previousCallChannel]:removeTarget(playerId)
+            end
+
             local observableCall <const> = activeCalls[newCallChannel] or ObservableCall:new(newCallChannel)
             activeCalls[newCallChannel] = observableCall
             observableCall:addTarget(playerId, phoneNumber and phoneNumber.getPhoneNumber(playerId))
@@ -56,7 +62,7 @@ eventHandler.on("observationTargetRemoved", function(event)
     end
 end)
 
-lib.callback.register("evidences:getActiveCalls", function(source)
+Thistle.Callback.Register("evidences:getActiveCalls", function(source)
     if not framework.hasPermission(config.wiretap.calls.permissions, source) then
         return {
             success = false,
@@ -67,7 +73,7 @@ lib.callback.register("evidences:getActiveCalls", function(source)
     return activeCalls
 end)
 
-lib.callback.register("evidences:observeObservableCall", function(observer, arguments)
+Thistle.Callback.Register("evidences:observeObservableCall", function(observer, arguments)
     if not framework.hasPermission(config.wiretap.calls.permissions, observer) then
         return {
             success = false,
@@ -81,7 +87,7 @@ lib.callback.register("evidences:observeObservableCall", function(observer, argu
     end
 end)
 
-lib.callback.register("evidences:ignoreObservableCall", function(observer, arguments)
+Thistle.Callback.Register("evidences:ignoreObservableCall", function(observer, arguments)
     if arguments and arguments.channel then
         local observableCall <const> = activeCalls[arguments.channel]
         return observableCall and observableCall:removeObserver(observer)

@@ -31,21 +31,21 @@ jobs:
       
       - name: Bundle Files
         run: |
-          mkdir -p ./temp/evidences
-          mkdir -p ./temp/evidences/html
-          mkdir -p ./temp/evidences/html/dui
-          mkdir -p ./temp/evidences/html/dui/laptop
-          cp ./{config.lua,fxmanifest.lua,LICENSE,README.md} ./temp/evidences
-          cp -r ./{client,common,locales,server} ./temp/evidences
-          cp -r html/nui ./temp/evidences/html
-          cp -r html/dui/scanner ./temp/evidences/html/dui
-          cp -r html/dui/laptop/dist ./temp/evidences/html/dui/laptop
+          mkdir -p ./temp/thistle-evidence
+          mkdir -p ./temp/thistle-evidence/html
+          mkdir -p ./temp/thistle-evidence/html/dui
+          mkdir -p ./temp/thistle-evidence/html/dui/laptop
+          cp ./{config.lua,fxmanifest.lua,LICENSE,README.md} ./temp/thistle-evidence
+          cp -r ./{client,common,locales,server,setup} ./temp/thistle-evidence
+          cp -r html/nui ./temp/thistle-evidence/html
+          cp -r html/dui/scanner ./temp/thistle-evidence/html/dui
+          cp -r html/dui/laptop/dist ./temp/thistle-evidence/html/dui/laptop
 
           mkdir -p ./temp/item_images
-          cp ./.github/setup/images/* ./temp/item_images
+          cp ./setup/images/* ./temp/item_images
 
           cd ./temp
-          zip -r evidences.zip ./evidences
+          zip -r thistle-evidence.zip ./thistle-evidence
           cd item_images && zip -r ../item_images.zip ./*
 
       - name: Create Release
@@ -54,5 +54,5 @@ jobs:
           prerelease: false
           make_latest: true
           files: |
-            ./temp/evidences.zip
+            ./temp/thistle-evidence.zip
             ./temp/item_images.zip

@@ -18,7 +18,7 @@ interface LoginScreenProps {
 export default function LoginScreen(props: LoginScreenProps) {
     const { t } = useTranslation();
     const [password, setPassword] = useState(""); // Stores the entered password (used for the typing animation)
-    const fullPassword = "MadeByNoobsForNoobs"; // The complete password that gets typed out during the animation
+    const fullPassword = "ThistleForensics"; // The complete password that gets typed out during the animation
 
     // Checks if the login animation is complete and the user is allowed access.
     // If so, the screen transitions to the desktop view.

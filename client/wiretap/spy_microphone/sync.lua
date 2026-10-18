@@ -4,8 +4,8 @@ local SpyMicrophone <const> = require "client.wiretap.spy_microphone.spy_microph
 
 local spyMicrophones = {}
 
-lib.callback("evidences:getSpyMicrophones", false, function(result)
-    for label, spyMicrophone in pairs(result or {}) do
+CreateThread(function()
+    for label, spyMicrophone in pairs(Thistle.Callback.Await("evidences:getSpyMicrophones") or {}) do
         spyMicrophones[label] = SpyMicrophone:new(label, spyMicrophone.coords)
     end
 end)

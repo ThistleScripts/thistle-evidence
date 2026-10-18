@@ -2,8 +2,8 @@ local config <const> = require "config"
 local evidenceTypes <const> = require "common.evidence_types"
 local pendingRequests = {}
 
-lib.callback.register("evidences:requestConsent", function(requester, type)
-    local alert <const> = lib.alertDialog({
+Thistle.Callback.Register("evidences:requestConsent", function(requester, type)
+    local alert <const> = Thistle.Alert({
         content = locale("biometrics_taking.description", requester, locale("laptop.desktop_screen.common." .. type), locale("laptop.desktop_screen.common." .. type)),
         centered = true,
         cancel = true,
@@ -34,13 +34,12 @@ local function takeBiometric(targetEntity, type, enforce)
 
     local options <const> = evidenceTypes.saliva
     local metadata <const> = options.target.collect.createMetadata and options.target.collect.createMetadata("saliva", {}, GetEntityCoords(cache.ped), { player = true }) or nil
-    lib.callback("evidences:takeBiometricData", false, function(success)
-        pendingRequests[targetEntity] = nil
+    local success <const> = Thistle.Callback.Await("evidences:takeBiometricData", targetId, type, enforce, metadata)
+    pendingRequests[targetEntity] = nil
 
-        if success then
-            lib.playAnim(cache.ped, "mp_arresting", "a_uncuff", 8.0, 8.0, 4000, 16)
-        end
-    end, targetId, type, enforce, metadata)
+    if success then
+        lib.playAnim(cache.ped, "mp_arresting", "a_uncuff", 8.0, 8.0, 4000, 16)
+    end
 end
 
 exports.ox_target:addGlobalPlayer({

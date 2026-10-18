@@ -34,25 +34,25 @@ function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
                 end,
                 onSelect = function(data)
                     local metadata <const> = self.options.target.collect.createMetadata(self.evidenceType, self.data, data.coords)
-                    lib.callback("evidences:collect", false, function(success)
-                        if not success then
-                            config.notify({ key = "evidences.notifications.common.errors.collect" }, "error")
-                            return
-                        end
-
-                        local ped <const> = cache.ped
-                        local pedCoords <const> = GetEntityCoords(ped)
-                        SetEntityHeading(ped, GetHeadingFromVector_2d(self.coords.x - pedCoords.x, self.coords.y - pedCoords.y)) -- make player look at the evidence
-
-                        lib.playAnim(ped, "random@domestic", "pickup_low")
-                        config.notify({
-                            key = "evidences.notifications.collect",
-                            arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
-                        }, "success")
-                    end, self.evidenceType, self.owner, {
+                    local success <const> = Thistle.Callback.Await("evidences:collect", self.evidenceType, self.owner, {
                         fun = "removeFromCoords",
                         arguments = { self.coords }
                     }, metadata)
+
+                    if not success then
+                        config.notify({ key = "evidences.notifications.common.errors.collect" }, "error")
+                        return
+                    end
+
+                    local ped <const> = cache.ped
+                    local pedCoords <const> = GetEntityCoords(ped)
+                    SetEntityHeading(ped, GetHeadingFromVector_2d(self.coords.x - pedCoords.x, self.coords.y - pedCoords.y)) -- make player look at the evidence
+
+                    lib.playAnim(ped, "random@domestic", "pickup_low")
+                    config.notify({
+                        key = "evidences.notifications.collect",
+                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
+                    }, "success")
                 end
             },
             {
@@ -64,39 +64,27 @@ function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
                     return not config.isPedDead(cache.ped)
                 end,
                 onSelect = function(data)
-                    lib.callback("evidences:destroy", false, function(success)
-                        if not success then
-                            config.notify({ key = "evidences.notifications.common.errors.destroy" }, "error")
-                            return
-                        end
-
-                        lib.playAnim(cache.ped, "random@domestic", "pickup_low")
-                        config.notify({
-                            key = "evidences.notifications.destroy",
-                            arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
-                        }, "success")
-                    end, self.evidenceType, self.owner, {
+                    local success <const> = Thistle.Callback.Await("evidences:destroy", self.evidenceType, self.owner, {
                         fun = "removeFromCoords",
-                        arguments = { coords }
+                        arguments = { self.coords }
                     })
+
+                    if not success then
+                        config.notify({ key = "evidences.notifications.common.errors.destroy" }, "error")
+                        return
+                    end
+
+                    lib.playAnim(cache.ped, "random@domestic", "pickup_low")
+                    config.notify({
+                        key = "evidences.notifications.destroy",
+                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
+                    }, "success")
                 end
             }
         }
     })
 
     self:visualize(self.options.visualize)
-
-    eventHandler.onNet("evidences:remove:atCoords", function(event)
-        if event.arguments[1] == self.evidenceType and event.arguments[2] == self.coords then
-            self:destroy()
-        end
-    end)
-
-    eventHandler.onLocal("onResourceStop", function(event)
-        if event.arguments[1] == cache.resource then
-            self:destroy()
-        end
-    end)
 
     table.insert(EvidencesAtCoords, self)
 end
@@ -118,6 +106,27 @@ function EvidenceAtCoords:visualize(options)
         end
     })
 end
+
+-- One handler pair for all ground evidence. Registering them per evidence never removed them,
+-- so every blood drop or casing left two more handlers behind.
+eventHandler.onNet("evidences:remove:atCoords", function(event)
+    local evidenceType <const>, coords <const> = event.arguments[1], event.arguments[2]
+
+    for i = #EvidencesAtCoords, 1, -1 do
+        local evidence <const> = EvidencesAtCoords[i]
+        if evidence.evidenceType == evidenceType and evidence.coords == coords then
+            evidence:destroy()
+        end
+    end
+end)
+
+eventHandler.onLocal("onResourceStop", function(event)
+    if event.arguments[1] == cache.resource then
+        for i = #EvidencesAtCoords, 1, -1 do
+            EvidencesAtCoords[i]:destroy()
+        end
+    end
+end)
 
 function EvidenceAtCoords:destroy()
     exports.ox_target:removeZone(self.zone)
