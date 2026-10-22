@@ -1,6 +1,5 @@
 --[[
   thistle-evidence · Thistle Scripts
-  Based on noobsystems/evidences (https://github.com/noobsystems/evidences), GPL-3.0
 ]]
 local config = {}
 

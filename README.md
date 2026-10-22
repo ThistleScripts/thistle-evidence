@@ -42,7 +42,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 
 Database tables are created on first start. The language follows `setr ox:locale`; translations live in `locales/`.
 
-### Upgrading from noobsystems/evidences
+### Upgrading from evidences 1.x
 
 1. Stop and remove `evidences`. The database tables are unchanged, so laptops, citizens, notes, biometrics, wiretap logs and registered firearms carry over.
 2. The resource is now named `thistle-evidence`, so the item exports changed. Re-paste the items from `setup/` (they call `thistle-evidence.<export>` and `exports['thistle-evidence']:…`).
@@ -66,10 +66,3 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Scan a fingerprint | Use `fingerprint_scanner`; the other player targets it |
 | Place a spy microphone | Use `spy_microphone` |
 | Clear evidence around you | `/clearEvidences <radius>` (`group.admin`) |
-
-## License
-
-GNU General Public License v3.0 or later. See [LICENSE](LICENSE). If you distribute this resource, modified or not, you must pass on the same rights and the source code.
-
-Based on [evidences](https://github.com/noobsystems/evidences), copyright &copy; 2025-2026 noobsystems.
-Modifications copyright &copy; 2026 Thistle Scripts.

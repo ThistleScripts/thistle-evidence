@@ -2,7 +2,6 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
--- Based on noobsystems/evidences (https://github.com/noobsystems/evidences), GPL-3.0
 name 'thistle-evidence'
 author 'Thistle Scripts'
 description 'Forensic evidence, evidence laptop and wiretaps. Powered by Thistle-Lib.'
