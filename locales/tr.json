@@ -456,5 +456,8 @@
             "label_textfield_details": "Kanıt dizüstü bilgisayarındaki dinleme uygulamasında bu casus mikrofonu tanımlamak için benzersiz bir ad seçin"
         },
         "target_collect": "Casus mikrofonu topla"
+    },
+    "lab": {
+        "target": "Use forensics lab"
     }
 }

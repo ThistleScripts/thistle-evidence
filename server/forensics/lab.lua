@@ -63,7 +63,7 @@ local function describe(item, kind)
         evidenceType = getEvidenceType(item, kind),
         analysed = data.analysed or false,
         key = data.analysed and not isTypeOnly(item, kind) and data.owner or nil,
-        createdAt = data.createdAt,
+        createdAt = item.metadata.createdAt or data.createdAt, -- when the trace was left (a shot, for gunshot residue)
         weaponType = data.weaponType,
         weaponImage = data.weaponImage,
         crimeScene = information.crimeScene or "",

@@ -104,6 +104,14 @@ config.citizens = {
     synced = true
 }
 
+-- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
+-- It opens from any evidence laptop and at these stations. Who can use it is set by config.permissions.access.
+config.forensicsLab = {
+    stations = {
+        -- example: { coords = vec3(0.0, 0.0, 0.0), radius = 1.0 },
+    }
+}
+
 -- Enable or disable the firearms registry app
 config.firearmsRegistry = {
     enabled = true

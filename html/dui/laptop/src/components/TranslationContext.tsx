@@ -28,13 +28,17 @@ export const TranslationProvider = ({ children }: { children: React.ReactNode })
             .catch((err) => console.error(err));
     }, [lang]);
 
+    const lookup = (source: TranslationObject, key: string) => key.split(".").reduce((acc, part) => {
+        if (acc && typeof acc === "object" && part in acc) {
+            return acc[part];
+        }
+        return undefined;
+    }, source as any);
+
     const t = (key: string, ...replacements: (string | number)[]): string => {
-        const raw = key.split(".").reduce((acc, part) => {
-            if (acc && typeof acc === "object" && part in acc) {
-                return acc[part];
-            }
-            return undefined;
-        }, translations as any);
+        // Strings missing from a language file fall back to English
+        let raw = lookup(translations, key);
+        if (typeof raw !== "string") raw = lookup(defaultTranslations, key);
 
         if (typeof raw !== "string") return key;
 

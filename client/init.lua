@@ -17,6 +17,8 @@ require "client.scanner.scanner"
 
 require "client.items"
 
+require "client.lab.lab"
+
 local config <const> = require "config"
 
 if config.wiretap.enabled and GetResourceState("pma-voice"):find("start") then

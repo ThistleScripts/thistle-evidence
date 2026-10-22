@@ -423,7 +423,7 @@
                         "ObservableSpyMicrophone": "%s a écouté le micro-espion %s"
                     }
                 },
-                "running_observation_popup" : {
+                "running_observation_popup": {
                     "ObservableCall": "Interception de l'appel #%s en cours",
                     "ObservableRadioFreq": "Interception du canal radio %s MHz en cours",
                     "ObservableSpyMicrophone": "Écoute du micro-espion %s",
@@ -456,5 +456,8 @@
             "label_textfield_details": "Choisissez un nom unique pour identifier ce micro dans l'application d'écoute de l'ordinateur de preuves"
         },
         "target_collect": "Récupérer le micro-espion"
+    },
+    "lab": {
+        "target": "Use forensics lab"
     }
 }

@@ -37,7 +37,6 @@ jobs:
           mkdir -p ./temp/thistle-evidence/html/dui/laptop
           cp ./{config.lua,fxmanifest.lua,LICENSE,README.md} ./temp/thistle-evidence
           cp -r ./{client,common,locales,server,setup} ./temp/thistle-evidence
-          cp -r html/nui ./temp/thistle-evidence/html
           cp -r html/dui/scanner ./temp/thistle-evidence/html/dui
           cp -r html/dui/laptop/dist ./temp/thistle-evidence/html/dui/laptop
 

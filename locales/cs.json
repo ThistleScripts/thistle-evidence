@@ -456,5 +456,8 @@
             "label_textfield_details": "Vyberte jedinečný název pro identifikaci tohoto špionážního mikrofonu v aplikaci pro odposlech na notebooku s důkazy"
         },
         "target_collect": "Sebrat špionážní mikrofon"
+    },
+    "lab": {
+        "target": "Use forensics lab"
     }
 }

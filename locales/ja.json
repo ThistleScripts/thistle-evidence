@@ -423,7 +423,7 @@
                         "ObservableSpyMicrophone": "%s がスパイマイク %s を聴取しました"
                     }
                 },
-                "running_observation_popup" : {
+                "running_observation_popup": {
                     "ObservableCall": "通話 #%s を傍受中",
                     "ObservableRadioFreq": "無線チャンネル %s MHz を傍受中",
                     "ObservableSpyMicrophone": "スパイマイク %s を聴取中",
@@ -456,5 +456,8 @@
             "label_textfield_details": "ノートPCの通信傍受アプリで識別するための固有の名前を入力してください"
         },
         "target_collect": "スパイマイクを回収する"
+    },
+    "lab": {
+        "target": "Use forensics lab"
     }
 }

@@ -423,7 +423,7 @@
                         "ObservableSpyMicrophone": "%s hat die Wanze %s überwacht"
                     }
                 },
-                "running_observation_popup" : {
+                "running_observation_popup": {
                     "ObservableCall": "Laufende Telekommunikationsüberwachung #%s",
                     "ObservableRadioFreq": "Laufende Überwachung des Funkkanals %s MHz",
                     "ObservableSpyMicrophone": "Laufende Überwachung der Wanze %s",
@@ -456,5 +456,8 @@
             "label_textfield_details": "Anhand dieses Namens kannst du die Wanze in der Abhör-App auf dem Laptop finden"
         },
         "target_collect": "Wanze aufheben"
+    },
+    "lab": {
+        "target": "Use forensics lab"
     }
 }
