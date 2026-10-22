@@ -5,7 +5,10 @@
 Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bullets, casings, magazines and gunshot residue behind, and police collect it, analyse it on an in-world evidence laptop and match it to citizens and registered firearms.
 
 - Evidence on the ground, on vehicles (per door and seat), on props, on players and on weapons.
-- In-world evidence laptop with citizens, DNA, fingerprint, ballistics, firearms registry and wiretap apps.
+- Forensics lab: a full-screen station for analysing DNA, fingerprints, bullets, casings, magazines and gunshot residue, with case files that link every piece of evidence sharing a DNA profile, fingerprint or gun ID across cases.
+- Every gun has an ID that its bullets and casings carry, even after the serial is filed off. Analysing them names the registered owner, or links evidence from an unregistered gun until it turns up.
+- Bullet paths: with a forensic kit, each bullet shows a line back to where it was fired from, on vehicles too.
+- In-world evidence laptop (Thistle design) with citizens, firearms registry and wiretap apps, and a shortcut into the lab.
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
 - Fingerprint scanner, evidence boxes, hydrogen peroxide to wipe traces, and steel files to file off serial numbers.
 - Qbox, QBCore and ESX through thistle-lib.
@@ -46,6 +49,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 3. Other resources using the API call `exports['thistle-evidence']` instead of `exports.evidences` (`syncEvidence`, `getFingerprint`, `getDNA`, `registerFirearm`). Event names (`evidences:*`) are unchanged.
 4. Logging: `config.logging.webhook` became `config.logging.webhooks` with per-category URLs (`default`, `evidences`, `citizens`, `wiretap`, `firearms`).
 5. ND_Core and ox_core are no longer supported (thistle-lib supports Qbox, QBCore and ESX).
+6. Analysis moved from the laptop's DNA, Fingerprint and Ballistics apps to the forensics lab. Evidence analysed before the upgrade still shows as analysed, but only evidence analysed in the lab appears in case files.
 
 ## Usage
 
@@ -56,6 +60,9 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Take fingerprints / DNA | Target a player with a `forensic_kit`; they get a consent prompt unless cuffed or down |
 | Place / pick up a laptop | Use `evidence_laptop`, then target it to pick it back up |
 | Use a laptop | Target it (`config.permissions.access`) |
+| Analyse evidence | Open the Forensics Lab from a laptop, or at a station from `config.forensicsLab.stations` |
+| Look up a case file | Lab → Case files, then paste a gun ID, DNA profile or fingerprint |
+| See a bullet's path | Hold a `forensic_kit` and use the targeting eye near the bullet |
 | Scan a fingerprint | Use `fingerprint_scanner`; the other player targets it |
 | Place a spy microphone | Use `spy_microphone` |
 | Clear evidence around you | `/clearEvidences <radius>` (`group.admin`) |
