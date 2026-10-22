@@ -147,19 +147,3 @@ Thistle.Callback.Register("evidences:getRegisteredFirearms", function(source, ar
         pattern, arguments.offset
     )
 end)
-
-Thistle.Callback.Register("evidences:getRegisteredFirearmFromSerial", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
-        return {
-            success = false,
-            response = "laptop.notifications.no_permission.description"
-        }
-    end
-
-    arguments.serial = arguments.serial or ""
-
-    return database.selectFirstRow(
-        "SELECT * FROM firearms_registry WHERE serial = ?", 
-        arguments.serial
-    )
-end)

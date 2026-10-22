@@ -456,5 +456,8 @@
             "label_textfield_details": "Elije un nombre único para identificar este micrófono espía en la aplicación de escuchas en la computadora portátil de pruebas"
         },
         "target_collect": "Recopilar micrófono espía"
+    },
+    "lab": {
+        "target": "Use forensics lab"
     }
 }

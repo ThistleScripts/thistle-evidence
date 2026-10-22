@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import backgroundImage from "@/assets/background.png";
+import { Microscope } from "lucide-react";
 import type { ScreenType } from "../App";
 import { useTranslation } from "../TranslationContext";
 
@@ -47,9 +47,19 @@ export default function ScreenSaverScreen(props: ScreenSaverScreenProps) {
 
 
     return (
-        <div className="w-full h-full relative" style={{ background: `url(${backgroundImage})` }} onClick={handleClick}>
+        <div className="th-wallpaper w-full h-full relative" onClick={handleClick}>
+            <div className="absolute top-10 left-10 flex items-center gap-4">
+                <div className="flex h-20 w-20 items-center justify-center rounded-16 bg-accent/15 text-accent">
+                    <Microscope size={44} />
+                </div>
+                <div>
+                    <p className="text-20 font-semibold uppercase tracking-[0.2em] text-accent">Thistle Forensics</p>
+                    <p className="font-display text-45 font-black leading-none text-white">{t("laptop.brand")}</p>
+                </div>
+            </div>
+
             <div className={`absolute flex flex-col gap-3 bottom-10 left-10 text-white z-10 transition-all duration-500 ease-in-out ${animateOut ? "-translate-y-150 opacity-0" : "translate-y-0 opacity-100"}`}>
-                <p className="text-150 leading-none">{formatTime(currentTime)}</p>
+                <p className="font-display text-150 font-black leading-none">{formatTime(currentTime)}</p>
                 <p className="text-50 leading-none">{formatDate(currentTime)}</p>
             </div>
         </div>

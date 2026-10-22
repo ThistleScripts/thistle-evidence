@@ -75,6 +75,29 @@ end, {
 })
 
 
+-- Every gun gets an ID that its bullets and casings carry. ox_inventory gives a serial to most guns, but not to
+-- ones created with `registered = false` (crafted, black market...). Those get an ID in the same format, stored
+-- where a filed-off serial goes, so they're unregistered and have no visible serial but can still be traced.
+local function generateGunId()
+    local letters = ""
+    for _ = 1, 3 do
+        letters = letters .. string.char(math.random(65, 90))
+    end
+
+    return ("%s%s%s"):format(math.random(100000, 999999), letters, math.random(100000, 999999))
+end
+
+exports.ox_inventory:registerHook("createItem", function(payload)
+    local metadata <const> = payload.metadata
+    if payload.item and payload.item.weapon and payload.item.ammoname
+        and type(metadata) == "table" and not metadata.serial and not metadata.imperfections then
+        metadata.imperfections = generateGunId()
+    end
+
+    return metadata
+end)
+
+
 RegisterNetEvent("evidences:removeSerialNumber", function()
     local playerId <const> = source
 

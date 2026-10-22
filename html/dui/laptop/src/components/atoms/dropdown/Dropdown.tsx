@@ -163,7 +163,7 @@ function DropdownSelection<ItemType>({ includeSearch, displayArrow = true, place
         ref={dropdownContext?.refSelection}
         onClick={() => dropdownContext?.setDropdownOpen(includeSearch ? true : prev => !prev)}
         {...props}
-        className={cn("flex justify-between items-center bg-white/20 shadow-glass border-2 border-white/80 rounded-10 p-2", displayArrow && (includeSearch ? "textable" : "hoverable"), className)}
+        className={cn("flex justify-between items-center bg-raised/70 shadow-glass border-2 border-line rounded-10 p-2", displayArrow && (includeSearch ? "textable" : "hoverable"), className)}
     >
         {includeSearch
             ? <input
@@ -180,7 +180,7 @@ function DropdownSelection<ItemType>({ includeSearch, displayArrow = true, place
                 </div>
         }
         {displayArrow &&
-            <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" fill="black" viewBox="0 -960 960 960"><path d="M480-80 240-320l57-57 183 183 183-183 57 57L480-80ZM298-584l-58-56 240-240 240 240-58 56-182-182-182 182Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" fill="currentColor" viewBox="0 -960 960 960"><path d="M480-80 240-320l57-57 183 183 183-183 57 57L480-80ZM298-584l-58-56 240-240 240 240-58 56-182-182-182 182Z"/></svg>
         }
     </div>
 }
@@ -224,18 +224,18 @@ function DropdownUnfolded<ItemType>({
             width: rect?.width
         }}
     >
-        <div ref={scrollRef} onScroll={handleScroll} className="flex flex-col gap-1 p-2 max-h-60 bg-white/20 shadow-glass border-2 border-white/80 rounded-16 overflow-y-hidden scrollbar hover:overflow-y-auto">
+        <div ref={scrollRef} onScroll={handleScroll} className="flex flex-col gap-1 p-2 max-h-60 bg-raised/70 shadow-glass border-2 border-line rounded-16 overflow-y-hidden scrollbar hover:overflow-y-auto">
             {dropdownContext.loading && Array.from({ length: 10 }).map(() =>
                 <div className="w-full flex flex-col gap-1 justify-center items-start px-1 py-1.5 border-unset bg-transparent">
                     <div className="w-full flex gap-1">
-                        <div className="w-[30%] h-6 bg-button animate-skeleton-pulse" />
-                        <div className="w-1/2 h-6 bg-button animate-skeleton-pulse" />
+                        <div className="w-[30%] h-6 bg-raised animate-skeleton-pulse" />
+                        <div className="w-1/2 h-6 bg-raised animate-skeleton-pulse" />
                     </div>
 
                     <div className="w-full flex gap-1">
-                        <div className="w-[40%] h-4 bg-button animate-skeleton-pulse" />
-                        <div className="w-2 h-4 bg-button animate-skeleton-pulse" />
-                        <div className="w-[12.5%] h-4 bg-button animate-skeleton-pulse" />
+                        <div className="w-[40%] h-4 bg-raised animate-skeleton-pulse" />
+                        <div className="w-2 h-4 bg-raised animate-skeleton-pulse" />
+                        <div className="w-[12.5%] h-4 bg-raised animate-skeleton-pulse" />
                     </div>
                 </div>
             )}
@@ -267,7 +267,7 @@ function DropdownItem<ItemType>({
     if (!dropdownContext.dropdownOpen) return null;
 
     return <div
-        className={cn("w-full flex flex-col justify-center items-start gap-4 px-1 py-1.5 border-none rounded-10 duration-400 transition-all hoverable hover:bg-button", selected ? "bg-button" : "bg-transparent", className)}
+        className={cn("w-full flex flex-col justify-center items-start gap-4 px-1 py-1.5 border-none rounded-10 duration-400 transition-all hoverable hover:bg-accent/30", selected ? "bg-button" : "bg-transparent", className)}
         onClick={() => dropdownContext.onItemSelect(item)}
         {...props}
     >

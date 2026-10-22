@@ -368,7 +368,7 @@ function startDisplayThread(entity)
                         SetDrawOrigin(globalEvidenceCoords.x, globalEvidenceCoords.y, globalEvidenceCoords.z)
                         DrawSprite(dict, texture, 0, 0, 0.02, 0.02 * GetAspectRatio(false), 0, spriteColor.r, spriteColor.g, spriteColor.b, spriteColor.a)
 
-                        options.visualize.show({ coords = globalEvidenceCoords }, specificMetadata, true)
+                        options.visualize.show({ coords = globalEvidenceCoords, entity = entity }, specificMetadata, true)
                     end
                 end
             end
@@ -454,6 +454,42 @@ exports("hydrogen_peroxide", function(data, slot)
 end)
 
 
+local shotRayFlags <const> = 1 | 2 | 16 | 64 -- world, vehicles, objects, foliage
+local impactRayFlags <const> = shotRayFlags | 4 | 8 -- and peds, so a shot into a player leaves no bullet in the air (bullet.lua ignores peds)
+local lastImpactCoords = nil
+
+-- Where the shot landed, traced from the gun rather than the camera so third person and angled shots are right.
+-- GTA records the impact a frame or two after the shot, so wait briefly for a new one; fall back to the camera ray.
+local function getShotImpact()
+    for _ = 1, 3 do
+        Wait(0)
+
+        local hasImpact <const>, impactCoords <const> = GetPedLastWeaponImpactCoord(cache.ped)
+        if hasImpact and impactCoords ~= lastImpactCoords then
+            lastImpactCoords = impactCoords
+
+            local weaponEntity <const> = GetCurrentPedWeaponEntityIndex(cache.ped)
+            local muzzle <const> = GetEntityCoords(weaponEntity ~= 0 and weaponEntity or cache.ped)
+            local path <const> = impactCoords - muzzle
+            local distance <const> = #path
+
+            if distance > 0.3 then
+                -- trace a little past the impact point to find the entity that was hit
+                local direction <const> = path / distance
+                local hit <const>, entityHit <const>, endCoords <const> = lib.raycast.fromCoords(muzzle + direction * 0.3, impactCoords + direction * 0.25, impactRayFlags, 4)
+
+                if hit then
+                    return true, entityHit, endCoords
+                end
+
+                break
+            end
+        end
+    end
+
+    return lib.raycast.fromCamera(shotRayFlags, 4, 100)
+end
+
 CreateThread(function() -- detects shooting
     while true do
         Wait(0)
@@ -461,8 +497,11 @@ CreateThread(function() -- detects shooting
         if IsPedShooting(cache.ped) then
             local weapon <const> = exports.ox_inventory:getCurrentWeapon()
             if weapon and weapon.ammo and weapon.metadata then -- nil for weapons ox_inventory doesn't manage
-                local hit <const>, entityHit <const>, impactCoords <const> = lib.raycast.fromCamera(1 | 2 | 16 | 64, 4, 100)
-                TriggerEvent("evidences:playerShot", weapon, hit, entityHit, impactCoords)
+                -- resolved in its own thread so waiting for the impact doesn't miss shots in automatic fire
+                CreateThread(function()
+                    local hit <const>, entityHit <const>, impactCoords <const> = getShotImpact()
+                    TriggerEvent("evidences:playerShot", weapon, hit, entityHit, impactCoords)
+                end)
             end
         end
     end

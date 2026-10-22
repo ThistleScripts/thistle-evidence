@@ -9,6 +9,7 @@ local categories <const> = {
     ["Evidence collected"] = "evidences",
     ["Biometric data taken"] = "evidences",
     ["Fingerprint scanned"] = "evidences",
+    ["Evidence analysed"] = "evidences",
     ["Biometric data linked to citizen"] = "citizens",
     ["Citizen created"] = "citizens",
     ["Citizen updated"] = "citizens",

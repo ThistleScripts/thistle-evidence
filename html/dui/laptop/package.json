@@ -7,6 +7,7 @@
         "build": "bun run build.ts"
     },
     "dependencies": {
+        "lucide-react": "0.468.0",
         "react": "^19",
         "react-dom": "^19",
         "tailwind-merge": "^3.6.0",

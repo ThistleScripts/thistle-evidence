@@ -47,9 +47,9 @@ files {
 
     'html/dui/laptop/dist/**',
     'html/dui/scanner/**',
-    'html/nui/**',
 
     'client/**'
 }
 
-ui_page 'html/nui/index.html'
+-- The forensics lab is the NUI page; the laptop is a DUI built from the same project (html/dui/laptop)
+ui_page 'html/dui/laptop/dist/lab.html'

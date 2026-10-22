@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import backgroundImage from "@/assets/background.png";
 import startup from "@/assets/startup.mp3";
 import type { ScreenType } from "../App";
 import { useTranslation } from "../TranslationContext";
@@ -58,12 +57,12 @@ export default function LoginScreen(props: LoginScreenProps) {
 
 
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center gap-2" style={{ background: `url(${backgroundImage})` }}>
-            <svg width="250px" height="250px" className="bg-[gray] p-2 rounded-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <div className="th-wallpaper w-full h-full flex flex-col justify-center items-center gap-2">
+            <svg width="250px" height="250px" className="bg-accent/20 border-4 border-accent/60 p-10 rounded-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path fill="white" d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" />
             </svg>
 
-            {props.playerName && <p className="text-100 p-3 text-white">{props.playerName}</p> }
+            {props.playerName && <p className="text-100 p-3 text-white font-display font-bold">{props.playerName}</p> }
         
             {password === fullPassword
                 ? props.canAccess
@@ -83,7 +82,7 @@ export default function LoginScreen(props: LoginScreenProps) {
                 : <input
                     type="password"
                     value={password}
-                    className="w-1/4 px-4 py-2 text-white text-50 leading-none bg-white/30 border-2 border-white/80 rounded-20 shadow-glass"
+                    className="w-1/4 px-4 py-2 text-white text-50 leading-none bg-white/30 border-2 border-line rounded-20 shadow-glass"
                     disabled
                 />
             }

@@ -1,5 +1,34 @@
 local utils <const> = require "client.evidences.utils"
 
+local forensicKitCheckedAt, forensicKitPresent = 0, false
+
+-- ox_inventory's Search is an export call, so don't repeat it every frame for every bullet
+local function hasForensicKit()
+    if GetGameTimer() - forensicKitCheckedAt > 500 then
+        forensicKitCheckedAt = GetGameTimer()
+        forensicKitPresent = exports.ox_inventory:Search("count", "forensic_kit") > 0
+    end
+
+    return forensicKitPresent
+end
+
+-- Where the shot came from. Bullets in vehicles and props store it relative to the entity,
+-- so the path still points the right way after the vehicle has moved.
+local function getShooterCoords(point, data)
+    local offset <const> = data.shooterOffset
+    if offset and point.entity and DoesEntityExist(point.entity) then
+        return GetOffsetFromEntityInWorldCoords(point.entity, offset.x, offset.y, offset.z)
+    end
+
+    return data.shooterCoords
+end
+
+-- The bullet's path: a line from the bullet back to where it was fired from, with a dot at the shooter's end
+local function drawBulletPath(bulletCoords, shooterCoords)
+    DrawLine(bulletCoords.x, bulletCoords.y, bulletCoords.z, shooterCoords.x, shooterCoords.y, shooterCoords.z, 255, 0, 0, 200)
+    DrawMarker(28, shooterCoords.x, shooterCoords.y, shooterCoords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.05, 0.05, 255, 0, 0, 200, false, false, 2, false, nil, nil, false)
+end
+
 local function createMetadata(evidenceType, data, coords, holder)
     local door <const> = (holder and holder.door) and locale(string.format("evidences.information.doors.%s", tostring(holder.door))) or nil
     local seat <const> = (holder and holder.seat) and locale(string.format("evidences.information.seats.%s", tostring(holder.seat))) or nil
@@ -211,35 +240,32 @@ return {
         },
         visualize = {
             show = function(point, data, no_thread)
-                local shooterCoords <const> = data.shooterCoords
-                local bulletCoords <const> = point.coords
+                if no_thread then
+                    -- called every frame by the entity evidence display thread
+                    local shooterCoords <const> = getShooterCoords(point, data)
+                    if shooterCoords and hasForensicKit() then
+                        drawBulletPath(point.coords, shooterCoords)
+                    end
 
-                if not shooterCoords or not bulletCoords then
                     return
                 end
 
-                local dx, dy, dz = shooterCoords.x - bulletCoords.x, shooterCoords.y - bulletCoords.y, shooterCoords.z - bulletCoords.z
-                local l = #(vector3(dx, dy, dz))
-
-                if no_thread then
-                    if exports.ox_inventory:Search("count", "forensic_kit") > 0 then
-                        DrawLine(bulletCoords.x, bulletCoords.y, bulletCoords.z, bulletCoords.x + dx / l, bulletCoords.y + dy / l, bulletCoords.z + dz / l, 255, 0, 0, 255)
-                    end
-                else
-                    point.isThreadRunning = true
-
-                    CreateThread(function()
-                        while point.isThreadRunning do
-                            if exports.ox_inventory:Search("count", "forensic_kit") > 0 then
-                                if exports.ox_target:isActive() then
-                                    DrawLine(bulletCoords.x, bulletCoords.y, bulletCoords.z, bulletCoords.x + dx / l, bulletCoords.y + dy / l, bulletCoords.z + dz / l, 255, 0, 0, 255)
-                                end
-                            end
-
-                            Wait(1)
-                        end
-                    end)
+                local shooterCoords <const> = getShooterCoords(point, data)
+                if not shooterCoords or not point.coords then
+                    return
                 end
+
+                point.isThreadRunning = true
+
+                CreateThread(function()
+                    while point.isThreadRunning do
+                        if hasForensicKit() and exports.ox_target:isActive() then
+                            drawBulletPath(point.coords, shooterCoords)
+                        end
+
+                        Wait(0)
+                    end
+                end)
             end,
             hide = function(point)
                 point.isThreadRunning = false

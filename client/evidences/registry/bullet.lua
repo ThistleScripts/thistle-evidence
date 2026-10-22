@@ -24,7 +24,10 @@ AddEventHandler("evidences:playerShot", function(weapon, hit, entityHit, impactC
                     imperfections = serial,
                     plate = entityType == 2 and GetVehicleNumberPlateText(entityHit) or nil,
                     type = "bullet"
-                }, { shooterCoords = shooterCoords })
+                }, {
+                    shooterCoords = shooterCoords,
+                    shooterOffset = GetOffsetFromEntityGivenWorldCoords(entityHit, shooterCoords.x, shooterCoords.y, shooterCoords.z)
+                })
 
             return
         end

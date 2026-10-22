@@ -54,10 +54,10 @@ export default function Taskbar(props: TaskbarProps) {
     // Format time to a specific format.
     const formatTime = (date: Date): string => date.toLocaleTimeString(t("laptop.desktop_screen.common.date_locales"), { hour: "2-digit", minute: "2-digit", hour12: false });
 
-    return <div className="absolute bottom-0 w-full h-[5%] flex items-center bg-[#001221] text-white">
+    return <div className="absolute bottom-0 w-full h-[5%] flex items-center bg-bg/95 border-t border-line text-white">
         <button
             onClick={handleLogout}
-            className="bg-linear-to-b from-[#192029] to-[#0D1216] border-2 border-[#363636] h-[80%] w-auto ml-3 flex justify-center items-center hoverable"
+            className="bg-raised border-2 border-line rounded-10 h-[80%] w-auto ml-3 flex justify-center items-center hoverable hover:border-accent"
         >
             <svg width="100%" height="100%" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
                 <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />

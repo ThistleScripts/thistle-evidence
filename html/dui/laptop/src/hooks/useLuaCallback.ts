@@ -2,6 +2,10 @@ import { useTranslation } from "@/components/TranslationContext";
 import { useEffect, useState } from "react";
 import { useAppContext } from "./useAppContext";
 
+// The laptop is a DUI (nui://<resource>/...), the lab is the resource's NUI page (https://cfx-nui-<resource>/...)
+export const resourceName = (): string =>
+    location.protocol === "nui:" ? location.host : (window as any).GetParentResourceName?.() ?? location.host;
+
 interface useLuaCallbackProps<Request, Response> {
     name: string;
     defaultData?: Response;
@@ -47,7 +51,7 @@ export default function useLuaCallback<Request, Response>(props: useLuaCallbackP
         setLoading(true);
         setError(false);
 
-        fetch(`https://${location.host}/triggerServerCallback`, {
+        fetch(`https://${resourceName()}/triggerServerCallback`, {
             method: "post",
             headers: {
                 "Content-Type": "application/json; charset=UTF-8",

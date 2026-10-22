@@ -17,43 +17,43 @@ export const Status = {
     UNKNOWN: {
         id: "unknown",
         translationKey: "laptop.desktop_screen.firearms_registry_app.status.unknown",
-        className: "bg-yellow-300",
+        className: "bg-yellow-300 text-bg",
         classNameHover: "hover:bg-yellow-300"
     },
     REGISTERED: {
         id: "registered",
         translationKey: "laptop.desktop_screen.firearms_registry_app.status.registered",
-        className: "bg-green-300",
+        className: "bg-green-300 text-bg",
         classNameHover: "hover:bg-green-300"
     },
     LOST: {
         id: "lost",
         translationKey: "laptop.desktop_screen.firearms_registry_app.status.lost",
-        className: "bg-red-300",
+        className: "bg-red-300 text-bg",
         classNameHover: "hover:bg-red-300"
     },
     STOLEN: {
         id: "stolen",
         translationKey: "laptop.desktop_screen.firearms_registry_app.status.stolen",
-        className: "bg-orange-300",
+        className: "bg-orange-300 text-bg",
         classNameHover: "hover:bg-orange-300"
     },
     CONFISCATED: {
         id: "confiscated",
         translationKey: "laptop.desktop_screen.firearms_registry_app.status.confiscated",
-        className: "bg-blue-300",
+        className: "bg-blue-300 text-bg",
         classNameHover: "hover:bg-blue-300"
     },
     DESTROYED: {
         id: "destroyed",
         translationKey: "laptop.desktop_screen.firearms_registry_app.status.destroyed",
-        className: "bg-gray-400",
+        className: "bg-gray-400 text-bg",
         classNameHover: "hover:bg-gray-400"
     },
     SUSPENDED: {
         id: "suspended",
         translationKey: "laptop.desktop_screen.firearms_registry_app.status.suspended",
-        className: "bg-fuchsia-300",
+        className: "bg-fuchsia-300 text-bg",
         classNameHover: "hover:bg-fuchsia-300"
     }
 } as const;

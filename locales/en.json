@@ -423,7 +423,7 @@
                         "ObservableSpyMicrophone": "%s listend to spy microphone %s"
                     }
                 },
-                "running_observation_popup" : {
+                "running_observation_popup": {
                     "ObservableCall": "Running interception of phone call #%s",
                     "ObservableRadioFreq": "Running interception of radio channel at %s MHz",
                     "ObservableSpyMicrophone": "Listening to spy microphone %s",
@@ -442,7 +442,8 @@
                     "observation_ended": "Observation ended."
                 }
             }
-        }
+        },
+        "brand": "Evidence Terminal"
     },
     "spy_microphone": {
         "input_help": "Press %s to place the spy microphone.%sUse %s to cancel this action",
@@ -456,5 +457,116 @@
             "label_textfield_details": "Choose a unique name to identify this spy microphone in the wiretap app on the evidence laptop"
         },
         "target_collect": "Collect spy microphone"
+    },
+    "lab": {
+        "brand": "Thistle Forensics",
+        "title": "Forensics Lab",
+        "officer": "Signed in as %s",
+        "close": "Close",
+        "target": "Use forensics lab",
+        "tabs": {
+            "analysis": "Analysis",
+            "case_files": "Case files"
+        },
+        "kinds": {
+            "dna": "DNA",
+            "fingerprint": "Fingerprint",
+            "ballistics": "Ballistics"
+        },
+        "types": {
+            "blood": "Blood",
+            "saliva": "Saliva",
+            "fingerprint": "Fingerprint",
+            "bullet": "Bullet",
+            "casing": "Casing",
+            "magazine": "Magazine",
+            "gunshot_residue": "Gunshot residue"
+        },
+        "status": {
+            "analysed": "Analysed",
+            "pending": "Not analysed"
+        },
+        "tray": {
+            "title": "Evidence tray",
+            "refresh": "Refresh",
+            "empty": "You aren't carrying any evidence. Collected evidence in your pockets and evidence boxes shows up here."
+        },
+        "bench": {
+            "select": "Select a piece of evidence from the tray.",
+            "notes": "Notes",
+            "notes_placeholder": "Add notes for this evidence…",
+            "run": "Run analysis",
+            "intro": {
+                "dna": "Sequence the sample and search it against every DNA profile linked to a citizen.",
+                "fingerprint": "Map the print's ridge detail and search it against every fingerprint linked to a citizen.",
+                "ballistics": "Examine the tool marks under the microscope to identify the weapon and search the firearms registry."
+            }
+        },
+        "stages": {
+            "dna": {
+                "1": "Extracting sample",
+                "2": "Amplifying DNA",
+                "3": "Sequencing profile",
+                "4": "Searching database"
+            },
+            "fingerprint": {
+                "1": "Lifting print",
+                "2": "Mapping ridge detail",
+                "3": "Comparing minutiae",
+                "4": "Searching database"
+            },
+            "ballistics": {
+                "1": "Mounting under the microscope",
+                "2": "Imaging striations",
+                "3": "Comparing tool marks",
+                "4": "Searching the firearms registry"
+            }
+        },
+        "result": {
+            "key": {
+                "dna": "DNA profile",
+                "fingerprint": "Fingerprint",
+                "ballistics": "Gun ID"
+            },
+            "copy": "Copy",
+            "citizen_match": "Identified",
+            "no_citizen": "No match in the citizen database",
+            "no_citizen_hint": "Link this profile to a citizen once you know who it belongs to. All evidence with the same profile will then point to them.",
+            "search_citizens": "Search citizens to link…",
+            "link_citizen": "Link",
+            "registered": "Registered firearm",
+            "registered_to": "Registered to",
+            "registered_by": "Registered by %s",
+            "unregistered": "Unregistered firearm",
+            "unregistered_hint": "This gun isn't in the firearms registry. Its ID stays on every bullet and casing it fires, so evidence from other scenes links up below, and it matches as soon as the gun is registered.",
+            "weapon_type": "Weapon type",
+            "fired_at": "Fired",
+            "type_only": {
+                "magazine": "Magazines can be matched to a weapon type, but not to an individual gun.",
+                "gunshot_residue": "Gunshot residue shows the type of weapon fired and when, but not the individual gun."
+            }
+        },
+        "links": {
+            "title": "Linked evidence",
+            "count": "%s analysed",
+            "none": "No other analysed evidence shares this ID yet.",
+            "columns": {
+                "type": "Evidence",
+                "crime_scene": "Crime scene",
+                "collected": "Collected",
+                "analysed": "Analysed"
+            }
+        },
+        "case": {
+            "title": "Case files",
+            "hint": "Look up everything analysed for a gun ID, DNA profile or fingerprint, across every case.",
+            "kind": "Type",
+            "key_placeholder": "Paste an ID",
+            "search": "Search",
+            "empty": "Search for an ID to open its case file."
+        },
+        "errors": {
+            "analyse": "The analysis failed. Make sure the evidence is still in your inventory or a box you carry."
+        }
     }
 }

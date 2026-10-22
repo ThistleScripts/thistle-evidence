@@ -9,6 +9,7 @@ import { getStatusById, Status, type RegisteredFirearm, type StatusType } from "
 import type Citizen from "@/types/citizen.type";
 import { Dropdown, DropdownItem, DropdownSelection, DropdownUnfolded } from "@/components/atoms/dropdown/Dropdown";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import LinkedEvidence from "./LinkedEvidence";
 
 
 interface FirearmsRegistryAppProps {
@@ -94,8 +95,8 @@ export default function FirearmsRegistryApp({ firearm }: FirearmsRegistryAppProp
     return <div className="w-full h-full flex gap-4 p-4 bg-window">
         <div className="w-70 h-full flex flex-col gap-2">
             <div className="w-full flex items-center gap-2">
-                <div className="min-w-0 flex flex-1 items-center bg-white/20 shadow-glass border-2 border-white/80 rounded-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="pl-2" width="35px" height="35px" fill="black" viewBox="0 -960 960 960"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+                <div className="min-w-0 flex flex-1 items-center bg-raised/70 shadow-glass border-2 border-line rounded-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="pl-2" width="35px" height="35px" fill="currentColor" viewBox="0 -960 960 960"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
                     <input
                         type="text"
                         className="input text-30 p-2 bg-transparent border-none shadow-none outline-none appearance-none textable"
@@ -107,11 +108,11 @@ export default function FirearmsRegistryApp({ firearm }: FirearmsRegistryAppProp
                 </div>
 
                 <div className="flex flex-col justify-between items-center">
-                    <div ref={reloadRef} className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-button" onClick={handleReload}>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="black" viewBox="0 -960 960 960"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/></svg>
+                    <div ref={reloadRef} className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-accent/30" onClick={handleReload}>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="currentColor" viewBox="0 -960 960 960"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/></svg>
                     </div>
                     <div onClick={handleFirearmRegistration} className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-[rgb(52,199,89)]">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="black" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="currentColor" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
                     </div>
                 </div>
             </div>
@@ -210,11 +211,11 @@ const DisplayFirearm = (props: DisplayFirearmProps) => {
     };
 
     return <div className="h-full flex flex-col grow gap-4">
-        <div className="w-full flex flex-col gap-4 p-6 bg-white/20 shadow-glass border-2 border-white/80 rounded-16">
+        <div className="w-full flex flex-col gap-4 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16">
             <div className="w-full flex justify-between items-center">
                 <p className="text-20 leading-none m-0 uppercase">{t("laptop.desktop_screen.firearms_registry_app.firearm_information")}</p>
                 <div key="delete-button" className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-[rgb(233,21,45)]" onClick={removeFirearm}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="black" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                 </div>
             </div>
             <div className="w-full flex justify-start items-center gap-4">
@@ -248,7 +249,7 @@ const DisplayFirearm = (props: DisplayFirearmProps) => {
             </div>
         </div>
 
-        <div className="w-full flex flex-col flex-1 min-h-0 gap-4 p-6 bg-white/20 shadow-glass border-2 border-white/80 rounded-16">
+        <div className="w-full flex flex-col flex-1 min-h-0 gap-4 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16">
             <div className="w-full flex justify-between items-center">
                 <p className="text-20 leading-none m-0 uppercase">{t("laptop.desktop_screen.firearms_registry_app.firearm_registration")}</p>
 
@@ -259,7 +260,7 @@ const DisplayFirearm = (props: DisplayFirearmProps) => {
                                 className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-[rgb(30,110,244)]"
                                 onClick={() => setEditingRegistration(true)}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="black" viewBox="0 -960 960 960"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 -960 960 960"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                             </div>
                         </div>
                     : <div className="flex items-center gap-1">
@@ -319,5 +320,7 @@ const DisplayFirearm = (props: DisplayFirearmProps) => {
                 />
             </div>
         </div>
+
+        {props.firearm.serial && <LinkedEvidence serial={props.firearm.serial} />}
     </div>
 }
