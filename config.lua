@@ -194,6 +194,7 @@ config.logging = {
         ["Note deletion requested"] = true,
         ["Evidence destroyed"] = true,
         ["Evidence collected"] = true,
+        ["Evidence analysed"] = true,
         ["Fingerprint scanned"] = true,
         ["Observation started"] = true,
         ["Observation ended"] = true,
