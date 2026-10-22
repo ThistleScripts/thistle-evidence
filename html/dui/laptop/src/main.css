@@ -1,11 +1,17 @@
 @import "tailwindcss";
+@import "./thistle.css";
 
 @layer base {
     * {
-        font-family: Arial, sans-serif;
+        font-family: var(--font-body);
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+
+    body {
+        color: var(--color-ink);
+        background: var(--color-bg);
     }
 
     [lang="ja"] {
@@ -31,20 +37,34 @@
         }
 
         &::-webkit-scrollbar-thumb {
-            background: rgb(174, 174, 178);
+            background: var(--color-line);
             background-clip: content-box;
             border: 5px solid transparent;
             border-radius: 20px;
         }
 
         scrollbar-width: thin;
-        scrollbar-color: rgb(174, 174, 178) transparent;
+        scrollbar-color: var(--color-line) transparent;
     }
 }
 
 @layer components {
     .input {
-        @apply w-full p-2.5 bg-white/20 shadow-glass border-2 border-white/80 rounded-10 text-30 leading-none;
+        @apply w-full p-2.5 bg-raised/70 border-2 border-line rounded-10 text-30 leading-none text-ink outline-none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .input:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 4px rgb(168 85 247 / 0.18);
+    }
+
+    /* Desktop wallpaper: Thistle's dark slate with a purple glow */
+    .th-wallpaper {
+        background:
+            radial-gradient(ellipse 55% 60% at 78% 18%, rgb(168 85 247 / 0.28), transparent 70%),
+            radial-gradient(ellipse 45% 55% at 12% 88%, rgb(96 165 250 / 0.12), transparent 70%),
+            linear-gradient(160deg, rgb(17 20 28) 0%, rgb(9 11 16) 100%);
     }
 }
 
@@ -68,11 +88,11 @@
     --radius-16: 16px;
     --radius-20: 20px;
 
-    --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.1);
-    --shadow-button: 0 4px 30px rgba(0, 0, 0, 0.2);
+    --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.25);
+    --shadow-button: 0 6px 24px -8px rgb(168 85 247 / 0.8);
 
-    --color-window: #c0c0c0ff;
-    --color-button: rgb(174, 174, 178);
+    --color-window: rgb(17 20 28);
+    --color-button: rgb(168 85 247);
 
     @keyframes orbit {
         from {

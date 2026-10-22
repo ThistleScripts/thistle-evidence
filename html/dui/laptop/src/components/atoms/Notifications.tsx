@@ -34,7 +34,7 @@ function Notification({ onClose, notification }: { notification: NotificationWit
 
     return (
         <div
-            className={`bg-white/20 shadow-glass border-2 border-white/80 rounded-16 px-4 py-3 min-w-60 max-w-80 flex justify-between items-start gap-2 relative overflow-hidden duration-400 transition-all ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]`}
+            className={`bg-raised/70 shadow-glass border-2 border-line rounded-16 px-4 py-3 min-w-60 max-w-80 flex justify-between items-start gap-2 relative overflow-hidden duration-400 transition-all ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]`}
             style={{
                 opacity: isMounted && !isClosing ? 1 : 0,
                 transform: isMounted && !isClosing
@@ -48,7 +48,7 @@ function Notification({ onClose, notification }: { notification: NotificationWit
             </div>
 
             <div className="hoverable" onClick={handleClose}>
-                <svg xmlns="http://www.w3.org/2000/svg" height="25px" width="25px" fill="black" viewBox="0 -960 960 960"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="25px" width="25px" fill="currentColor" viewBox="0 -960 960 960"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
             </div>
         </div>
     );

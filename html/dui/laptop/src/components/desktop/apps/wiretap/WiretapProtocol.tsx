@@ -14,7 +14,7 @@ export default function WiretapProtocol(props: WiretapProtocolProps) {
     };
  
     return <div className="w-full h-full p-4 flex flex-col gap-4 bg-window">
-        <div className="w-full h-full p-2.5 bg-white/20 shadow-glass border-2 border-white/80 rounded-10 overflow-y-hidden hover:overflow-y-auto scrollbar">
+        <div className="w-full h-full p-2.5 bg-raised/70 shadow-glass border-2 border-line rounded-10 overflow-y-hidden hover:overflow-y-auto scrollbar">
             <p className="text-30">
                 [{formatTime(props.interception.startedAt)}]
                 {" "}

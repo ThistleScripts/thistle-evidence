@@ -40,6 +40,12 @@ eventHandler.onNui("lab:close", function()
     lab.close()
 end)
 
+-- The laptop's Forensics Lab tile: step away from the laptop and open the lab
+eventHandler.onNui("lab:openFromLaptop", function()
+    require("client.dui.focus").stop()
+    lab.open()
+end)
+
 local zones = {}
 
 for index, station in ipairs(config.forensicsLab.stations or {}) do

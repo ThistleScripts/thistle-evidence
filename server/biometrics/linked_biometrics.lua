@@ -72,17 +72,6 @@ function linkedBiometrics.getCitizenLinkedToBiometricData(type, biometricData)
     end
 end
 
-Thistle.Callback.Register("evidences:getCitizenLinkedToBiometricData", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
-        return {
-            success = false,
-            response = "laptop.notifications.no_permission.description"
-        }
-    end
-
-    return linkedBiometrics.getCitizenLinkedToBiometricData(arguments.type, arguments.biometricData)
-end)
-
 Thistle.Callback.Register("evidences:getBiometricDataLinkedToIdentifier", function(source, arguments)
     if not framework.hasPermission(config.permissions.access, source) then
         return {

@@ -10,7 +10,7 @@ function Sidebar({
     return (
         <div
             {...props}
-            className={cn("flex flex-col gap-1 px-3 py-4 bg-white/20 shadow-glass border-2 border-white/80 rounded-16 overflow-y-hidden scrollbar hover:overflow-y-auto", className)}
+            className={cn("flex flex-col gap-1 px-3 py-4 bg-raised/70 shadow-glass border-2 border-line rounded-16 overflow-y-hidden scrollbar hover:overflow-y-auto", className)}
         >
             {children}
         </div>
@@ -28,7 +28,7 @@ function SidebarItem({
 }: React.ComponentProps<"button"> & { active?: boolean, imagePath?: string, description?: string }) {
     return (
         <button
-            className={`w-full flex justify-start items-center gap-4 px-1 py-1.5 border-none rounded-10 ${active ? "bg-button" : "bg-transparent"} duration-400 transition-all hoverable hover:bg-button`}
+            className={`w-full flex justify-start items-center gap-4 px-1 py-1.5 border-none rounded-10 ${active ? "bg-button" : "bg-transparent"} duration-400 transition-all hoverable hover:bg-accent/30`}
             onClick={onClick}
             {...props}
         >

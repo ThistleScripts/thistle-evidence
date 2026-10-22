@@ -1,4 +1,3 @@
-import backgroundImage from "@/assets/background.png";
 import DesktopContent from "../desktop/DesktopContent";
 import Taskbar from "../desktop/Taskbar";
 import type { Options, ScreenType } from "../App";
@@ -59,6 +58,11 @@ export default function DesktopScreen(props: DesktopScreenProps) {
     // Sets the app's minimized state to false and brings it into focus.
     // Called when the user opens an app.
     function handleAppOpen(app: App, args?: AppArgs) {
+        if (app.onOpen) {
+            app.onOpen();
+            return;
+        }
+
         const openApp: OpenApp = { ...app, minimized: false, zIndex: 1, args: args };
 
         const existingApp = openApps.find((a) => a.name === app.name);
@@ -119,7 +123,7 @@ export default function DesktopScreen(props: DesktopScreenProps) {
 
 
     return (
-        <div className="w-full h-full relative" style={{ background: `url(${backgroundImage})` }}>
+        <div className="th-wallpaper w-full h-full relative">
             <DesktopContent playerName={props.playerName} options={props.options} openApps={openApps} openPopUp={openPopUp} openApp={handleAppOpen} onMinimize={handleMinimizeApp} focusApp={handleBringToFront} closeApp={handleAppClose} />
             <Taskbar switchScreen={props.switchScreen} mute={props.mute} maximizeApp={handleMaximizeApp} openApps={openApps} />
         </div>

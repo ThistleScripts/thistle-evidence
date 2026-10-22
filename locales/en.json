@@ -442,7 +442,8 @@
                     "observation_ended": "Observation ended."
                 }
             }
-        }
+        },
+        "brand": "Evidence Terminal"
     },
     "spy_microphone": {
         "input_help": "Press %s to place the spy microphone.%sUse %s to cancel this action",

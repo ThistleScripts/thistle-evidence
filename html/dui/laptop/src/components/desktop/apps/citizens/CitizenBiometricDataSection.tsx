@@ -1,8 +1,7 @@
 import useLuaCallback from "@/hooks/useLuaCallback";
 import type Citizen from "@/types/citizen.type";
 import { useEffect, useState } from "react";
-import fingerprintIcon from "@/assets/app_icons/fingerprint.png";
-import dnaIcon from "@/assets/app_icons/dna.png";
+import { Dna, Fingerprint } from "lucide-react";
 import EvidenceDropdown from "@/components/atoms/dropdown/EvidenceDropdown";
 import type { BiometricEvidence, Evidence } from "@/types/evidence.type";
 import { useAppContext } from "@/hooks/useAppContext";
@@ -91,7 +90,7 @@ export default function CitizenBiomericDataSection(props: CitizenBiomericDataSec
     };
 
     
-    return <div className="w-full flex flex-col gap-4 p-6 bg-white/20 shadow-glass border-2 border-white/80 rounded-16">
+    return <div className="w-full flex flex-col gap-4 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16">
         <div className="w-full flex justify-between items-center">
             <p className="text-20 leading-none m-0 uppercase">{t("laptop.desktop_screen.citizens_app.biometric_data")}</p>
 
@@ -103,7 +102,7 @@ export default function CitizenBiomericDataSection(props: CitizenBiomericDataSec
                             className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-[rgb(30,110,244)]"
                             onClick={() => setEditingCitizen(true)}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="black" viewBox="0 -960 960 960"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 -960 960 960"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                         </div>
                     </div>
                 : <div className="flex items-center gap-1">
@@ -126,7 +125,7 @@ export default function CitizenBiomericDataSection(props: CitizenBiomericDataSec
         </div>
         <div className="w-full flex flex-col gap-1">
             <div className="flex items-center gap-2" >
-                <img width="30px" height="30px" src={fingerprintIcon} />
+                <Fingerprint size={30} className="text-info" />
                 <p className="text-30 leading-none">{t("laptop.desktop_screen.common.fingerprint")}:</p>
                 {isEditingCitizen
                     ? <div className="w-full flex justify-between items-center">
@@ -137,7 +136,7 @@ export default function CitizenBiomericDataSection(props: CitizenBiomericDataSec
                         />
 
                         <div className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-[rgb(233,21,45)]" onClick={() => setSelectedFingerprint(undefined)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="black" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                         </div>
                     </div>
                     : <p className="text-30 leading-none">
@@ -151,7 +150,7 @@ export default function CitizenBiomericDataSection(props: CitizenBiomericDataSec
                 }
             </div>
             <div className="flex items-center gap-2">
-                <img width="30px" height="30px" src={dnaIcon} />
+                <Dna size={30} className="text-ok" />
                 <p className="text-30 leading-none">{t("laptop.desktop_screen.common.dna")}:</p>
                 {isEditingCitizen
                     ? <div className="w-full flex justify-between items-center">
@@ -162,7 +161,7 @@ export default function CitizenBiomericDataSection(props: CitizenBiomericDataSec
                         />
                         
                         <div className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-[rgb(233,21,45)]" onClick={() => setSelectedDna(undefined)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="black" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                         </div>
                     </div>
                     : <p className="text-30 leading-none">

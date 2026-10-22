@@ -103,7 +103,7 @@ export default function MoveableApp(props: MoveableAppProps) {
         >
             <div
                 onMouseDown={() => props.onFocus(props.app)}
-                className={`absolute select-none overflow-hidden pointer-events-auto rounded-10 shadow-[0_0_5px_1px_rgba(0,0,0,0.4)] ${props.app.minimized ? "hidden" : "block"}`}
+                className={`absolute select-none overflow-hidden pointer-events-auto rounded-16 border-2 border-line bg-bg shadow-[0_30px_80px_rgba(0,0,0,0.55)] ${props.app.minimized ? "hidden" : "block"}`}
                 style={{
                     width: props.width + "px",
                     height: props.height + "px",
@@ -112,16 +112,16 @@ export default function MoveableApp(props: MoveableAppProps) {
                     zIndex: props.app.zIndex
                 }}
             >
-                <div onMouseDown={onMouseDown} className="w-full h-[42px] bg-window relative flex justify-end items-center">
+                <div onMouseDown={onMouseDown} className="w-full h-[42px] bg-window border-b-2 border-line relative flex justify-end items-center">
                     <div className="absolute left-1/2 -translate-x-1/2 h-full flex items-center gap-2">
                         {props.app.icon("25px", "25px")}
-                        <span className="text-25 truncate uppercase">{props.app.name}</span>
+                        <span className="text-22.5 truncate uppercase font-semibold tracking-[0.12em] text-muted">{props.app.name}</span>
                     </div>
 
                     <div className="h-full flex items-center gap-1.5 mr-4">
                         {!props.isPopUp &&
                             <button
-                                className="group h-4 w-4 flex items-center justify-center bg-[#383838] border-none rounded-full duration-400 transition-all hoverable hover:h-5 hover:w-5"
+                                className="group h-4 w-4 flex items-center justify-center bg-line border-none rounded-full duration-400 transition-all hoverable hover:h-5 hover:w-5"
                                 onClick={() => props.onMinimize(props.app)}
                             >
                                 <svg className="opacity-0 group-hover:opacity-100 transition-opacity duration-400 ease-in-out" width="25px" height="25px" fill="#c0c0c0ff" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
