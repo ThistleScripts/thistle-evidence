@@ -13,6 +13,7 @@ local equipCount = 0 -- so a quick unequip and equip doesn't leave two threads r
 local isOn = false
 local lastOnAt = 0
 local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until which it stays visible
+local areas = {} -- lit areas (UV floodlights, client/evidences/floodlights.lua): id -> { coords, radius }
 
 local minDot <const> = math.cos(math.rad(config.uvLight.angle))
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
@@ -82,6 +83,38 @@ function uv.isInBeam(coords)
     return (offset.x * direction.x + offset.y * direction.y + offset.z * direction.z) / distance >= minDot
 end
 
+-- A lit area, such as a UV floodlight: evidence inside it shows as if in the beam
+---@param id any
+---@param coords vector3
+---@param radius number
+function uv.setArea(id, coords, radius)
+    areas[id] = { coords = coords, radius = radius }
+end
+
+function uv.removeArea(id)
+    areas[id] = nil
+end
+
+function uv.hasAreas()
+    return next(areas) ~= nil
+end
+
+---@param coords vector3
+---@return boolean
+function uv.isInArea(coords)
+    if not coords then
+        return false
+    end
+
+    for _, area in pairs(areas) do
+        if #(coords - area.coords) <= area.radius then
+            return true
+        end
+    end
+
+    return false
+end
+
 -- Whether the beam has shown this evidence recently, without checking the beam again
 ---@param key any
 ---@return boolean
@@ -90,8 +123,8 @@ function uv.isRevealed(key)
     return visibleUntil ~= nil and visibleUntil > GetGameTimer()
 end
 
--- Whether a piece of evidence can be seen: always when UV light isn't required, otherwise while it's in the beam
--- and for config.uvLight.memory ms after.
+-- Whether a piece of evidence can be seen: always when UV light isn't required, otherwise while it's in the beam or
+-- a lit area, and for config.uvLight.memory ms after.
 ---@param key any The evidence object or entity, so it stays visible after the beam has passed
 ---@param coords vector3
 ---@return boolean
@@ -100,7 +133,7 @@ function uv.reveals(key, coords)
         return true
     end
 
-    if uv.isInBeam(coords) then
+    if uv.isInBeam(coords) or uv.isInArea(coords) then
         revealedUntil[key] = GetGameTimer() + config.uvLight.memory
         return true
     end

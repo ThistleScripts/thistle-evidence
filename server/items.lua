@@ -30,6 +30,10 @@ if not exports.ox_inventory:Items("evidence_marker") then
     lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")
 end
 
+if not exports.ox_inventory:Items("uv_floodlight") then
+    lib.print.warn("The uv_floodlight item doesn't exist, so UV floodlights can't be placed.")
+end
+
 
 -- https://github.com/overextended/ox_inventory/commit/c7dee27c97a3ef2dc9e5ea402346cf6ea4cc1b16
 -- https://github.com/overextended/ox_inventory/commit/895cca3c9f0cd140e75bdb050dc88843119b4418

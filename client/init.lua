@@ -22,6 +22,7 @@ require "client.lab.microscopes"
 require "client.evidences.uv"
 require "client.evidences.uv_hints"
 require "client.evidences.markers"
+require "client.evidences.floodlights"
 
 local config <const> = require "config"
 

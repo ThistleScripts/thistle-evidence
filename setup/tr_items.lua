@@ -162,6 +162,16 @@
     client = {
         export = 'thistle-evidence.evidence_marker'
     }
+},
+['uv_floodlight'] = {
+    label = 'UV projektör',
+    description = 'Tüm olay yerini UV ışığıyla aydınlatıp çevresindeki tüm delilleri gösteren çalışma lambası',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_floodlight'
+    }
 }
 
 -- The UV flashlight is a weapon: see weapons.lua in this folder.

@@ -525,5 +525,17 @@
             "description": "You have too many evidence markers down. Pick some up first"
         },
         "placer_help": "%s Place marker%s%s Rotate%s%s / %s Finish"
+    },
+    "uv_floodlight": {
+        "input_help": "Press %s to place the UV floodlight.%sUse %s to cancel this action",
+        "pickup": "Pick up UV floodlight",
+        "limit": {
+            "title": "Evidence",
+            "description": "You have too many UV floodlights out. Pick one up first"
+        },
+        "cannot_carry": {
+            "title": "Evidence",
+            "description": "You can't carry the UV floodlight"
+        }
     }
 }

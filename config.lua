@@ -183,6 +183,22 @@ config.uvLight = {
     }
 }
 
+-- The uv_floodlight item: a UV work light officers stand at a crime scene. Every piece of evidence within its radius
+-- shows up (and can be collected) as if under the UV flashlight. Only matters while config.uvLight.required is on.
+config.uvFloodlight = {
+    model = `prop_worklight_03b`,
+    radius = 15.0, -- how far round it evidence shows up (metres)
+    lampHeight = 1.8, -- where the light comes from, above the floodlight's base (metres)
+    intensity = 6.0, -- how bright the blue light is
+    maxPerPlayer = 2, -- most floodlights one player can have standing at once
+    lifetime = 120, -- minutes before a floodlight switches itself off (the item is lost; they're also gone after a restart)
+
+    permissions = { -- Allowed jobs and their minimum grades required to place and pick up floodlights
+        police = 0,
+        fib = 0
+    }
+}
+
 -- The evidence_marker item: a reusable kit of marker props officers put down at a crime scene. Using it opens a menu
 -- to pick the prop, then click to place as many as needed. Officers target a marker to pick it up, or all at the scene.
 config.evidenceMarkers = {
