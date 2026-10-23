@@ -242,7 +242,8 @@
                 },
                 "dropdowns": {
                     "select_citizen": "Vatandaş seçin",
-                    "select_firearm": "Silah seçin"
+                    "select_firearm": "Silah seçin",
+                    "no_citizens_on_record": "No citizens on record yet. Create them in the Citizens app first."
                 }
             },
             "citizens_app": {

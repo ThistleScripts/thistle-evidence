@@ -242,7 +242,8 @@
                 },
                 "dropdowns": {
                     "select_citizen": "市民を選択してください",
-                    "select_firearm": "武器を選択してください"
+                    "select_firearm": "武器を選択してください",
+                    "no_citizens_on_record": "No citizens on record yet. Create them in the Citizens app first."
                 }
             },
             "citizens_app": {

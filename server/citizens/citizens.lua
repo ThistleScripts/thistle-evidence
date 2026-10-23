@@ -11,7 +11,7 @@ if not config.citizens.synced then
     MySQL.update.await(
         [[
             CREATE TABLE IF NOT EXISTS citizens (
-                identifier VARCHAR(500) PRIMARY KEY DEFAULT (UUID()),
+                identifier VARCHAR(500) PRIMARY KEY,
                 fullName TEXT NOT NULL,
                 birthdate TEXT NOT NULL,
                 gender ENUM('male', 'female', 'non_binary') NOT NULL
@@ -44,15 +44,20 @@ if not config.citizens.synced then
             )
         end
 
-        return database.selectFirstColumn(
+        -- The ID is made first: INSERT ... RETURNING only works on MariaDB, so on MySQL no citizen was ever created
+        local identifier <const> = database.selectFirstColumn("SELECT UUID()")
+        if not identifier.success or not identifier.response then
+            return identifier
+        end
+
+        return database.update(
             [[
                 INSERT INTO citizens (identifier, fullName, birthdate, gender)
-                VALUES (UUID(), ?, ?, ?)
-                RETURNING identifier
+                VALUES (?, ?, ?, ?)
             ]],
-            arguments.fullName, arguments.birthdate, arguments.gender,
-            function(identifier)
-                arguments.identifier = identifier
+            identifier.response, arguments.fullName, arguments.birthdate, arguments.gender,
+            function()
+                arguments.identifier = identifier.response
                 logger.log(source, "Citizen created", arguments)
                 return arguments
             end
