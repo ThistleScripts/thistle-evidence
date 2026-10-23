@@ -17,7 +17,7 @@ export default function LinkedEvidence({ serial }: { serial: string }) {
 
     const matches = caseFile?.matches ?? [];
 
-    return <div className="w-full flex flex-col gap-3 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16 max-h-[300px] min-h-0">
+    return <div className="w-full flex flex-col gap-3 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16 max-h-[300px] shrink-0">
         <div className="flex items-center gap-2">
             <Link2 size={22} className="text-accent" />
             <p className="text-20 leading-none m-0 uppercase">{t("lab.links.title")}</p>

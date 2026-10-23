@@ -36,15 +36,14 @@ export default function FirearmsRegistryApp({ firearm }: FirearmsRegistryAppProp
 
     const { data: firearms, setData: setFirearms, fetchData: fetchFirearms, loading, reloadRef, scrollRef, handleScroll, handleReload, adjustOffset } = useInfiniteScroll<RegisteredFirearm, { searchText: string }>("evidences:getRegisteredFirearms", { searchText: debouncedSearchText });
 
-    const [citizensCache, setCitizensCache] = useState<Map<string, Citizen>>(new Map());
+    // null once looked up: the owner isn't in the citizen database, so the list stops showing "Loading..."
+    const [citizensCache, setCitizensCache] = useState<Map<string, Citizen | null>>(new Map());
     const { trigger: fetchCitizen } = useLuaCallback<{ identifier: string }, Citizen>({
         name: "evidences:getCitizen",
-        onSuccess: (data) => {
-            if (!data) return;
-
+        onSuccess: (data, args) => {
             setCitizensCache(prev => {
                 const nextMap = new Map(prev);
-                nextMap.set(data.identifier.toString(), data);
+                nextMap.set((data?.identifier ?? args.identifier).toString(), data ?? null);
                 return nextMap;
             });
         }
@@ -129,7 +128,9 @@ export default function FirearmsRegistryApp({ firearm }: FirearmsRegistryAppProp
                             return <SidebarItem
                                 active={selectedFirearm?.serial === firearm.serial}
                                 imagePath={firearm.imagePath}
-                                description={citizensCache.get(firearm.identifier.toString())?.fullName || t("laptop.desktop_screen.common.statuses.loading")}
+                                description={citizensCache.has(firearm.identifier.toString())
+                                    ? citizensCache.get(firearm.identifier.toString())?.fullName ?? t("laptop.desktop_screen.common.statuses.unknown")
+                                    : t("laptop.desktop_screen.common.statuses.loading")}
                                 onClick={() => setSelectedFirearm(firearm)}
                             >
                                 {firearm.serial}
@@ -139,7 +140,7 @@ export default function FirearmsRegistryApp({ firearm }: FirearmsRegistryAppProp
             </Sidebar>
         </div>
         {selectedFirearm
-            ? <DisplayFirearm key={selectedFirearm.serial} citizen={citizensCache.get(selectedFirearm.identifier.toString())} firearm={selectedFirearm} onUpdateFirearm={onUpdateFirearm} />
+            ? <DisplayFirearm key={selectedFirearm.serial} citizen={citizensCache.get(selectedFirearm.identifier.toString()) ?? undefined} firearm={selectedFirearm} onUpdateFirearm={onUpdateFirearm} />
             : firearms.length > 0 && <NoFirearmSelected />
         }
     </div>
@@ -210,8 +211,8 @@ const DisplayFirearm = (props: DisplayFirearmProps) => {
         });
     };
 
-    return <div className="h-full flex flex-col grow gap-4">
-        <div className="w-full flex flex-col gap-4 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16">
+    return <div className="h-full min-w-0 min-h-0 flex flex-col grow gap-4 overflow-y-auto scrollbar">
+        <div className="w-full shrink-0 flex flex-col gap-4 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16">
             <div className="w-full flex justify-between items-center">
                 <p className="text-20 leading-none m-0 uppercase">{t("laptop.desktop_screen.firearms_registry_app.firearm_information")}</p>
                 <div key="delete-button" className="flex justify-center items-center p-1 rounded-10 hoverable hover:bg-[rgb(233,21,45)]" onClick={removeFirearm}>
@@ -249,7 +250,7 @@ const DisplayFirearm = (props: DisplayFirearmProps) => {
             </div>
         </div>
 
-        <div className="w-full flex flex-col flex-1 min-h-0 gap-4 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16">
+        <div className="w-full flex flex-col shrink-0 gap-4 p-6 bg-raised/70 shadow-glass border-2 border-line rounded-16">
             <div className="w-full flex justify-between items-center">
                 <p className="text-20 leading-none m-0 uppercase">{t("laptop.desktop_screen.firearms_registry_app.firearm_registration")}</p>
 
@@ -309,11 +310,11 @@ const DisplayFirearm = (props: DisplayFirearmProps) => {
                     </div>
                 }
             </div>
-            <div className="flex flex-col flex-1 min-h-0 items-start gap-2">
+            <div className="flex flex-col items-start gap-2">
                 <p className="text-30 leading-none">{t("laptop.desktop_screen.firearms_registry_app.registration_reason")}:</p>
                 <textarea
                     disabled={!isEditingRegistration}
-                    className={`w-full h-full input resize-none scrollbar ${isEditingRegistration && "textable"}`}
+                    className={`w-full h-[130px] shrink-0 input resize-none scrollbar ${isEditingRegistration && "textable"}`}
                     maxLength={500}
                     value={registrationReason}
                     onChange={(e) => setRegistrationReason(e.target.value)}
