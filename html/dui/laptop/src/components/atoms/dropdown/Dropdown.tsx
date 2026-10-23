@@ -13,6 +13,7 @@ interface DropdownProps<ItemType> {
     loading?: boolean;
     searchText?: string;
     onSearchTextChange?: (text: string) => void;
+    emptyText?: string; // shown when there's nothing to pick from
 }
 
 
@@ -29,6 +30,7 @@ interface DropdownContextType {
     loading?: boolean;
     searchText?: string;
     onSearchTextChange?: (text: string) => void;
+    emptyText?: string;
     registerCallback: (cb: SelectionDisplayCallback<any>) => void;
 }
 
@@ -62,6 +64,7 @@ function Dropdown<ItemType>({
     loading,
     searchText,
     onSearchTextChange,
+    emptyText,
 
     children,
     className,
@@ -132,6 +135,7 @@ function Dropdown<ItemType>({
                 loading: loading,
                 searchText: searchText,
                 onSearchTextChange: handleSearchTextChange,
+                emptyText: emptyText,
                 registerCallback: registerCallback
             }}>
                 {children}
@@ -241,7 +245,7 @@ function DropdownUnfolded<ItemType>({
             )}
             {!dropdownContext.loading &&
                 dropdownContext.items.length === 0
-                    ? <p className="text-20 leading-none italic p-2">{t("laptop.desktop_screen.common.statuses.no_selection")}</p>
+                    ? <p className="text-20 leading-tight italic p-2">{dropdownContext.emptyText ?? t("laptop.desktop_screen.common.statuses.no_selection")}</p>
                     : dropdownContext.items.map((item) => children(item, dropdownContext.selectedItem && (dropdownContext.itemToString(dropdownContext.selectedItem) === dropdownContext.itemToString(item))))
             }
         </div>

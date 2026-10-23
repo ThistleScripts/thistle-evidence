@@ -242,7 +242,8 @@
                 },
                 "dropdowns": {
                     "select_citizen": "Sélectionner un citoyen",
-                    "select_firearm": "Sélectionner une arme"
+                    "select_firearm": "Sélectionner une arme",
+                    "no_citizens_on_record": "No citizens on record yet. Create them in the Citizens app first."
                 }
             },
             "citizens_app": {
