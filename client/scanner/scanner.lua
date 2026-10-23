@@ -56,8 +56,8 @@ eventHandler.onNui("keydown", function(event)
     end
 end)
 
--- Export to control the item registered in items.lua!
-exports("forensic_fingerprint_scanner", function(data, slot)
+-- Using the forensic_fingerprint_scanner item (setup/<lang>_items.lua)
+local function useScanner(data, slot)
     if not scannerProp then
         exports.ox_inventory:useItem(data, function(data)
             TriggerEvent("ox_inventory:disarm", cache.ped, true)
@@ -84,7 +84,11 @@ exports("forensic_fingerprint_scanner", function(data, slot)
             })
         end)
     end
-end)
+end
+
+exports("forensic_fingerprint_scanner", useScanner)
+-- The item's export before it was renamed, so an items.lua entry that still calls it keeps working
+exports("fingerprint_scanner", useScanner)
 
 RegisterNetEvent("evidences:fingerprintScanned", function(result)
     CreateThread(function()
