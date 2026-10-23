@@ -11,7 +11,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - In-world evidence laptop: an Evidence app to review everything analysed and the evidence you carry, add notes and link DNA profiles and fingerprints to citizens, plus citizens, firearms registry and wiretap apps. Analysis itself only happens at a microscope.
 - Your city's name on the laptop, the lab and the Discord logs (`config.cityName`, shown as "<name> Evidence").
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
-- UV flashlight: hold right click to raise it and shine it where you look. Evidence nearby glows faintly while it's on, evidence it has shown glows brightly so it can be found and collected, and blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
+- UV flashlight: hold right click to point it and shine it where you look, while still walking and strafing. Evidence nearby glows faintly while it's on, evidence it has shown glows brightly so it can be found and collected, and blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
 - Evidence markers: officers pick a numbered marker prop from a menu and click to put down as many as they need, then pick them up one at a time or all at once.
 - Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.

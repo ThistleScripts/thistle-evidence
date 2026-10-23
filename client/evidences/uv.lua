@@ -1,8 +1,8 @@
 -- The UV flashlight: the WEAPON_UVFLASHLIGHT addon weapon (data/weapons), held and swung like the game's flashlight.
--- Right click raises it and switches the blue beam on (held, or toggled with config.uvLight.mode): the player turns to
--- where the camera looks and shines a torch held in the left hand, as the shine-torch pose expects. The weapon in the
--- right hand is hidden meanwhile. Evidence caught in the beam shows up, and
--- client/evidences/uv_hints.lua draws faint hints of the evidence around while it's on.
+-- Right click points it and switches the blue beam on (held, or toggled with config.uvLight.mode): the right arm, which
+-- holds the flashlight, points where the camera looks using GTA Online's pointing gesture, and the player can still walk
+-- and strafe. Evidence caught in the beam shows up, and client/evidences/uv_hints.lua draws faint hints of the evidence
+-- around while it's on.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 
@@ -16,12 +16,10 @@ local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until 
 
 local minDot <const> = math.cos(math.rad(config.uvLight.angle))
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
-local animation <const> = config.uvLight.animation or { dict = "amb@world_human_security_shine_torch@male@base", clip = "base" }
-local torch <const> = config.uvLight.torch or { model = `prop_cs_police_torch`, bone = 60309, offset = vec3(0.0, 0.0, 0.0), rotation = vec3(0.0, 0.0, 0.0) }
-local torchObject = nil -- the torch in the left hand while it's raised
+local isPointing = false
 
--- How far up and down the torch can be pointed (degrees)
-local minPitch <const>, maxPitch <const> = -70.0, 45.0
+-- How far up and down the arm can point (degrees), as the pointing gesture allows
+local minPitch <const>, maxPitch <const> = -70.0, 42.0
 
 AddTextEntry("WT_UVFLASHLIGHT", "UV Flashlight") -- the weapon's name on the weapon wheel and HUD
 
@@ -35,25 +33,18 @@ local function getWeaponEntity()
 end
 
 local function getBeamOrigin()
-    if torchObject and DoesEntityExist(torchObject) then
-        return GetEntityCoords(torchObject)
-    end
-
     local weapon <const> = getWeaponEntity()
     return weapon and GetEntityCoords(weapon) or GetEntityCoords(cache.ped)
 end
 
--- The player faces where the camera looks while the torch is raised, so the beam goes the way they face,
--- tilted up or down with the camera since the raised-torch pose can't
+-- The arm points where the camera looks, so the beam does too
 local function getBeamDirection()
-    local forward <const> = GetEntityForwardVector(cache.ped)
-    local flat <const> = vector2(forward.x, forward.y)
-    local length <const> = #flat > 0 and #flat or 1.0
-
-    local pitch <const> = math.rad(math.max(minPitch, math.min(maxPitch, GetGameplayCamRot(2).x)))
+    local rotation <const> = GetGameplayCamRot(2)
+    local pitch <const> = math.rad(math.max(minPitch, math.min(maxPitch, rotation.x)))
+    local yaw <const> = math.rad(rotation.z)
     local horizontal <const> = math.cos(pitch)
 
-    return vector3(flat.x / length * horizontal, flat.y / length * horizontal, math.sin(pitch))
+    return vector3(-math.sin(yaw) * horizontal, math.cos(yaw) * horizontal, math.sin(pitch))
 end
 
 function uv.isOn()
@@ -126,49 +117,52 @@ local function cleanUpRevealed()
     end
 end
 
-local function removeTorchObject()
-    if torchObject and DoesEntityExist(torchObject) then
-        DeleteObject(torchObject)
-    end
-    torchObject = nil
-end
-
--- Raised torch: the shine-torch pose on the upper body, so the player can still walk. The pose holds the torch in
--- the left hand, so a torch is put there (config.uvLight.torch) and the flashlight weapon in the right hand is hidden.
-local function raiseTorch()
+-- Pointing: GTA Online's pointing gesture (the task_mp_pointing move network) on the right arm, which holds the
+-- flashlight. It only moves the arm, so the player can walk, run and strafe while shining it.
+local function point()
     if cache.vehicle then
-        removeTorchObject()
         return
     end
 
-    if not IsEntityPlayingAnim(cache.ped, animation.dict, animation.clip, 3) then
-        lib.requestAnimDict(animation.dict)
-        TaskPlayAnim(cache.ped, animation.dict, animation.clip, 4.0, 4.0, -1, 49, 0.0, false, false, false)
+    local ped <const> = cache.ped
+
+    if not isPointing or not IsTaskMoveNetworkActive(ped) then
+        lib.requestAnimDict("anim@mp_point")
+        SetPedConfigFlag(ped, 36, true)
+        TaskMoveNetworkByName(ped, "task_mp_pointing", 0.5, false, "anim@mp_point", 24)
+        RemoveAnimDict("anim@mp_point")
+        isPointing = true
     end
 
-    if not torchObject or not DoesEntityExist(torchObject) then
-        local coords <const> = GetEntityCoords(cache.ped)
-        torchObject = CreateObject(lib.requestModel(torch.model), coords.x, coords.y, coords.z, false, false, false)
-        SetModelAsNoLongerNeeded(torch.model)
-        SetEntityCollision(torchObject, false, false)
-        AttachEntityToEntity(torchObject, cache.ped, GetPedBoneIndex(cache.ped, torch.bone),
-            torch.offset.x, torch.offset.y, torch.offset.z, torch.rotation.x, torch.rotation.y, torch.rotation.z,
-            true, true, false, true, 1, true)
+    -- Standing still and looking behind: turn round, as the arm can't point backwards
+    local relativeHeading = GetGameplayCamRelativeHeading()
+    if math.abs(relativeHeading) > 100.0 and GetEntitySpeed(ped) < 0.5 then
+        SetEntityHeading(ped, GetGameplayCamRot(2).z)
+        relativeHeading = 0.0
     end
 
-    SetPedCurrentWeaponVisible(cache.ped, false, true, false, false)
+    local pitch <const> = (math.max(minPitch, math.min(maxPitch, GetGameplayCamRelativePitch())) - minPitch) / (maxPitch - minPitch)
+    local heading <const> = (math.max(-180.0, math.min(180.0, relativeHeading)) + 180.0) / 360.0
 
-    -- Turn to where the camera looks, as when aiming a gun
-    SetEntityHeading(cache.ped, GetGameplayCamRot(2).z)
+    SetTaskMoveNetworkSignalFloat(ped, "Pitch", pitch)
+    SetTaskMoveNetworkSignalFloat(ped, "Heading", heading * -1.0 + 1.0)
+    SetTaskMoveNetworkSignalBool(ped, "isBlocked", false)
+    SetTaskMoveNetworkSignalBool(ped, "isFirstPerson", GetCamViewModeForContext(GetCamActiveViewModeContext()) == 4)
 end
 
-local function lowerTorch()
-    if IsEntityPlayingAnim(cache.ped, animation.dict, animation.clip, 3) then
-        StopAnimTask(cache.ped, animation.dict, animation.clip, 2.0)
+local function stopPointing()
+    if not isPointing then
+        return
     end
 
-    removeTorchObject()
-    SetPedCurrentWeaponVisible(cache.ped, true, true, false, false)
+    isPointing = false
+    local ped <const> = cache.ped
+
+    RequestTaskMoveNetworkStateTransition(ped, "Stop")
+    if not IsPedInjured(ped) then
+        ClearPedSecondaryTask(ped)
+    end
+    SetPedConfigFlag(ped, 36, false)
 end
 
 local function setLight(on)
@@ -181,7 +175,7 @@ local function setLight(on)
     PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 
     if not on then
-        lowerTorch()
+        stopPointing()
     end
 end
 
@@ -220,7 +214,7 @@ local function equip()
 
             if isOn then
                 lastOnAt = GetGameTimer()
-                raiseTorch()
+                point()
 
                 local origin <const> = getBeamOrigin()
                 local direction <const> = getBeamDirection()
@@ -255,7 +249,6 @@ end)
 eventHandler.onLocal("onResourceStop", function(event)
     if event.arguments[1] == cache.resource then
         unequip()
-        removeTorchObject()
     end
 end)
 
