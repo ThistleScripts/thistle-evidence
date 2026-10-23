@@ -13,6 +13,7 @@ local equipCount = 0 -- so a quick unequip and equip doesn't leave two threads r
 local isOn = false
 local lastOnAt = 0
 local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until which it stays visible
+local areas = {} -- lit areas (UV floodlights, client/evidences/floodlights.lua): id -> { coords, radius }
 
 local minDot <const> = math.cos(math.rad(config.uvLight.angle))
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
@@ -82,6 +83,56 @@ function uv.isInBeam(coords)
     return (offset.x * direction.x + offset.y * direction.y + offset.z * direction.z) / distance >= minDot
 end
 
+-- A lit area, such as a UV lamp: evidence inside it shows as if in the beam. With a direction, only a cone of
+-- the given angle (degrees from the centre) is lit, like the flashlight's beam.
+---@param id any
+---@param coords vector3
+---@param radius number
+---@param direction vector3?
+---@param angle number?
+function uv.setArea(id, coords, radius, direction, angle)
+    areas[id] = {
+        coords = coords,
+        radius = radius,
+        direction = direction,
+        minDot = direction and math.cos(math.rad(angle or 35.0)) or nil
+    }
+end
+
+function uv.removeArea(id)
+    areas[id] = nil
+end
+
+function uv.hasAreas()
+    return next(areas) ~= nil
+end
+
+---@param coords vector3
+---@return boolean
+function uv.isInArea(coords)
+    if not coords then
+        return false
+    end
+
+    for _, area in pairs(areas) do
+        local offset <const> = coords - area.coords
+        local distance <const> = #offset
+
+        if distance <= area.radius then
+            if not area.direction or distance < 1.0 then
+                return true
+            end
+
+            local direction <const> = area.direction
+            if (offset.x * direction.x + offset.y * direction.y + offset.z * direction.z) / distance >= area.minDot then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
 -- Whether the beam has shown this evidence recently, without checking the beam again
 ---@param key any
 ---@return boolean
@@ -90,8 +141,8 @@ function uv.isRevealed(key)
     return visibleUntil ~= nil and visibleUntil > GetGameTimer()
 end
 
--- Whether a piece of evidence can be seen: always when UV light isn't required, otherwise while it's in the beam
--- and for config.uvLight.memory ms after.
+-- Whether a piece of evidence can be seen: always when UV light isn't required, otherwise while it's in the beam or
+-- a lit area, and for config.uvLight.memory ms after.
 ---@param key any The evidence object or entity, so it stays visible after the beam has passed
 ---@param coords vector3
 ---@return boolean
@@ -100,7 +151,7 @@ function uv.reveals(key, coords)
         return true
     end
 
-    if uv.isInBeam(coords) then
+    if uv.isInBeam(coords) or uv.isInArea(coords) then
         revealedUntil[key] = GetGameTimer() + config.uvLight.memory
         return true
     end

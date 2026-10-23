@@ -106,6 +106,20 @@ config.citizens = {
     synced = true
 }
 
+-- The forensic_fingerprint_scanner item: the holder holds out a phone (p_cs_cam_phone) and another player puts their
+-- finger on it. The holder can walk about while holding it; ESC, Backspace or using the item again puts it away.
+config.fingerprintScanner = {
+    animation = { dict = "cellphone@", clip = "cellphone_text_read_base" }, -- holding the phone out (loops)
+    enterAnimation = { dict = "cellphone@", clip = "cellphone_text_in", duration = 600 }, -- raising it
+    exitAnimation = { dict = "cellphone@", clip = "cellphone_text_out", duration = 700 }, -- lowering it
+    pressAnimation = { dict = "mp_common", clip = "givetake1_a", duration = 1500 }, -- the scanned player's finger press
+
+    -- How the phone sits in the right hand (bone 28422 is PH_R_Hand). Tune these if it floats or clips.
+    bone = 28422,
+    offset = vec3(0.0, 0.0, 0.0),
+    rotation = vec3(0.0, 0.0, 0.0)
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.
@@ -166,6 +180,37 @@ config.uvLight = {
         range = 15.0, -- how far away evidence gets a hint (metres)
         size = 0.035, -- the hint's size (metres)
         alpha = 110 -- how strong the hint is (0-255)
+    }
+}
+
+-- UV lamps officers stand at a crime scene. Evidence they light shows up (and can be collected) as if under the UV
+-- flashlight. Only matters while config.uvLight.required is on. Each style is its own item, named by its key.
+config.uvFloodlight = {
+    styles = {
+        -- Lights all round it
+        uv_floodlight = {
+            model = `bzzz_dream_of_lights_purple`,
+            lamp = vec3(0.0, 0.0, 2.1), -- where the light comes from, from the lamp's base (metres)
+            radius = 12.0 -- how far round it evidence shows up (metres)
+        },
+
+        -- Lights a cone in front of it, further. It's turned to shine away from the officer placing it.
+        uv_spotlight = {
+            model = `bzzz_world_of_lamps_purple`,
+            lamp = vec3(0.0, -0.3, 1.45),
+            direction = vec3(0.0, -1.0, -0.35), -- which way the lamp head points on the model
+            angle = 35.0, -- how wide the beam is (degrees from the centre)
+            radius = 25.0 -- how far the beam reaches (metres)
+        }
+    },
+
+    intensity = 6.0, -- how bright the blue light is
+    maxPerPlayer = 2, -- most lamps one player can have standing at once
+    lifetime = 120, -- minutes before a lamp switches itself off (the item is lost; they're also gone after a restart)
+
+    permissions = { -- Allowed jobs and their minimum grades required to place and pick up lamps
+        police = 0,
+        fib = 0
     }
 }
 

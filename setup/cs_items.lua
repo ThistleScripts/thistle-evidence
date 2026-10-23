@@ -162,6 +162,26 @@
     client = {
         export = 'thistle-evidence.evidence_marker'
     }
+},
+['uv_floodlight'] = {
+    label = 'UV reflektor',
+    description = 'Pracovní světlo, které osvítí celé místo činu UV světlem a ukáže všechny stopy kolem',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_floodlight'
+    }
+},
+['uv_spotlight'] = {
+    label = 'UV reflektor (směrový)',
+    description = 'Směrová UV lampa, která osvítí dlouhý kužel místa činu a ukáže v něm stopy',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_spotlight'
+    }
 }
 
 -- The UV flashlight is a weapon: see weapons.lua in this folder.

@@ -121,11 +121,12 @@ end
 
 CreateThread(function()
     while true do
-        if uv.wasOnRecently() then
+        -- also near a UV floodlight, which shows the evidence around it without anyone holding a flashlight
+        if uv.wasOnRecently() or uv.hasAreas() then
             local colour <const> = uv.getColour()
             local nextScan = 0
 
-            while uv.wasOnRecently() do
+            while uv.wasOnRecently() or uv.hasAreas() do
                 local isOn <const> = uv.isOn()
 
                 if GetGameTimer() >= nextScan then
@@ -149,7 +150,7 @@ CreateThread(function()
                     if coords then
                         local inBeam <const> = uv.isInBeam(coords)
 
-                        if inBeam or (config.uvLight.required and uv.isRevealed(point.entity)) then
+                        if inBeam or (config.uvLight.required and (uv.isRevealed(point.entity) or uv.isInArea(coords))) then
                             drawRevealed(coords, colour)
                         elseif isOn and settings.enabled ~= false then
                             drawHint(coords, colour)

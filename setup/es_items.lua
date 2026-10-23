@@ -162,6 +162,26 @@
     client = {
         export = 'thistle-evidence.evidence_marker'
     }
+},
+['uv_floodlight'] = {
+    label = 'Foco UV',
+    description = 'Foco de trabajo que ilumina toda la escena del crimen con luz UV y muestra todas las pruebas a su alrededor',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_floodlight'
+    }
+},
+['uv_spotlight'] = {
+    label = 'Proyector UV',
+    description = 'Lámpara UV direccional que ilumina un cono largo de la escena del crimen y muestra las pruebas en él',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_spotlight'
+    }
 }
 
 -- The UV flashlight is a weapon: see weapons.lua in this folder.

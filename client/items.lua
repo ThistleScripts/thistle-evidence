@@ -1,5 +1,11 @@
 local config <const> = require "config"
 
+-- Shown under a labelled evidence box in the inventory, so boxes in a stash can be matched to cases
+exports.ox_inventory:displayMetadata({
+    caseNumber = locale("evidences.evidence_box_label_dialog.case_metadata"),
+    labelledBy = locale("evidences.evidence_box_label_dialog.labelled_by_metadata")
+})
+
 exports("evidence_box", function(slot)
     local evidenceBoxItem
 
@@ -18,11 +24,18 @@ exports("evidence_box", function(slot)
         local input <const> = Thistle.Input(locale("evidences.evidence_box_label_dialog.title"), {
             {
                 type = "input",
+                label = locale("evidences.evidence_box_label_dialog.case_textfield_title"),
+                description = locale("evidences.evidence_box_label_dialog.case_textfield_details"),
+                default = metadata.caseNumber or nil,
+                required = false,
+                max = 20
+            },
+            {
+                type = "input",
                 label = locale("evidences.evidence_box_label_dialog.name_textfield_title"),
                 description = locale("evidences.evidence_box_label_dialog.name_textfield_details"),
-                default = metadata.label or evidenceBoxItem.label,
-                required = true, 
-                min = 1,
+                default = metadata.boxName or (not metadata.caseNumber and metadata.label) or nil, -- boxes labelled before case numbers
+                required = false,
                 max = 30
             },
             {
@@ -30,7 +43,7 @@ exports("evidence_box", function(slot)
                 label = locale("evidences.evidence_box_label_dialog.description_textfield_title"),
                 description = locale("evidences.evidence_box_label_dialog.description_textfield_details"),
                 default = metadata.description or nil,
-                required = false, 
+                required = false,
                 autosize = true
             }
         })
