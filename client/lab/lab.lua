@@ -12,6 +12,10 @@ function lab.open()
     end
 
     local info <const> = player.getInfo()
+    if info.setupIncomplete then
+        return
+    end
+
     if not info.permissions.access then
         config.notify({ key = "laptop.notifications.no_permission" }, "error")
         return

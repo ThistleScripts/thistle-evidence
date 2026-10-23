@@ -3,8 +3,10 @@
 local player = {}
 
 local fallback <const> = { name = "undefined", permissions = {} }
+local setupIncomplete <const> = { name = "undefined", permissions = {}, setupIncomplete = true }
 
----@return { name: string, permissions: table<string, boolean> }
+-- setupIncomplete is set when the server isn't running; the player has already been told why
+---@return { name: string, permissions: table<string, boolean>, setupIncomplete?: boolean }
 function player.getInfo()
     -- The server registers its callbacks only once setup succeeded (server/init.lua)
     if not GlobalState[("%s:ready"):format(cache.resource)] then
@@ -13,7 +15,7 @@ function player.getInfo()
 
         lib.print.error(setupError)
         Thistle.NotifyClient({ title = "thistle-evidence", description = setupError, type = "error", duration = 10000 })
-        return fallback
+        return setupIncomplete
     end
 
     return Thistle.Callback.Await("evidences:getPlayerInfo") or fallback
