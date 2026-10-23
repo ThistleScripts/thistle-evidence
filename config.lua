@@ -143,7 +143,9 @@ config.destroyItems = {
     magazine = "cleaning_kit"
 }
 
--- The uv_flashlight item. While it's switched on, evidence caught in its beam shows up and can be collected or destroyed.
+-- The UV flashlight is GTA's flashlight weapon (WEAPON_FLASHLIGHT) with metadata type "uv", equipped and used like the
+-- normal one but with a blue beam. Give one with /giveitem <id> WEAPON_FLASHLIGHT 1 uv, or sell it in an ox_inventory
+-- shop with metadata = { type = "uv" }. While it's equipped, evidence caught in its beam shows up and can be targeted.
 config.uvLight = {
     -- true: blood, casings, bullets, magazines and traces on vehicles and props are only visible and targetable under UV light.
     -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.
@@ -151,7 +153,8 @@ config.uvLight = {
 
     range = 12.0, -- how far the beam reaches (metres)
     angle = 30.0, -- how wide the beam is (degrees from the centre)
-    memory = 8000 -- how long evidence stays visible after the beam has passed over it (ms)
+    memory = 8000, -- how long evidence stays visible after the beam has passed over it (ms)
+    colour = { r = 60, g = 90, b = 255 } -- the beam's colour
 }
 
 -- The evidence_marker item: numbered markers officers put down at a crime scene.

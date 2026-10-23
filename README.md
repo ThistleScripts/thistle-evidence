@@ -58,7 +58,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 
 | Action | How |
 | --- | --- |
-| Find evidence | Use a `uv_flashlight` to switch it on, aim it around the scene; use it again to switch off |
+| Find evidence | Equip the UV flashlight and aim it around the scene (it's `WEAPON_FLASHLIGHT` with metadata type `uv`: `/giveitem <id> WEAPON_FLASHLIGHT 1 uv`, or a shop item with `metadata = { type = 'uv' }`) |
 | Mark evidence | Use an `evidence_marker` and place it; markers number themselves per scene and can be picked back up |
 | Collect evidence | Target it with a `forensic_kit` (jobs from `config.permissions.collect`) |
 | Destroy evidence | Target it with the item from `config.destroyItems` (`hydrogen_peroxide` or `cleaning_kit`) |

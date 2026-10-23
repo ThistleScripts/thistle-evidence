@@ -147,16 +147,6 @@
         export = 'thistle-evidence.forensic_microscope'
     }
 },
-['uv_flashlight'] = {
-    label = 'UVライト',
-    description = '血痕や指紋などの痕跡をUV光で浮かび上がらせる',
-    weight = 400,
-    stack = false,
-    close = true,
-    client = {
-        export = 'thistle-evidence.uv_flashlight'
-    }
-},
 ['cleaning_kit'] = {
     label = '清掃キット',
     description = '薬莢・弾丸・マガジンを処分するための手袋、袋、漂白剤',
@@ -173,3 +163,7 @@
         export = 'thistle-evidence.evidence_marker'
     }
 }
+
+-- The UV flashlight isn't an item of its own: it's WEAPON_FLASHLIGHT (already in ox_inventory/data/weapons.lua)
+-- with metadata type "uv". Give one with /giveitem <id> WEAPON_FLASHLIGHT 1 uv, or add it to a shop with metadata = { type = 'uv' }.
+-- Copy images/uv_flashlight.png to ox_inventory/web/images/ for its inventory image.

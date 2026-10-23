@@ -1,28 +1,41 @@
--- The UV flashlight (uv_flashlight item). Using it switches a police torch on in the player's hand with a purple beam;
--- evidence caught in the beam shows up (see config.uvLight). Using it again, or losing the item, switches it off.
+-- The UV flashlight: GTA's flashlight weapon (WEAPON_FLASHLIGHT) with metadata type "uv". While it's equipped the
+-- game's white beam is switched off and a blue one is drawn instead; evidence caught in it shows up (config.uvLight).
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 
 local uv = {}
 
 local isOn = false
-local torch = nil
 local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until which it stays visible
 
-local torchModel <const> = `prop_cs_police_torch`
-local animDict <const>, animClip <const> = "amb@world_human_security_shine_torch@male@base", "base"
 local minDot <const> = math.cos(math.rad(config.uvLight.angle))
+local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
 
--- Where the camera points, which is where the player aims the torch
+local function isUvFlashlight(weapon)
+    return weapon ~= nil and weapon.name == "WEAPON_FLASHLIGHT" and type(weapon.metadata) == "table" and weapon.metadata.type == "uv"
+end
+
+local function normalise(vector)
+    local length <const> = #vector
+    return length > 0 and vector / length or vector
+end
+
+-- Aiming points the light where the camera looks; otherwise it hangs in front of the player, angled at the ground
 local function getBeamDirection()
-    local rotation <const> = GetGameplayCamRot(2)
-    local pitch <const>, yaw <const> = math.rad(rotation.x), math.rad(rotation.z)
-    local flat <const> = math.abs(math.cos(pitch))
-    return vector3(-math.sin(yaw) * flat, math.cos(yaw) * flat, math.sin(pitch))
+    if IsPlayerFreeAiming(cache.playerId) then
+        local rotation <const> = GetGameplayCamRot(2)
+        local pitch <const>, yaw <const> = math.rad(rotation.x), math.rad(rotation.z)
+        local flat <const> = math.abs(math.cos(pitch))
+        return vector3(-math.sin(yaw) * flat, math.cos(yaw) * flat, math.sin(pitch))
+    end
+
+    local forward <const> = GetEntityForwardVector(cache.ped)
+    return normalise(vector3(forward.x, forward.y, -0.35))
 end
 
 local function getBeamOrigin()
-    return (torch and DoesEntityExist(torch)) and GetEntityCoords(torch) or GetEntityCoords(cache.ped)
+    local weapon <const> = GetCurrentPedWeaponEntityIndex(cache.ped)
+    return (weapon ~= 0 and DoesEntityExist(weapon)) and GetEntityCoords(weapon) or GetEntityCoords(cache.ped)
 end
 
 function uv.isOn()
@@ -72,18 +85,7 @@ function uv.reveals(key, coords)
 end
 
 local function switchOff()
-    if not isOn then
-        return
-    end
-
     isOn = false
-
-    if torch and DoesEntityExist(torch) then
-        DeleteEntity(torch)
-    end
-    torch = nil
-
-    StopAnimTask(cache.ped, animDict, animClip, 1.0)
 end
 
 local function switchOn()
@@ -91,39 +93,21 @@ local function switchOn()
         return
     end
 
-    TriggerEvent("ox_inventory:disarm", cache.ped, true)
-
-    lib.requestModel(torchModel)
-    local coords <const> = GetEntityCoords(cache.ped)
-    torch = CreateObject(torchModel, coords.x, coords.y, coords.z, true, true, false)
-    SetModelAsNoLongerNeeded(torchModel)
-    AttachEntityToEntity(torch, cache.ped, GetPedBoneIndex(cache.ped, 57005), 0.12, 0.02, -0.02, -80.0, 0.0, 0.0, true, true, false, true, 1, true)
-
-    lib.playAnim(cache.ped, animDict, animClip, 2.0, 2.0, -1, 49)
     isOn = true
 
     CreateThread(function()
-        local nextCheck = 0
+        local nextCleanup = 0
 
         while isOn do
+            -- the game's own white flashlight beam, replaced by the blue one
+            SetFlashLightEnabled(cache.ped, false)
+
             local origin <const> = getBeamOrigin()
             local direction <const> = getBeamDirection()
-            DrawSpotLight(origin.x, origin.y, origin.z, direction.x, direction.y, direction.z, 120, 40, 255, config.uvLight.range + 3.0, 12.0, 0.0, config.uvLight.angle * 1.2, 1.0)
-            DisablePlayerFiring(cache.playerId, true)
+            DrawSpotLight(origin.x, origin.y, origin.z, direction.x, direction.y, direction.z, colour.r, colour.g, colour.b, config.uvLight.range + 3.0, 12.0, 0.0, config.uvLight.angle * 1.2, 1.0)
 
-            -- switch off when the torch is gone, the item was dropped, or the player can't hold it
-            if GetGameTimer() > nextCheck then
-                nextCheck = GetGameTimer() + 1000
-
-                if not (torch and DoesEntityExist(torch)) or cache.vehicle or config.isPedDead(cache.ped)
-                    or exports.ox_inventory:Search("count", "uv_flashlight") < 1 then
-                    switchOff()
-                    break
-                end
-
-                if not IsEntityPlayingAnim(cache.ped, animDict, animClip, 3) then
-                    lib.playAnim(cache.ped, animDict, animClip, 2.0, 2.0, -1, 49)
-                end
+            if GetGameTimer() > nextCleanup then
+                nextCleanup = GetGameTimer() + 5000
 
                 local now <const> = GetGameTimer()
                 for key, visibleUntil in pairs(revealedUntil) do
@@ -138,15 +122,19 @@ local function switchOn()
     end)
 end
 
-exports("uv_flashlight", function(data, slot)
-    -- ox_inventory calls this export from its own resource, and switching on loads a model, so do it in a thread
-    CreateThread(function()
-        if isOn then
-            switchOff()
-        else
-            switchOn()
-        end
-    end)
+-- ox_inventory tells us whenever the equipped weapon changes (nil when holstered)
+AddEventHandler("ox_inventory:currentWeapon", function(weapon)
+    if isUvFlashlight(weapon) then
+        switchOn()
+    else
+        switchOff()
+    end
+end)
+
+CreateThread(function()
+    if isUvFlashlight(exports.ox_inventory:getCurrentWeapon()) then
+        switchOn()
+    end
 end)
 
 eventHandler.onLocal("onResourceStop", function(event)
