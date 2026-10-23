@@ -3,7 +3,7 @@ node_modules
 
 # output
 out
-dist
+dist/*.map
 *.tgz
 
 # code coverage

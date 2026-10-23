@@ -6,7 +6,12 @@ local tempObject = nil
 local isPlacing = false
 
 local function placeLaptop()
-    if not player.getInfo().permissions.place then
+    local info <const> = player.getInfo()
+    if info.setupIncomplete then
+        return
+    end
+
+    if not info.permissions.place then
         config.notify({ key = "laptop.notifications.no_permission" }, "error")
         return
     end
