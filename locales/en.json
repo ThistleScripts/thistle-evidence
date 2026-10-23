@@ -645,5 +645,36 @@
             "title": "Evidence",
             "description": "You can't carry the UV lamp"
         }
+    },
+    "booking": {
+        "title": "Booking",
+        "target": "Use booking terminal",
+        "citizens": "Citizens",
+        "search": "Search by name…",
+        "new_citizen": "New citizen",
+        "full_name": "Full name",
+        "birthdate": "Date of birth",
+        "create": "Create record",
+        "no_citizens": "No citizens found.",
+        "no_citizens_manual": "No citizens found. Create a record for the suspect with New citizen.",
+        "select": "Select the suspect's citizen record.",
+        "hint": "Take their fingerprints and a DNA swab with a forensic kit first (target them). The samples you carry then show up here to put on file.",
+        "biometrics": "On file",
+        "not_on_file": "Not on file",
+        "from_sample": "From a sample you carry",
+        "no_samples": {
+            "fingerprint": "No fingerprint samples on you.",
+            "dna": "No DNA samples on you."
+        },
+        "put_on_file": "Put on file",
+        "on_file": "On file",
+        "remove": "Remove from file",
+        "linked": "%s put on file",
+        "unlinked": "%s removed from file",
+        "link_error": "Couldn't put the %s on file",
+        "notes": "Notes",
+        "note_title": "Title, e.g. Booked for armed robbery",
+        "note_text": "Details",
+        "add_note": "Add note"
     }
 }
