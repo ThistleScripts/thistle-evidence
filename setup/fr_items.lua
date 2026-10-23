@@ -41,7 +41,7 @@
         export = 'thistle-evidence.hydrogen_peroxide'
     }
 },
-['fingerprint_scanner'] = {
+['forensic_fingerprint_scanner'] = {
     label = 'Scanner d\'empreintes',
     description = 'Grâce à cela, vous pouvez scanner l’empreinte digitale de la personne en face de vous. Si l’empreinte correspond à une entrée dans la base de données, son identité s’affichera.',
     weight = 500,
@@ -49,7 +49,7 @@
     close = true,
     consume = 0,
     client = {
-        export = 'thistle-evidence.fingerprint_scanner',
+        export = 'thistle-evidence.forensic_fingerprint_scanner',
     }
 },
 ['collected_blood'] = {

@@ -12,7 +12,7 @@ Thistle.Callback.Register("evidences:scanFingerprint", function(scanningPlayerId
     playerHoldingScanner = tonumber(playerHoldingScanner)
     if not playerHoldingScanner or playerHoldingScanner == scanningPlayerId or not DoesPlayerExist(playerHoldingScanner)
         or not isPlayerNear(scanningPlayerId, playerHoldingScanner, 3.0)
-        or (exports.ox_inventory:Search(playerHoldingScanner, "count", "fingerprint_scanner") or 0) < 1 then
+        or (exports.ox_inventory:Search(playerHoldingScanner, "count", "forensic_fingerprint_scanner") or 0) < 1 then
         return false
     end
 

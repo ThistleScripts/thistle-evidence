@@ -41,7 +41,7 @@
         export = 'thistle-evidence.hydrogen_peroxide'
     }
 },
-['fingerprint_scanner'] = {
+['forensic_fingerprint_scanner'] = {
     label = '指紋スキャナー',
     description = '目の前の人物の指紋をスキャンできます。指紋がデータベースと一致した場合、その身元が表示されます。',
     weight = 500,
@@ -49,7 +49,7 @@
     close = true,
     consume = 0,
     client = {
-        export = 'thistle-evidence.fingerprint_scanner',
+        export = 'thistle-evidence.forensic_fingerprint_scanner',
     }
 },
 ['collected_blood'] = {

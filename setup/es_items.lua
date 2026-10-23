@@ -41,7 +41,7 @@
         export = 'thistle-evidence.hydrogen_peroxide'
     }
 },
-['fingerprint_scanner'] = {
+['forensic_fingerprint_scanner'] = {
     label = 'Lector de Huellas Dactilares',
     description = 'Con esto puedes escanear la huella dactilar de la persona frente a ti. Si la huella coincide con una entrada en la base de datos, se te mostrará su identidad.',
     weight = 500,
@@ -49,7 +49,7 @@
     close = true,
     consume = 0,
     client = {
-        export = 'thistle-evidence.fingerprint_scanner',
+        export = 'thistle-evidence.forensic_fingerprint_scanner',
     }
 },
 ['collected_blood'] = {

@@ -53,6 +53,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 4. Logging: `config.logging.webhook` became `config.logging.webhooks` with per-category URLs (`default`, `evidences`, `citizens`, `wiretap`, `firearms`).
 5. ND_Core and ox_core are no longer supported (thistle-lib supports Qbox, QBCore and ESX).
 6. Analysis moved from the laptop's DNA, Fingerprint and Ballistics apps to the forensics lab. Evidence analysed before the upgrade still shows as analysed, but only evidence analysed in the lab appears in case files.
+7. The fingerprint scanner item is now `forensic_fingerprint_scanner` (it was `fingerprint_scanner`, which other scripts also use). Replace the old entry in `ox_inventory/data/items.lua`, copy the renamed image, and swap any `fingerprint_scanner` in shops or stashes.
 
 ## Usage
 
@@ -70,6 +71,6 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Review evidence / link it to a citizen | Laptop → Evidence: pick it from the evidence log or what you carry |
 | Look up a case file | Lab → Case files, then paste a gun ID, DNA profile or fingerprint |
 | See a bullet's path | Point the UV light at the bullet |
-| Scan a fingerprint | Use `fingerprint_scanner`; the other player targets it |
+| Scan a fingerprint | Use `forensic_fingerprint_scanner`; the other player targets it |
 | Place a spy microphone | Use `spy_microphone` |
 | Clear evidence around you | `/clearEvidences <radius>` (`group.admin`) |
