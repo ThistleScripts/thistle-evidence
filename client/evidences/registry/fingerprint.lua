@@ -36,6 +36,27 @@ lib.onCache("seat", function(value, oldValue)
     end
 end)
 
+-- seat fingerprint: whoever sits in a seat leaves prints there, the driver's on the steering wheel. Collected by
+-- sitting in that seat (client/evidences/evidences.lua), and the lab is told which seat (server/evidences/actions.lua).
+lib.onCache("seat", function(value, oldValue)
+    if value == nil or value == false or value == oldValue then
+        return
+    end
+
+    if config.isPedWearingGloves() then
+        return
+    end
+
+    -- the seat cache changes before the vehicle one when getting in, so read the ped's vehicle directly
+    local vehicle <const> = GetVehiclePedIsIn(cache.ped, false)
+    if vehicle == 0 or not DoesEntityExist(vehicle) or not NetworkGetEntityIsNetworked(vehicle) then
+        return
+    end
+
+    TriggerServerEvent("evidences:syncEvidence", "fingerprint", cache.serverId,
+        "atVehicleSeat", NetworkGetNetworkIdFromEntity(vehicle), value, { plate = GetVehicleNumberPlateText(vehicle) })
+end)
+
 -- weapon fingerprint
 -- Only add fingerprints to weapons, as adding them to other items would prevent stacking them
 -- This is because fingerprints are stored in the item's metadata and item's with different metadata cannot be stacked

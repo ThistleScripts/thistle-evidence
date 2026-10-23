@@ -12,6 +12,8 @@ export interface LabEvidence {
     weaponType?: string;
     weaponImage?: string;
     crimeScene: string;
+    vehicleLocation?: string; // where in a vehicle it was found, e.g. "Steering wheel (front driver's seat)"
+    plate?: string;
     collectionTime: string;
     additionalData: string;
 }
@@ -36,6 +38,8 @@ export interface ForensicMatch {
     evidenceType: string;
     weaponType?: string;
     crimeScene?: string;
+    vehicleLocation?: string;
+    plate?: string;
     collectionTime?: string;
     collectedAt?: number;
     analysedAt: number;

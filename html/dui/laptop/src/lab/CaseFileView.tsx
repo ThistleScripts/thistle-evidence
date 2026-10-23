@@ -4,7 +4,7 @@ import { useTranslation } from "@/components/TranslationContext";
 import { getStatusById, Status } from "@/types/firearm.type";
 import { cn } from "@/utils/cn";
 import type { CaseFile, LabEvidence } from "./types";
-import { Card, Label, copyText, formatDateTime, kindStyles, useTypeLabel } from "./ui";
+import { Card, Label, copyText, formatDateTime, kindStyles, useTypeLabel, vehiclePlace } from "./ui";
 import CitizenLinker from "./CitizenLinker";
 
 interface CaseFileViewProps {
@@ -169,7 +169,10 @@ function LinkedEvidence({ caseFile }: { caseFile: CaseFile }) {
                                         <p className="font-medium">{typeLabel(match.evidenceType)}</p>
                                         {match.weaponType && <p className="text-xs text-muted">{match.weaponType}</p>}
                                     </td>
-                                    <td className="px-4 py-2.5">{match.crimeScene || "-"}</td>
+                                    <td className="px-4 py-2.5">
+                                        <p>{match.crimeScene || "-"}</p>
+                                        {match.vehicleLocation && <p className="text-xs text-muted">{vehiclePlace(match)}</p>}
+                                    </td>
                                     <td className="px-4 py-2.5 text-muted">{match.collectionTime || "-"}</td>
                                     <td className="px-4 py-2.5 text-muted">
                                         <p>{formatDateTime(match.analysedAt, locales)}</p>

@@ -4,7 +4,7 @@ import { useTranslation } from "@/components/TranslationContext";
 import { useDebounce } from "@/hooks/useDebounce";
 import useLuaCallback from "@/hooks/useLuaCallback";
 import type { LabEvidence, LabItem } from "@/lab/types";
-import { useTypeLabel } from "@/lab/ui";
+import { useTypeLabel, vehiclePlace } from "@/lab/ui";
 import { cn } from "@/utils/cn";
 import EvidenceCase, { Detail, SectionTitle, panel } from "./EvidenceCase";
 
@@ -29,6 +29,7 @@ export default function CarriedEvidence({ selection }: CarriedEvidenceProps) {
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                 <Detail label={t("laptop.desktop_screen.evidence_app.crime_scene")}>{evidence.crimeScene}</Detail>
+                {evidence.vehicleLocation && <Detail label={t("lab.vehicle.found_on")}>{vehiclePlace(evidence)}</Detail>}
                 <Detail label={t("laptop.desktop_screen.evidence_app.collected")}>{evidence.collectionTime}</Detail>
             </div>
             <Notes selection={selection} />

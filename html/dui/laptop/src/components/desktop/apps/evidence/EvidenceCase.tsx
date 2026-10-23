@@ -5,7 +5,7 @@ import { useAppContext } from "@/hooks/useAppContext";
 import { useDebounce } from "@/hooks/useDebounce";
 import useLuaCallback from "@/hooks/useLuaCallback";
 import type { CaseFile, Kind } from "@/lab/types";
-import { formatDateTime, useTypeLabel } from "@/lab/ui";
+import { formatDateTime, useTypeLabel, vehiclePlace } from "@/lab/ui";
 import type Citizen from "@/types/citizen.type";
 import type { BiometricDataLinkedEvent } from "@/types/events.type";
 import { cn } from "@/utils/cn";
@@ -232,7 +232,10 @@ function LinkedEvidenceList({ caseFile }: { caseFile: CaseFile }) {
                             <p className="text-25 leading-none truncate">{typeLabel(match.evidenceType)}</p>
                             {match.weaponType && <p className="text-20 leading-tight text-muted truncate">{match.weaponType}</p>}
                         </div>
-                        <p className="flex-1 min-w-0 text-25 leading-none truncate">{match.crimeScene || "-"}</p>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-25 leading-none truncate">{match.crimeScene || "-"}</p>
+                            {match.vehicleLocation && <p className="text-20 leading-tight text-muted truncate">{vehiclePlace(match)}</p>}
+                        </div>
                         <p className="w-[22%] text-22.5 leading-none text-muted truncate">{match.collectionTime || "-"}</p>
                         <div className="w-[24%] text-right min-w-0">
                             <p className="text-22.5 leading-none truncate">{formatDateTime(match.analysedAt, locales)}</p>

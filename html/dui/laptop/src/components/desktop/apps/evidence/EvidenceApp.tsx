@@ -5,7 +5,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import useLuaCallback from "@/hooks/useLuaCallback";
 import type { ForensicMatch, Kind, LabEvidence, LabInventory, LabItem } from "@/lab/types";
-import { formatDateTime, useTypeLabel } from "@/lab/ui";
+import { formatDateTime, useTypeLabel, vehiclePlace } from "@/lab/ui";
 import { cn } from "@/utils/cn";
 import EvidenceCase, { Detail, KindBadge, panel } from "./EvidenceCase";
 import CarriedEvidence from "./CarriedEvidence";
@@ -106,7 +106,7 @@ function EvidenceLog({ selection, onSelect }: { selection: EvidenceSelection | n
                         onClick={() => onSelect({ source: "log", match })}
                         kind={match.kind}
                         title={typeLabel(match.evidenceType)}
-                        description={match.crimeScene || match.matchKey}
+                        description={match.vehicleLocation ? vehiclePlace(match) : (match.crimeScene || match.matchKey)}
                         trailing={<span className="text-15 leading-none opacity-60 font-mono">{match.matchKey.slice(0, 8)}</span>}
                     />
                 ))}
@@ -145,7 +145,7 @@ function CarriedList({ selection, onSelect }: { selection: EvidenceSelection | n
                                 kind={evidence.kind}
                                 imagePath={item.imagePath}
                                 title={item.label}
-                                description={evidence.crimeScene || typeLabel(evidence.evidenceType)}
+                                description={evidence.vehicleLocation || evidence.crimeScene || typeLabel(evidence.evidenceType)}
                                 trailing={evidence.analysed
                                     ? <CheckCircle2 size={18} className="text-ok" />
                                     : <CircleDashed size={18} className="text-muted" />}
@@ -188,6 +188,7 @@ function LoggedDetails({ match }: { match: ForensicMatch }) {
     return <div className={cn("w-full grid grid-cols-2 gap-x-6 gap-y-4 p-6", panel)}>
         <Detail label={t("laptop.desktop_screen.evidence_app.details")}>{typeLabel(match.evidenceType)}{match.weaponType ? ` · ${match.weaponType}` : ""}</Detail>
         <Detail label={t("laptop.desktop_screen.evidence_app.crime_scene")}>{match.crimeScene}</Detail>
+        {match.vehicleLocation && <Detail label={t("lab.vehicle.found_on")}>{vehiclePlace(match)}</Detail>}
         <Detail label={t("laptop.desktop_screen.evidence_app.collected")}>{match.collectionTime}</Detail>
         <Detail label={t("laptop.desktop_screen.evidence_app.analysed")}>{`${formatDateTime(match.analysedAt, locales)} · ${match.analysedBy}`}</Detail>
     </div>;

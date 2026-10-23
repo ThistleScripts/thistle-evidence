@@ -64,6 +64,10 @@ export const formatDateTime = (millis: number | undefined, locales: string) => m
     ? new Date(millis).toLocaleString(locales, { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })
     : "-";
 
+// "Steering wheel (front driver's seat) · 12ABC345", for evidence found in or on a vehicle
+export const vehiclePlace = (evidence: { vehicleLocation?: string; plate?: string }) =>
+    [evidence.vehicleLocation, evidence.plate].filter(Boolean).join(" · ");
+
 // "Blood", "Bullet"... or the item name for traces on other items, such as a weapon
 export function useTypeLabel() {
     const { t } = useTranslation();

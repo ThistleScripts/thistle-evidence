@@ -4,7 +4,7 @@
 
 Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bullets, casings, magazines and gunshot residue behind, and police collect it, analyse it on an in-world evidence laptop and match it to citizens and registered firearms.
 
-- Evidence on the ground, on vehicles (per door and seat), on props, on players and on weapons.
+- Evidence on the ground, on vehicles (per door and seat), on props, on players and on weapons. Whoever sits in a vehicle without gloves leaves prints on their seat, the driver's on the steering wheel, and evidence collected from a vehicle records where in it it was found and the plate, so the lab can tell the driver from the passengers.
 - Forensics lab: officers target a microscope to analyse DNA, fingerprints, bullets, casings, magazines and gunshot residue in a full-screen lab, with case files that link every piece of evidence sharing a DNA profile, fingerprint or gun ID across cases. Microscopes stand at fixed stations from the config or are placed with the `forensic_microscope` item.
 - Every gun has an ID that its bullets and casings carry, even after the serial is filed off. Analysing them names the registered owner, or links evidence from an unregistered gun until it turns up.
 - Bullet paths: pointing the UV light at a bullet shows a line back to where it was fired from, on vehicles too.

@@ -65,7 +65,9 @@
                 "collection_time": "採取時刻",
                 "additionalData": "情報",
                 "weapon_type": "武器の種類",
-                "serial": "シリアル番号"
+                "serial": "シリアル番号",
+                "vehicle_location": "Found on",
+                "plate": "Licence plate"
             },
             "seats": {
                 "-1": "運転席",
@@ -78,7 +80,11 @@
                 "1": "助手席ドア",
                 "2": "後部左ドア",
                 "3": "後部右ドア"
-            }
+            },
+            "steering_wheel": "steering wheel (%s)",
+            "seat_number": "seat %s",
+            "door_number": "door %s",
+            "vehicle_body": "vehicle bodywork"
         },
         "notifications": {
             "common": {
@@ -509,6 +515,11 @@
                 "title": "Evidence",
                 "description": "Error picking up the microscope"
             }
+        },
+        "result": {},
+        "vehicle": {
+            "found_on": "Found on",
+            "plate": "Plate %s"
         }
     },
     "markers": {

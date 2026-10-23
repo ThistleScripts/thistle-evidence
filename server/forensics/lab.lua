@@ -32,6 +32,18 @@ MySQL.update.await(
     ]]
 )
 
+-- Where in a vehicle a piece of evidence was found, for telling the people in it apart (added after the table)
+for _, column in ipairs({ "vehicleLocation", "plate" }) do
+    local exists <const> = MySQL.scalar.await(
+        "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'forensic_matches' AND COLUMN_NAME = ?",
+        { column }
+    )
+
+    if tonumber(exists) == 0 then
+        MySQL.update.await(("ALTER TABLE forensic_matches ADD COLUMN %s TEXT NULL"):format(column))
+    end
+end
+
 local function deny()
     return {
         success = false,
@@ -67,6 +79,8 @@ local function describe(item, kind)
         weaponType = data.weaponType,
         weaponImage = data.weaponImage,
         crimeScene = information.crimeScene or "",
+        vehicleLocation = information.vehicleLocation,
+        plate = information.plate,
         collectionTime = information.collectionTime or "",
         additionalData = information.additionalData or ""
     }
@@ -164,10 +178,10 @@ Thistle.Callback.Register("evidences:lab:analyse", function(source, arguments)
         if not typeOnly then
             database.insert(
                 [[
-                    INSERT INTO forensic_matches (kind, matchKey, evidenceType, weaponType, crimeScene, collectionTime, collectedAt, analysedAt, analysedBy)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO forensic_matches (kind, matchKey, evidenceType, weaponType, crimeScene, vehicleLocation, plate, collectionTime, collectedAt, analysedAt, analysedBy)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ]],
-                kind, key, getEvidenceType(item, kind), data.weaponType, information.crimeScene, information.collectionTime,
+                kind, key, getEvidenceType(item, kind), data.weaponType, information.crimeScene, information.vehicleLocation, information.plate, information.collectionTime,
                 tonumber(data.createdAt), os.time() * 1000, framework.getPlayerName(source)
             )
 
@@ -216,9 +230,10 @@ Thistle.Callback.Register("evidences:getEvidenceLog", function(source, arguments
         [[
             SELECT * FROM forensic_matches
             WHERE ? = '' OR matchKey LIKE ? OR crimeScene LIKE ? OR evidenceType LIKE ? OR weaponType LIKE ? OR analysedBy LIKE ?
+                OR plate LIKE ?
             ORDER BY analysedAt DESC
             LIMIT 10 OFFSET ?
         ]],
-        searchText, pattern, pattern, pattern, pattern, pattern, offset
+        searchText, pattern, pattern, pattern, pattern, pattern, pattern, offset
     )
 end)

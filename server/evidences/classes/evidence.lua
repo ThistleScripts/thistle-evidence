@@ -30,6 +30,18 @@ end
 -- }
 local function atEntityInternal(object, entity, currentEvidencesOfThisType, metadata)
     metadata = metadata or {}
+
+    -- One record per owner and entity holds every place their evidence is (doors, seats, spots on the bodywork).
+    -- Keep what's already there, so a print on the seat doesn't wipe the same person's print on the door.
+    local existing <const> = currentEvidencesOfThisType[object.owner]
+    if type(existing) == "table" then
+        for key, value in pairs(existing) do
+            if metadata[key] == nil then
+                metadata[key] = value
+            end
+        end
+    end
+
     metadata.createdAt = metadata.createdAt or os.time()
 
     currentEvidencesOfThisType[object.owner] = metadata

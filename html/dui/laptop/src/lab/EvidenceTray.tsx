@@ -62,7 +62,7 @@ export default function EvidenceTray({ inventories, loading, selection, onSelect
                                             <img src={item.imagePath} className="h-11 w-11 shrink-0 rounded-md bg-raised object-contain p-1" />
                                             <div className="min-w-0 flex-1">
                                                 <p className="truncate text-sm font-medium">{item.label}</p>
-                                                <p className="truncate text-xs text-muted">{evidence.crimeScene || evidence.collectionTime || typeLabel(evidence.evidenceType)}</p>
+                                                <p className="truncate text-xs text-muted">{evidence.vehicleLocation || evidence.crimeScene || evidence.collectionTime || typeLabel(evidence.evidenceType)}</p>
                                             </div>
                                             <div className="flex flex-col items-end gap-1">
                                                 <KindChip kind={evidence.kind} />
