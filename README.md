@@ -8,7 +8,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Forensics lab: officers target a microscope to analyse DNA, fingerprints, bullets, casings, magazines and gunshot residue in a full-screen lab, with case files that link every piece of evidence sharing a DNA profile, fingerprint or gun ID across cases. Microscopes stand at fixed stations from the config or are placed with the `forensic_microscope` item.
 - Every gun has an ID that its bullets and casings carry, even after the serial is filed off. Analysing them names the registered owner, or links evidence from an unregistered gun until it turns up.
 - Bullet paths: pointing the UV light at a bullet shows a line back to where it was fired from, on vehicles too.
-- In-world evidence laptop for logging: citizens, firearms registry and wiretap apps. It doesn't analyse anything.
+- In-world evidence laptop: an Evidence app to review everything analysed and the evidence you carry, add notes and link DNA profiles and fingerprints to citizens, plus citizens, firearms registry and wiretap apps. Analysis itself only happens at a microscope.
 - Your city's name on the laptop, the lab and the Discord logs (`config.cityName`, shown as "<name> Evidence").
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
 - UV flashlight: right click switches the light on. Evidence nearby glows faintly while it's on, and blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
@@ -67,6 +67,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Use a laptop | Target it (`config.permissions.access`) |
 | Analyse evidence | Target a microscope (`config.permissions.access`) |
 | Place / pick up a microscope | Use `forensic_microscope`, then target it to pick it back up (`config.forensicsLab.permissions`) |
+| Review evidence / link it to a citizen | Laptop → Evidence: pick it from the evidence log or what you carry |
 | Look up a case file | Lab → Case files, then paste a gun ID, DNA profile or fingerprint |
 | See a bullet's path | Point the UV light at the bullet |
 | Scan a fingerprint | Use `fingerprint_scanner`; the other player targets it |

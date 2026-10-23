@@ -1,8 +1,9 @@
 import type React from "react";
-import { ScrollText, Users, AudioLines, type LucideIcon } from "lucide-react";
+import { ScrollText, Users, AudioLines, FileSearch, type LucideIcon } from "lucide-react";
 import CitizensApp from "@/components/desktop/apps/citizens/CitizensApp";
 import FirearmsRegistryApp from "@/components/desktop/apps/firearms_registry/FirearmsRegistryApp";
 import WiretapApp from "@/components/desktop/apps/wiretap/WiretapApp";
+import EvidenceApp from "@/components/desktop/apps/evidence/EvidenceApp";
 import { useTranslation } from "@/components/TranslationContext";
 
 export interface AppPosition {
@@ -44,9 +45,16 @@ export const AppsList = (): App[] => {
             content: (props) => <FirearmsRegistryApp {...props} />
         },
         {
+            id: "evidence",
+            name: t("laptop.desktop_screen.evidence_app.name"),
+            position: { col: 1, row: 3 },
+            icon: tile(FileSearch, "bg-accent/15 border-accent/40 text-accent"),
+            content: (props) => <EvidenceApp {...props} />
+        },
+        {
             id: "wiretap",
             name: t("laptop.desktop_screen.wiretap_app.name"),
-            position: { col: 1, row: 3 },
+            position: { col: 1, row: 4 },
             icon: tile(AudioLines, "bg-bad/15 border-bad/40 text-bad"),
             content: (props) => <WiretapApp {...props} />
         }
