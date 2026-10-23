@@ -1,10 +1,9 @@
 import type React from "react";
-import { Microscope, ScrollText, Users, AudioLines, type LucideIcon } from "lucide-react";
+import { ScrollText, Users, AudioLines, type LucideIcon } from "lucide-react";
 import CitizensApp from "@/components/desktop/apps/citizens/CitizensApp";
 import FirearmsRegistryApp from "@/components/desktop/apps/firearms_registry/FirearmsRegistryApp";
 import WiretapApp from "@/components/desktop/apps/wiretap/WiretapApp";
 import { useTranslation } from "@/components/TranslationContext";
-import { resourceName } from "@/hooks/useLuaCallback";
 
 export interface AppPosition {
     col: number;
@@ -17,7 +16,6 @@ export interface App {
     position: AppPosition;
     icon: (width: string, height: string) => React.ReactNode;
     content: (props?: any) => React.ReactNode;
-    onOpen?: () => void; // apps that do something else instead of opening a window
 }
 
 // Thistle-style app tile: a Lucide icon on a tinted rounded square
@@ -26,9 +24,6 @@ const tile = (Icon: LucideIcon, className: string) => (width: string, height: st
         <Icon style={{ width: "55%", height: "55%" }} strokeWidth={1.75} />
     </div>
 );
-
-// Analysis happens in the forensics lab, so its tile closes the laptop and opens the lab (client/lab/lab.lua)
-const openForensicsLab = () => fetch(`https://${resourceName()}/lab:openFromLaptop`, { method: "POST", body: "{}" }).catch(() => {});
 
 export const AppsList = (): App[] => {
     const { t } = useTranslation();
@@ -54,14 +49,6 @@ export const AppsList = (): App[] => {
             position: { col: 1, row: 3 },
             icon: tile(AudioLines, "bg-bad/15 border-bad/40 text-bad"),
             content: (props) => <WiretapApp {...props} />
-        },
-        {
-            id: "forensics_lab",
-            name: t("lab.title"),
-            position: { col: 2, row: 1 },
-            icon: tile(Microscope, "bg-accent/20 border-accent/50 text-accent"),
-            content: () => null,
-            onOpen: openForensicsLab
         }
     ];
 };

@@ -51,5 +51,6 @@ require "server.biometrics.biometrics_taking"
 require "server.scanner.scanner"
 
 require "server.forensics.lab"
+require "server.forensics.microscopes"
 
 GlobalState[readyKey] = true

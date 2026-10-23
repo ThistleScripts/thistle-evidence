@@ -458,6 +458,18 @@
         "target_collect": "Recopilar micrófono espía"
     },
     "lab": {
-        "target": "Use forensics lab"
+        "target": "Use microscope",
+        "pickup": "Pick up microscope",
+        "input_help": "Press %s to place the microscope.%sUse %s to cancel this action",
+        "notifications": {
+            "error_creation": {
+                "title": "Evidence",
+                "description": "Error while placing the microscope"
+            },
+            "error_pickup": {
+                "title": "Evidence",
+                "description": "Error picking up the microscope"
+            }
+        }
     }
 }

@@ -136,4 +136,14 @@
     client = {
         export = 'thistle-evidence.spy_microphone'
     }
+},
+['forensic_microscope'] = {
+    label = 'Adli mikroskop',
+    description = 'Toplanan delilleri incelemek için mikroskop',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.forensic_microscope'
+    }
 }

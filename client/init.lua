@@ -17,7 +17,7 @@ require "client.scanner.scanner"
 
 require "client.items"
 
-require "client.lab.lab"
+require "client.lab.microscopes"
 
 local config <const> = require "config"
 

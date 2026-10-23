@@ -26,6 +26,7 @@ export default function App() {
     const [canAccess, setCanAccess] = useState<boolean>(false);
     const [options, setOptions] = useState<Options | undefined>();
     const [isMuted, setMuted] = useState<boolean>(false);
+    const [brand, setBrand] = useState<string>("Thistle Evidence"); // "<config.cityName> Evidence", sent by the client
     const { setLang } = useTranslation();
 
     // switch to other screen.
@@ -41,6 +42,11 @@ export default function App() {
                 return;
             }
 
+            if (event.data.action && event.data.action == "brand") {
+                if (event.data.brand) setBrand(event.data.brand);
+                return;
+            }
+
             if (event.data.action && event.data.action == "switchScreen") {
                 switchScreen(event.data.screen);
                 return;
@@ -48,6 +54,7 @@ export default function App() {
 
             if (event.data.action && event.data.action == "focus") {
                 setLang(event.data.language);
+                if (event.data.brand) setBrand(event.data.brand);
                 if (event.data.playerName) setPlayerName(event.data.playerName);
 
                 setCanAccess(event.data.playerName && event.data.canAccess);
@@ -179,7 +186,7 @@ export default function App() {
 
     return <div className="w-full h-screen overflow-hidden">
         <UserCursor muted={isMuted} />
-        {screen === "screensaver" && <ScreenSaverScreen switchScreen={switchScreen} />}
+        {screen === "screensaver" && <ScreenSaverScreen brand={brand} switchScreen={switchScreen} />}
         {screen === "login" && <LoginScreen playerName={playerName} canAccess={canAccess} switchScreen={switchScreen} />}
         {screen === "desktop" && <DesktopScreen playerName={playerName} options={options} switchScreen={switchScreen} mute={mute} />}
     </div>;

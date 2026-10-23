@@ -136,4 +136,14 @@
     client = {
         export = 'thistle-evidence.spy_microphone'
     }
+},
+['forensic_microscope'] = {
+    label = 'Microscopio forense',
+    description = 'Microscopio para analizar las pruebas recogidas',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.forensic_microscope'
+    }
 }

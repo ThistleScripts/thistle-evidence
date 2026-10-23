@@ -3,6 +3,9 @@
 ]]
 local config = {}
 
+-- Your city's name. It's shown as "<name> Evidence" on the laptop, in the forensics lab and on Discord logs.
+config.cityName = "Thistle"
+
 
 -- Players don't leave fingerprints when wearing gloves. If you have custom clothing on your server, you need to add the ids of hands without gloves to this exceptions-list.
 -- Note: Fingerprints are only created if the function returns false! This means you have to ability to add further conditions, which have to be fulfilled in order for a player not to leave any fingerprints.
@@ -104,10 +107,28 @@ config.citizens = {
 }
 
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
--- It opens from any evidence laptop and at these stations. Who can use it is set by config.permissions.access.
+-- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
+-- Who can use it is set by config.permissions.access.
 config.forensicsLab = {
+    -- The microscope prop
+    model = `v_med_microscope`,
+
+    -- Microscopes spawned at fixed spots, e.g. on a lab bench in your PD (x, y, z, heading).
+    -- Officers can also place microscopes anywhere with the forensic_microscope item.
     stations = {
-        -- example: { coords = vec3(0.0, 0.0, 0.0), radius = 1.0 },
+        -- vec4(0.0, 0.0, 0.0, 0.0),
+    },
+
+    permissions = {
+        place = { -- Allowed jobs and their minimum grades required to place a microscope
+            police = 0,
+            fib = 0
+        },
+
+        pickup = { -- Allowed jobs and their minimum grades required to pick up a placed microscope
+            police = 0,
+            fib = 0
+        }
     }
 }
 

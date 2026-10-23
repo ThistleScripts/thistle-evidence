@@ -140,8 +140,14 @@ function AnalysisProgress({ kind, stage, image }: { kind: LabEvidence["kind"]; s
 
     return (
         <div className="flex flex-1 items-center gap-8 rounded-lg border border-line bg-surface p-8">
-            <div className={cn("relative h-36 w-36 shrink-0 overflow-hidden rounded-lg border bg-raised", style.border)}>
-                <img src={image} className="h-full w-full object-contain p-4 opacity-70" />
+            {/* the evidence under the microscope lens */}
+            <div className={cn("relative h-44 w-44 shrink-0 overflow-hidden rounded-full border-4 bg-[radial-gradient(circle,rgb(40_46_60)_0%,rgb(9_11_16)_75%)] shadow-[inset_0_0_40px_rgba(0,0,0,0.9)]", style.border)}>
+                <img src={image} className="h-full w-full scale-125 object-contain p-6 opacity-80" />
+                <div className={cn("absolute inset-0 opacity-40", style.text)}>
+                    <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-current" />
+                    <div className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current" />
+                    <div className="absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-current" />
+                </div>
                 <div className={cn("animate-th-scan absolute left-0 h-0.5 w-full shadow-[0_0_12px_2px_currentColor]", style.text, "bg-current")} />
             </div>
 

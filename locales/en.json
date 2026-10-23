@@ -459,11 +459,10 @@
         "target_collect": "Collect spy microphone"
     },
     "lab": {
-        "brand": "Thistle Forensics",
         "title": "Forensics Lab",
         "officer": "Signed in as %s",
         "close": "Close",
-        "target": "Use forensics lab",
+        "target": "Use microscope",
         "tabs": {
             "analysis": "Analysis",
             "case_files": "Case files"
@@ -567,6 +566,18 @@
         },
         "errors": {
             "analyse": "The analysis failed. Make sure the evidence is still in your inventory or a box you carry."
+        },
+        "pickup": "Pick up microscope",
+        "input_help": "Press %s to place the microscope.%sUse %s to cancel this action",
+        "notifications": {
+            "error_creation": {
+                "title": "Evidence",
+                "description": "Error while placing the microscope"
+            },
+            "error_pickup": {
+                "title": "Evidence",
+                "description": "Error picking up the microscope"
+            }
         }
     }
 }

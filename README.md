@@ -5,10 +5,11 @@
 Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bullets, casings, magazines and gunshot residue behind, and police collect it, analyse it on an in-world evidence laptop and match it to citizens and registered firearms.
 
 - Evidence on the ground, on vehicles (per door and seat), on props, on players and on weapons.
-- Forensics lab: a full-screen station for analysing DNA, fingerprints, bullets, casings, magazines and gunshot residue, with case files that link every piece of evidence sharing a DNA profile, fingerprint or gun ID across cases.
+- Forensics lab: officers target a microscope to analyse DNA, fingerprints, bullets, casings, magazines and gunshot residue in a full-screen lab, with case files that link every piece of evidence sharing a DNA profile, fingerprint or gun ID across cases. Microscopes stand at fixed stations from the config or are placed with the `forensic_microscope` item.
 - Every gun has an ID that its bullets and casings carry, even after the serial is filed off. Analysing them names the registered owner, or links evidence from an unregistered gun until it turns up.
 - Bullet paths: with a forensic kit, each bullet shows a line back to where it was fired from, on vehicles too.
-- In-world evidence laptop (Thistle design) with citizens, firearms registry and wiretap apps, and a shortcut into the lab.
+- In-world evidence laptop for logging: citizens, firearms registry and wiretap apps. It doesn't analyse anything.
+- Your city's name on the laptop, the lab and the Discord logs (`config.cityName`, shown as "<name> Evidence").
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
 - Fingerprint scanner, evidence boxes, hydrogen peroxide to wipe traces, and steel files to file off serial numbers.
 - Qbox, QBCore and ESX through thistle-lib.
@@ -38,7 +39,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
         maxWeight = 5000
     })
     ```
-5. Adjust `config.lua`: job permissions, wiretap, logging and the glove, cuff and death checks for your clothing and police scripts.
+5. Adjust `config.lua`: your city name, job permissions, microscope stations, wiretap, logging and the glove, cuff and death checks for your clothing and police scripts.
 
 Database tables are created on first start. The language follows `setr ox:locale`; translations live in `locales/`.
 
@@ -60,7 +61,8 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Take fingerprints / DNA | Target a player with a `forensic_kit`; they get a consent prompt unless cuffed or down |
 | Place / pick up a laptop | Use `evidence_laptop`, then target it to pick it back up |
 | Use a laptop | Target it (`config.permissions.access`) |
-| Analyse evidence | Open the Forensics Lab from a laptop, or at a station from `config.forensicsLab.stations` |
+| Analyse evidence | Target a microscope (`config.permissions.access`) |
+| Place / pick up a microscope | Use `forensic_microscope`, then target it to pick it back up (`config.forensicsLab.permissions`) |
 | Look up a case file | Lab → Case files, then paste a gun ID, DNA profile or fingerprint |
 | See a bullet's path | Hold a `forensic_kit` and use the targeting eye near the bullet |
 | Scan a fingerprint | Use `fingerprint_scanner`; the other player targets it |

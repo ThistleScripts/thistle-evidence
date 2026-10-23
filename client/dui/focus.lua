@@ -88,6 +88,7 @@ function focus.start(laptop)
 
         dui:sendMessage({
             action = "focus",
+            brand = ("%s Evidence"):format(config.cityName or "Thistle"),
             language = GetConvar("ox:locale", "en"),
             playerName = info.name,
             canAccess = info.permissions.access or false,
