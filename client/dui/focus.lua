@@ -64,6 +64,11 @@ end)
 
 function focus.start(laptop)
     if not started then
+        local info <const> = player.getInfo()
+        if info.setupIncomplete then
+            return
+        end
+
         started = true
         -- render the dui on the laptop's screen again just in case it didn't work on startup ("black screen bug")
         texture.replace("script_rt_tvscreen", dui.dictName, dui.txtName)
@@ -80,8 +85,6 @@ function focus.start(laptop)
         if not config.firearmsRegistry.enabled then
             table.insert(disabledApps, "firearms_registry")
         end
-
-        local info <const> = player.getInfo()
 
         dui:sendMessage({
             action = "focus",
