@@ -120,6 +120,17 @@ config.fingerprintScanner = {
     rotation = vec3(0.0, 0.0, 0.0)
 }
 
+-- Booking terminals for the police cells: officers target one of these spots (e.g. a computer that's part of your MLO)
+-- to open the booking screen, where they find or create the suspect's citizen record, put the fingerprint and DNA swab
+-- taken from them on file, and add notes. It has nothing else from the laptop (no analysis, wiretaps or firearms).
+-- Using it needs config.permissions.access.
+config.bookingTerminals = {
+    stations = {
+        -- vec3(459.5, -989.0, 24.9), -- e.g. the booking room computer at Mission Row
+    },
+    radius = 0.6 -- how big the target is round each spot (metres)
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.

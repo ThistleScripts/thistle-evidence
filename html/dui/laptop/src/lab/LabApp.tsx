@@ -13,7 +13,7 @@ type Tab = "analysis" | "case_files";
 
 export default function LabApp() {
     const { t, setLang } = useTranslation();
-    const [visible, setVisible] = useState(!inGame);
+    const [visible, setVisible] = useState(!inGame && !location.search.includes("booking")); // ?booking previews the booking terminal
     const [officer, setOfficer] = useState("");
     const [brand, setBrand] = useState("Thistle Evidence"); // "<config.cityName> Evidence", sent by the client
     const [tab, setTab] = useState<Tab>("analysis");

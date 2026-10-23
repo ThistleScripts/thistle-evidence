@@ -8,6 +8,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Forensics lab: officers target a microscope to analyse DNA, fingerprints, bullets, casings, magazines and gunshot residue in a full-screen lab, with case files that link every piece of evidence sharing a DNA profile, fingerprint or gun ID across cases. Microscopes stand at fixed stations from the config or are placed with the `forensic_microscope` item.
 - Every gun has an ID that its bullets and casings carry, even after the serial is filed off. Analysing them names the registered owner, or links evidence from an unregistered gun until it turns up.
 - Bullet paths: pointing the UV light at a bullet shows a line back to where it was fired from, on vehicles too.
+- Booking terminals: officers target a spot in the cells (e.g. a computer in your MLO, `config.bookingTerminals.stations`) to open a booking screen, find or create the suspect's record, put the fingerprint and DNA swab taken from them on file and add notes.
 - In-world evidence laptop: an Evidence app to review everything analysed and the evidence you carry, add notes and link DNA profiles and fingerprints to citizens, plus citizens, firearms registry and wiretap apps. Analysis itself only happens at a microscope.
 - Your city's name on the laptop, the lab and the Discord logs (`config.cityName`, shown as "<name> Evidence").
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
@@ -74,6 +75,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Look up a case file | Lab → Case files, then paste a gun ID, DNA profile or fingerprint |
 | See a bullet's path | Point the UV light at the bullet |
 | Label an evidence box | Right-click it in your inventory → Label: a case number and a name (shown as "Case 1042 · Davis Ave shooting"), and a description. It keeps the label in stashes |
+| Book a suspect | Take their fingerprints and DNA with a `forensic_kit`, then target a booking terminal: pick their record and put the samples you carry on file |
 | Scan a fingerprint | Use `forensic_fingerprint_scanner`; the other player targets it |
 | Place a spy microphone | Use `spy_microphone` |
 | Clear evidence around you | `/clearEvidences <radius>` (`group.admin`) |

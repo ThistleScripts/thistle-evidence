@@ -18,6 +18,7 @@ require "client.scanner.scanner"
 require "client.items"
 
 require "client.lab.microscopes"
+require "client.booking.booking"
 
 require "client.evidences.uv"
 require "client.evidences.uv_hints"
