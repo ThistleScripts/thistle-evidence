@@ -146,4 +146,30 @@
     client = {
         export = 'thistle-evidence.forensic_microscope'
     }
+},
+['uv_flashlight'] = {
+    label = 'Lampe UV',
+    description = 'Révèle le sang, les empreintes et autres traces sous lumière UV',
+    weight = 400,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_flashlight'
+    }
+},
+['cleaning_kit'] = {
+    label = 'Kit de nettoyage',
+    description = 'Gants, sacs et javel pour se débarrasser des douilles, balles et chargeurs',
+    weight = 500,
+    stack = true
+},
+['evidence_marker'] = {
+    label = 'Marqueur de preuve',
+    description = 'Marqueur numéroté pour les scènes de crime',
+    weight = 50,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.evidence_marker'
+    }
 }

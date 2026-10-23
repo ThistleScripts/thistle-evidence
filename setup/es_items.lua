@@ -146,4 +146,30 @@
     client = {
         export = 'thistle-evidence.forensic_microscope'
     }
+},
+['uv_flashlight'] = {
+    label = 'Linterna UV',
+    description = 'Revela sangre, huellas y otros rastros bajo luz UV',
+    weight = 400,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_flashlight'
+    }
+},
+['cleaning_kit'] = {
+    label = 'Kit de limpieza',
+    description = 'Guantes, bolsas y lejía para deshacerse de casquillos, balas y cargadores',
+    weight = 500,
+    stack = true
+},
+['evidence_marker'] = {
+    label = 'Marcador de pruebas',
+    description = 'Marcador numerado para escenas del crimen',
+    weight = 50,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.evidence_marker'
+    }
 }

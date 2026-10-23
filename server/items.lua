@@ -13,6 +13,22 @@ if config.wiretap.enabled and not exports.ox_inventory:Items("spy_microphone") t
     return false
 end
 
+for _, item in pairs(config.destroyItems) do
+    if not exports.ox_inventory:Items(item) then
+        lib.print.error("Setup step missing: The script requires you to create the " .. item .. " item (used in config.destroyItems)")
+        return false
+    end
+end
+
+if config.uvLight.required and not exports.ox_inventory:Items("uv_flashlight") then
+    lib.print.error("Setup step missing: The script requires you to create the uv_flashlight item (evidence is only visible under UV light, see config.uvLight)")
+    return false
+end
+
+if not exports.ox_inventory:Items("evidence_marker") then
+    lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")
+end
+
 
 -- https://github.com/overextended/ox_inventory/commit/c7dee27c97a3ef2dc9e5ea402346cf6ea4cc1b16
 -- https://github.com/overextended/ox_inventory/commit/895cca3c9f0cd140e75bdb050dc88843119b4418

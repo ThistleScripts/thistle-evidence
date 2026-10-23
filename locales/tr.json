@@ -471,5 +471,13 @@
                 "description": "Error picking up the microscope"
             }
         }
+    },
+    "markers": {
+        "pickup": "Pick up evidence marker",
+        "input_help": "Press %s to place the evidence marker.%sUse %s to cancel this action",
+        "placed": {
+            "title": "Evidence",
+            "description": "Evidence marker %s placed"
+        }
     }
 }

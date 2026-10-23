@@ -1,3 +1,4 @@
+local config <const> = require "config"
 local utils <const> = require "client.evidences.utils"
 
 local forensicKitCheckedAt, forensicKitPresent = 0, false
@@ -77,7 +78,7 @@ return {
             destroy = {
                 label = locale("evidences.fingerprint.destroying_label"),
                 icon = "fa-solid fa-fingerprint",
-                requiredItem = "hydrogen_peroxide"
+                requiredItem = config.destroyItems.fingerprint
             }
         },
         visualize = {}
@@ -94,7 +95,7 @@ return {
             destroy = {
                 label = locale("evidences.blood.destroying_label"),
                 icon = "fa-solid fa-droplet",
-                requiredItem = "hydrogen_peroxide"
+                requiredItem = config.destroyItems.blood
             }
         },
         visualize = {
@@ -135,7 +136,7 @@ return {
             destroy = {
                 label = locale("evidences.saliva.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.saliva
             }
         },
         visualize = {}
@@ -153,7 +154,7 @@ return {
             destroy = {
                 label = locale("evidences.magazine.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.magazine
             }
         },
         visualize = {
@@ -202,7 +203,7 @@ return {
             destroy = {
                 label = locale("evidences.casing.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.casing
             }
         },
         visualize = {
@@ -235,7 +236,7 @@ return {
             destroy = {
                 label = locale("evidences.bullet.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.bullet
             }
         },
         visualize = {
@@ -284,7 +285,7 @@ return {
             destroy = {
                 label = locale("evidences.gunshot_residue.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.gunshot_residue
             }
         },
         visualize = {}

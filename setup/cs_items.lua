@@ -146,4 +146,30 @@
     client = {
         export = 'thistle-evidence.forensic_microscope'
     }
+},
+['uv_flashlight'] = {
+    label = 'UV svítilna',
+    description = 'Zviditelní krev, otisky prstů a další stopy pod UV světlem',
+    weight = 400,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_flashlight'
+    }
+},
+['cleaning_kit'] = {
+    label = 'Čisticí sada',
+    description = 'Rukavice, sáčky a bělidlo na odstranění nábojnic, projektilů a zásobníků',
+    weight = 500,
+    stack = true
+},
+['evidence_marker'] = {
+    label = 'Označovač důkazů',
+    description = 'Číslovaný označovač pro místa činu',
+    weight = 50,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.evidence_marker'
+    }
 }

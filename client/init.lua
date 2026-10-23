@@ -19,6 +19,9 @@ require "client.items"
 
 require "client.lab.microscopes"
 
+require "client.evidences.uv"
+require "client.evidences.markers"
+
 local config <const> = require "config"
 
 if config.wiretap.enabled and GetResourceState("pma-voice"):find("start") then

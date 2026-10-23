@@ -11,7 +11,9 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - In-world evidence laptop for logging: citizens, firearms registry and wiretap apps. It doesn't analyse anything.
 - Your city's name on the laptop, the lab and the Discord logs (`config.cityName`, shown as "<name> Evidence").
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
-- Fingerprint scanner, evidence boxes, hydrogen peroxide to wipe traces, and steel files to file off serial numbers.
+- UV flashlight: blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
+- Numbered evidence markers officers put down at a scene.
+- Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.
 - Server-validated: collecting, destroying and reporting evidence, placing laptops and microphones, and every laptop action are checked server-side.
 - Optional Discord webhook logs per category via thistle-lib, or ox_lib's logger (Datadog, Grafana Loki, Fivemanage).
@@ -56,8 +58,10 @@ Database tables are created on first start. The language follows `setr ox:locale
 
 | Action | How |
 | --- | --- |
+| Find evidence | Use a `uv_flashlight` to switch it on, aim it around the scene; use it again to switch off |
+| Mark evidence | Use an `evidence_marker` and place it; markers number themselves per scene and can be picked back up |
 | Collect evidence | Target it with a `forensic_kit` (jobs from `config.permissions.collect`) |
-| Destroy evidence | Target it; fingerprints and blood need `hydrogen_peroxide` |
+| Destroy evidence | Target it with the item from `config.destroyItems` (`hydrogen_peroxide` or `cleaning_kit`) |
 | Take fingerprints / DNA | Target a player with a `forensic_kit`; they get a consent prompt unless cuffed or down |
 | Place / pick up a laptop | Use `evidence_laptop`, then target it to pick it back up |
 | Use a laptop | Target it (`config.permissions.access`) |

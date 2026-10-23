@@ -146,4 +146,30 @@
     client = {
         export = 'thistle-evidence.forensic_microscope'
     }
+},
+['uv_flashlight'] = {
+    label = 'UVライト',
+    description = '血痕や指紋などの痕跡をUV光で浮かび上がらせる',
+    weight = 400,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_flashlight'
+    }
+},
+['cleaning_kit'] = {
+    label = '清掃キット',
+    description = '薬莢・弾丸・マガジンを処分するための手袋、袋、漂白剤',
+    weight = 500,
+    stack = true
+},
+['evidence_marker'] = {
+    label = '証拠マーカー',
+    description = '事件現場用の番号付きマーカー',
+    weight = 50,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.evidence_marker'
+    }
 }

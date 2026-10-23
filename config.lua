@@ -132,6 +132,40 @@ config.forensicsLab = {
     }
 }
 
+-- Items needed to destroy each kind of evidence. One is used up per destroy (a whole pile counts as one).
+config.destroyItems = {
+    fingerprint = "hydrogen_peroxide",
+    blood = "hydrogen_peroxide",
+    saliva = "hydrogen_peroxide",
+    gunshot_residue = "hydrogen_peroxide",
+    casing = "cleaning_kit",
+    bullet = "cleaning_kit",
+    magazine = "cleaning_kit"
+}
+
+-- The uv_flashlight item. While it's switched on, evidence caught in its beam shows up and can be collected or destroyed.
+config.uvLight = {
+    -- true: blood, casings, bullets, magazines and traces on vehicles and props are only visible and targetable under UV light.
+    -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.
+    required = true,
+
+    range = 12.0, -- how far the beam reaches (metres)
+    angle = 30.0, -- how wide the beam is (degrees from the centre)
+    memory = 8000 -- how long evidence stays visible after the beam has passed over it (ms)
+}
+
+-- The evidence_marker item: numbered markers officers put down at a crime scene.
+config.evidenceMarkers = {
+    model = `prop_roadcone02c`, -- swap in your own evidence marker prop if you have one
+    sceneRadius = 50.0, -- markers within this distance count as one scene and are numbered 1, 2, 3...
+    lifetime = 120, -- minutes before a marker removes itself (they're also gone after a restart)
+
+    permissions = { -- Allowed jobs and their minimum grades required to place and pick up markers
+        police = 0,
+        fib = 0
+    }
+}
+
 -- Enable or disable the firearms registry app
 config.firearmsRegistry = {
     enabled = true

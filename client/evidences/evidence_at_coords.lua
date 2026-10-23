@@ -1,6 +1,7 @@
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local evidenceTypes <const> = require "common.evidence_types"
+local uv <const> = require "client.evidences.uv"
 
 EvidencesAtCoords = {}
 
@@ -10,16 +11,28 @@ local pileRadius <const> = 1.5
 local maxPileSize <const> = 50 -- the server takes up to 50 pieces at once (server/evidences/actions.lua)
 local piles = {}
 
+-- Only pieces the player can see (under UV light, see config.uvLight) are part of the pile's target
+local function getVisibleMembers(pile)
+    local visible = {}
+    for _, evidence in ipairs(pile.members) do
+        if evidence.visible then
+            visible[#visible + 1] = evidence
+        end
+    end
+    return visible
+end
+
 local function getPileLabel(pile, action)
     local label <const> = pile.options.target[action].label
-    return #pile.members > 1 and ("%s (%d)"):format(label, #pile.members) or label
+    local count <const> = #getVisibleMembers(pile)
+    return count > 1 and ("%s (%d)"):format(label, count) or label
 end
 
 -- What the server needs to check every piece; the item metadata is built once per owner (gun or DNA)
 local function getPileEntries(pile, targetCoords, withMetadata)
     local entries, metadataBuilt = {}, {}
 
-    for index, evidence in ipairs(pile.members) do
+    for index, evidence in ipairs(getVisibleMembers(pile)) do
         if index > maxPileSize then
             break
         end
@@ -49,7 +62,7 @@ local function refreshPileZone(pile)
         pile.zone = nil
     end
 
-    if #pile.members == 0 then
+    if #getVisibleMembers(pile) == 0 then
         return
     end
 
@@ -172,28 +185,27 @@ function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
     self.coords = coords
     self.data = data or {}
 
-    self:visualize(self.options.visualize)
+    self.visible = false
+    self.visual = { coords = coords } -- what the visualize functions in common/evidence_types.lua draw with
 
     table.insert(EvidencesAtCoords, self)
     addToPile(self)
 end
 
-function EvidenceAtCoords:visualize(options)
-    local this <const> = self
-    self.point = lib.points.new({
-        coords = this.coords,
-        distance = 20,
-        onEnter = function(point)
-            if options.show then
-                options.show(point, this.data)
-            end
-        end,
-        onExit = function(point)
-            if options.hide then
-                options.hide(point, this.data)
-            end
-        end
-    })
+-- Shows or hides the piece on the ground (blood decal, casing, magazine, bullet path)
+function EvidenceAtCoords:setVisible(visible)
+    if self.visible == visible then
+        return
+    end
+
+    self.visible = visible
+    local visualize <const> = self.options.visualize
+
+    if visible and visualize.show then
+        visualize.show(self.visual, self.data)
+    elseif not visible and visualize.hide then
+        visualize.hide(self.visual, self.data)
+    end
 end
 
 -- One handler pair for all ground evidence. Registering them per evidence never removed them,
@@ -218,13 +230,8 @@ eventHandler.onLocal("onResourceStop", function(event)
 end)
 
 function EvidenceAtCoords:destroy()
+    self:setVisible(false)
     removeFromPile(self)
-
-    if self.point then
-        self.point:onExit()
-        self.point:remove()
-        self.point = nil
-    end
 
     for index, evidence in ipairs(EvidencesAtCoords) do
         if evidence == self then
@@ -233,6 +240,32 @@ function EvidenceAtCoords:destroy()
         end
     end
 end
+
+-- Shows nearby ground evidence that is visible (always, or under UV light) and updates the piles' targets
+CreateThread(function()
+    while true do
+        local pedCoords <const> = GetEntityCoords(cache.ped)
+        local changedPiles = {}
+
+        for _, evidence in ipairs(EvidencesAtCoords) do
+            local visible <const> = #(pedCoords - evidence.coords) <= 25.0 and uv.reveals(evidence, evidence.coords)
+
+            if visible ~= evidence.visible then
+                evidence:setVisible(visible)
+
+                if evidence.pile then
+                    changedPiles[evidence.pile] = true
+                end
+            end
+        end
+
+        for pile in pairs(changedPiles) do
+            refreshPileZone(pile)
+        end
+
+        Wait(uv.isOn() and 100 or 250)
+    end
+end)
 
 function EvidenceAtCoords:isExposedToRain()
     if GetRainLevel() > 0 then

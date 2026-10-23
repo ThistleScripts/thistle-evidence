@@ -99,6 +99,7 @@ Thistle.Callback.Register("evidences:getPlayerInfo", function(source)
         permissions = {
             place = framework.hasPermission(config.permissions.place, source),
             placeMicroscope = framework.hasPermission(config.forensicsLab.permissions.place, source),
+            placeMarkers = framework.hasPermission(config.evidenceMarkers.permissions, source),
             access = framework.hasPermission(config.permissions.access, source),
             interceptCalls = framework.hasPermission(config.wiretap.calls.permissions, source),
             interceptRadio = framework.hasPermission(config.wiretap.radio.permissions, source),
