@@ -4,6 +4,160 @@ local evidenceTypes <const> = require "common.evidence_types"
 
 EvidencesAtCoords = {}
 
+-- Ground evidence of one type lying close together (casings from automatic fire, a trail of blood) forms a pile
+-- with a single target that collects or destroys all of it. Each piece still shows on the ground on its own.
+local pileRadius <const> = 1.5
+local maxPileSize <const> = 50 -- the server takes up to 50 pieces at once (server/evidences/actions.lua)
+local piles = {}
+
+local function getPileLabel(pile, action)
+    local label <const> = pile.options.target[action].label
+    return #pile.members > 1 and ("%s (%d)"):format(label, #pile.members) or label
+end
+
+-- What the server needs to check every piece; the item metadata is built once per owner (gun or DNA)
+local function getPileEntries(pile, targetCoords, withMetadata)
+    local entries, metadataBuilt = {}, {}
+
+    for index, evidence in ipairs(pile.members) do
+        if index > maxPileSize then
+            break
+        end
+
+        local metadata
+        if withMetadata and not metadataBuilt[evidence.owner] then
+            metadataBuilt[evidence.owner] = true
+            metadata = pile.options.target.collect.createMetadata(pile.evidenceType, evidence.data, targetCoords)
+        end
+
+        entries[#entries + 1] = { owner = evidence.owner, coords = evidence.coords, metadata = metadata }
+    end
+
+    return entries
+end
+
+local function faceAndPickUp(coords)
+    local ped <const> = cache.ped
+    local pedCoords <const> = GetEntityCoords(ped)
+    SetEntityHeading(ped, GetHeadingFromVector_2d(coords.x - pedCoords.x, coords.y - pedCoords.y)) -- make player look at the evidence
+    lib.playAnim(ped, "random@domestic", "pickup_low")
+end
+
+local function refreshPileZone(pile)
+    if pile.zone then
+        exports.ox_target:removeZone(pile.zone)
+        pile.zone = nil
+    end
+
+    if #pile.members == 0 then
+        return
+    end
+
+    pile.zone = exports.ox_target:addSphereZone({
+        coords = pile.center,
+        radius = 0.3,
+        drawSprite = true,
+        options = {
+            {
+                label = getPileLabel(pile, "collect"),
+                icon = pile.options.target.collect.icon or "fa-solid fa-magnifying-glass",
+                distance = 2,
+                groups = config.permissions.collect or false,
+                items = pile.options.target.collect.requiredItem or nil,
+                canInteract = function()
+                    return not config.isPedDead(cache.ped)
+                end,
+                onSelect = function(data)
+                    local collected <const> = Thistle.Callback.Await("evidences:collectPile", pile.evidenceType, getPileEntries(pile, data.coords, true))
+
+                    if not collected or collected < 1 then
+                        config.notify({ key = "evidences.notifications.common.errors.collect" }, "error")
+                        return
+                    end
+
+                    faceAndPickUp(pile.center)
+                    config.notify({
+                        key = "evidences.notifications.collect",
+                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
+                    }, "success")
+                end
+            },
+            {
+                label = getPileLabel(pile, "destroy"),
+                icon = pile.options.target.destroy.icon or "fa-solid fa-hand-back-fist",
+                distance = 2,
+                items = pile.options.target.destroy.requiredItem or nil,
+                canInteract = function()
+                    return not config.isPedDead(cache.ped)
+                end,
+                onSelect = function(data)
+                    local destroyed <const> = Thistle.Callback.Await("evidences:destroyPile", pile.evidenceType, getPileEntries(pile, data.coords, false))
+
+                    if not destroyed or destroyed < 1 then
+                        config.notify({ key = "evidences.notifications.common.errors.destroy" }, "error")
+                        return
+                    end
+
+                    faceAndPickUp(pile.center)
+                    config.notify({
+                        key = "evidences.notifications.destroy",
+                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
+                    }, "success")
+                end
+            }
+        }
+    })
+end
+
+local function addToPile(evidence)
+    for _, pile in ipairs(piles) do
+        if pile.evidenceType == evidence.evidenceType and #(pile.center - evidence.coords) <= pileRadius then
+            table.insert(pile.members, evidence)
+            evidence.pile = pile
+            refreshPileZone(pile)
+            return
+        end
+    end
+
+    local pile <const> = {
+        evidenceType = evidence.evidenceType,
+        options = evidence.options,
+        center = evidence.coords,
+        members = { evidence }
+    }
+
+    piles[#piles + 1] = pile
+    evidence.pile = pile
+    refreshPileZone(pile)
+end
+
+local function removeFromPile(evidence)
+    local pile <const> = evidence.pile
+    if not pile then
+        return
+    end
+
+    evidence.pile = nil
+
+    for index, member in ipairs(pile.members) do
+        if member == evidence then
+            table.remove(pile.members, index)
+            break
+        end
+    end
+
+    refreshPileZone(pile)
+
+    if #pile.members == 0 then
+        for index, other in ipairs(piles) do
+            if other == pile then
+                table.remove(piles, index)
+                break
+            end
+        end
+    end
+end
+
 EvidenceAtCoords = lib.class("EvidenceAtCoords")
 
 function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
@@ -18,75 +172,10 @@ function EvidenceAtCoords:constructor(evidenceType, owner, coords, data)
     self.coords = coords
     self.data = data or {}
 
-    self.zone = exports.ox_target:addSphereZone({
-        coords = self.coords,
-        radius = 0.2,
-        drawSprite = true,
-        options = {
-            {
-                label = self.options.target.collect.label,
-                icon = self.options.target.collect.icon or "fa-solid fa-magnifying-glass",
-                distance = 2,
-                groups = config.permissions.collect or false,
-                items = self.options.target.collect.requiredItem or nil,
-                canInteract = function()
-                    return not config.isPedDead(cache.ped)
-                end,
-                onSelect = function(data)
-                    local metadata <const> = self.options.target.collect.createMetadata(self.evidenceType, self.data, data.coords)
-                    local success <const> = Thistle.Callback.Await("evidences:collect", self.evidenceType, self.owner, {
-                        fun = "removeFromCoords",
-                        arguments = { self.coords }
-                    }, metadata)
-
-                    if not success then
-                        config.notify({ key = "evidences.notifications.common.errors.collect" }, "error")
-                        return
-                    end
-
-                    local ped <const> = cache.ped
-                    local pedCoords <const> = GetEntityCoords(ped)
-                    SetEntityHeading(ped, GetHeadingFromVector_2d(self.coords.x - pedCoords.x, self.coords.y - pedCoords.y)) -- make player look at the evidence
-
-                    lib.playAnim(ped, "random@domestic", "pickup_low")
-                    config.notify({
-                        key = "evidences.notifications.collect",
-                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
-                    }, "success")
-                end
-            },
-            {
-                label = self.options.target.destroy.label,
-                icon = self.options.target.destroy.icon or "fa-solid fa-hand-back-fist",
-                distance = 2,
-                items = self.options.target.destroy.requiredItem or nil,
-                canInteract = function()
-                    return not config.isPedDead(cache.ped)
-                end,
-                onSelect = function(data)
-                    local success <const> = Thistle.Callback.Await("evidences:destroy", self.evidenceType, self.owner, {
-                        fun = "removeFromCoords",
-                        arguments = { self.coords }
-                    })
-
-                    if not success then
-                        config.notify({ key = "evidences.notifications.common.errors.destroy" }, "error")
-                        return
-                    end
-
-                    lib.playAnim(cache.ped, "random@domestic", "pickup_low")
-                    config.notify({
-                        key = "evidences.notifications.destroy",
-                        arguments = {locale("evidences.notifications.common.placeholders.at_coords")}
-                    }, "success")
-                end
-            }
-        }
-    })
-
     self:visualize(self.options.visualize)
 
     table.insert(EvidencesAtCoords, self)
+    addToPile(self)
 end
 
 function EvidenceAtCoords:visualize(options)
@@ -129,7 +218,7 @@ eventHandler.onLocal("onResourceStop", function(event)
 end)
 
 function EvidenceAtCoords:destroy()
-    exports.ox_target:removeZone(self.zone)
+    removeFromPile(self)
 
     if self.point then
         self.point:onExit()
