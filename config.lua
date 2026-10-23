@@ -159,7 +159,18 @@ config.uvLight = {
 
 -- The evidence_marker item: numbered markers officers put down at a crime scene.
 config.evidenceMarkers = {
-    model = `prop_roadcone02c`, -- swap in your own evidence marker prop if you have one
+    -- Numbered marker props: marker 1 at a scene uses the first, marker 2 the second, and so on.
+    -- The three below are streamed by this resource (stream/markers.ytyp). Add more to number further.
+    models = {
+        `marker1`,
+        `marker2`,
+        `marker3`
+    },
+
+    -- Used once a scene has more markers than there are numbered props; its number floats above it
+    model = `prop_roadcone02c`,
+    numberHeight = 0.55, -- how high the floating number sits above the fallback prop (metres)
+
     sceneRadius = 50.0, -- markers within this distance count as one scene and are numbered 1, 2, 3...
     lifetime = 120, -- minutes before a marker removes itself (they're also gone after a restart)
 

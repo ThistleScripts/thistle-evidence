@@ -51,6 +51,9 @@ files {
     'client/**'
 }
 
+-- Evidence marker props marker1 to marker3 (the models themselves are in stream/)
+data_file 'DLC_ITYP_REQUEST' 'stream/markers.ytyp'
+
 -- The UV flashlight addon weapon (WEAPON_UVFLASHLIGHT), using the game's flashlight model
 data_file 'WEAPON_ANIMATIONS_FILE' 'data/weapons/weaponanimations.meta'
 data_file 'WEAPONINFO_FILE' 'data/weapons/weapons.meta'

@@ -1,16 +1,38 @@
--- Numbered evidence markers at crime scenes (server/evidences/markers.lua). Each shows a prop with its number above it.
+-- Numbered evidence markers at crime scenes (server/evidences/markers.lua). Marker N uses the Nth numbered prop
+-- (config.evidenceMarkers.models); past those, the fallback prop with the number floating above it.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local placement <const> = require "client.utils.placement"
 local player <const> = require "client.player"
 
 local settings <const> = config.evidenceMarkers
-local model <const> = type(settings.model) == "string" and joaat(settings.model) or settings.model
+
+local function toHash(model)
+    return type(model) == "string" and joaat(model) or model
+end
+
+local numberedModels = {}
+for index, model in ipairs(settings.models or {}) do
+    numberedModels[index] = toHash(model)
+end
+
+local fallbackModel <const> = toHash(settings.model)
+
+-- The prop for marker number n, and whether the number has to be drawn above it
+local function getModel(number)
+    local numbered <const> = numberedModels[number]
+    return numbered or fallbackModel, numbered == nil
+end
+
+local allModels = { fallbackModel }
+for _, model in ipairs(numberedModels) do
+    allModels[#allModels + 1] = model
+end
 
 local markers = {} -- id -> { number, point, entity }
 
 local function drawNumber(coords, number)
-    SetDrawOrigin(coords.x, coords.y, coords.z + 0.55, 0)
+    SetDrawOrigin(coords.x, coords.y, coords.z + (settings.numberHeight or 0.55), 0)
     SetTextScale(0.0, 0.45)
     SetTextFont(4)
     SetTextCentre(true)
@@ -28,6 +50,7 @@ local function addMarker(data)
     end
 
     local coords <const> = vector4(data.coords.x, data.coords.y, data.coords.z, data.coords.w)
+    local model <const>, showNumber <const> = getModel(data.number)
     local marker = { number = data.number }
 
     marker.point = lib.points.new({
@@ -52,7 +75,7 @@ local function addMarker(data)
             marker.entity = nil
         end,
         nearby = function(point)
-            if point.currentDistance < 20.0 then
+            if showNumber and point.currentDistance < 20.0 then
                 drawNumber(coords.xyz, marker.number)
             end
         end
@@ -89,7 +112,7 @@ end)
 RegisterNetEvent("evidences:addEvidenceMarker", addMarker)
 RegisterNetEvent("evidences:removeEvidenceMarker", removeMarker)
 
-exports.ox_target:addModel(model, {
+exports.ox_target:addModel(allModels, {
     {
         name = "evidences:evidence_marker_pickup",
         label = locale("markers.pickup"),
@@ -129,7 +152,7 @@ exports("evidence_marker", function(data, slot)
                 return
             end
 
-            local coords <const> = placement.place(model, locale("markers.input_help"))
+            local coords <const> = placement.place(numberedModels[1] or fallbackModel, locale("markers.input_help"))
             if not coords then
                 return
             end
@@ -151,7 +174,7 @@ end)
 
 eventHandler.onLocal("onResourceStop", function(event)
     if event.arguments[1] == cache.resource then
-        exports.ox_target:removeModel(model, "evidences:evidence_marker_pickup")
+        exports.ox_target:removeModel(allModels, "evidences:evidence_marker_pickup")
 
         for id in pairs(markers) do
             removeMarker(id)
