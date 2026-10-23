@@ -56,35 +56,58 @@ eventHandler.onNui("keydown", function(event)
     end
 end)
 
--- Export to control the item registered in items.lua!
-exports("forensic_fingerprint_scanner", function(data, slot)
-    if not scannerProp then
-        exports.ox_inventory:useItem(data, function(data)
-            TriggerEvent("ox_inventory:disarm", cache.ped, true)
-            SetNuiFocus(true, false)
-
-            local coords <const> = GetEntityCoords(cache.ped)
-            lib.requestModel(`p_cs_cam_phone`)
-
-            scannerProp = CreateObject(`p_cs_cam_phone`, coords.x, coords.y, coords.z, true, true, true)
-            AttachEntityToEntity(
-                scannerProp,
-                cache.ped,
-                GetPedBoneIndex(cache.ped, 28422),
-                0.02, 0.025, -0.025,
-                -85.0, 180.0, 20.0,
-                true, true, true, true, 1, true
-            )
-
-            lib.playAnim(cache.ped, "random@hitch_lift", "idle_f", 8.0, 8.0, -1, 49, 0.0, false, 0, false)
-
-            config.inputHelp.show(locale("fingerprint_scanner.input_help"), {
-                tildeDelimitedCodes = { "~INPUT_FRONTEND_CANCEL~" },
-                mappedValues = { "[ESC]" }
-            })
-        end)
+-- Using the forensic_fingerprint_scanner item (setup/<lang>_items.lua). Using it again puts it away.
+local function useScanner(data, slot)
+    if scannerProp then
+        -- Out already, or stuck from an attempt where the phone never appeared: either way, put it away
+        cancel()
+        return
     end
-end)
+
+    local used = false
+
+    exports.ox_inventory:useItem(data, function(data)
+        used = true
+        TriggerEvent("ox_inventory:disarm", cache.ped, true)
+        SetNuiFocus(true, false)
+
+        local coords <const> = GetEntityCoords(cache.ped)
+        lib.requestModel(`p_cs_cam_phone`)
+
+        scannerProp = CreateObject(`p_cs_cam_phone`, coords.x, coords.y, coords.z, true, true, true)
+        if not scannerProp or scannerProp == 0 or not DoesEntityExist(scannerProp) then
+            -- e.g. sv_entityLockdown strict, which stops clients creating networked objects
+            lib.print.error("Couldn't create the fingerprint scanner's phone (p_cs_cam_phone). Check sv_entityLockdown isn't set to strict.")
+            scannerProp = nil
+            SetNuiFocus(false, false)
+            return
+        end
+
+        AttachEntityToEntity(
+            scannerProp,
+            cache.ped,
+            GetPedBoneIndex(cache.ped, 28422),
+            0.02, 0.025, -0.025,
+            -85.0, 180.0, 20.0,
+            true, true, true, true, 1, true
+        )
+
+        lib.playAnim(cache.ped, "random@hitch_lift", "idle_f", 8.0, 8.0, -1, 49, 0.0, false, 0, false)
+
+        config.inputHelp.show(locale("fingerprint_scanner.input_help"), {
+            tildeDelimitedCodes = { "~INPUT_FRONTEND_CANCEL~" },
+            mappedValues = { "[ESC]" }
+        })
+    end)
+
+    if not used then
+        lib.print.warn("ox_inventory didn't use the fingerprint scanner (busy, dead, ragdolling, or the item's server use was refused)")
+    end
+end
+
+exports("forensic_fingerprint_scanner", useScanner)
+-- The item's export before it was renamed, so an items.lua entry that still calls it keeps working
+exports("fingerprint_scanner", useScanner)
 
 RegisterNetEvent("evidences:fingerprintScanned", function(result)
     CreateThread(function()
