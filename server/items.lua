@@ -1,5 +1,6 @@
 local config <const> = require "config"
 local logger <const> = require "server.logger"
+local framework <const> = require "server.framework"
 
 for _, item in pairs({"evidence_laptop", "evidence_box", "forensic_kit", "hydrogen_peroxide", "forensic_fingerprint_scanner", "collected_blood", "collected_saliva", "collected_fingerprint", "collected_magazine", "collected_casing", "collected_bullet", "collected_gunshot_residue"}) do
     if not exports.ox_inventory:Items(item) then
@@ -60,7 +61,17 @@ else
 end
 
 
--- This event renames the item on the specified slot in the player's inventory
+-- Labels the evidence box on the given slot in the player's inventory: a case number and a name, which make up the
+-- box's label so boxes in a stash can be told apart by case, and a description
+local function trimmed(value, maxLength)
+    if type(value) ~= "string" then
+        return nil
+    end
+
+    value = value:gsub("^%s+", ""):gsub("%s+$", ""):sub(1, maxLength)
+    return value ~= "" and value or nil
+end
+
 RegisterNetEvent("evidences:renameEvidenceBox", function(slot, input)
     local playerId <const> = source
     if type(slot) ~= "number" or type(input) ~= "table" then
@@ -71,8 +82,22 @@ RegisterNetEvent("evidences:renameEvidenceBox", function(slot, input)
 
     if item and item.name == "evidence_box" then
         local metadata <const> = item.metadata or {}
-        metadata.label = type(input[1]) == "string" and input[1]:sub(1, 30) or nil
-        metadata.description = type(input[2]) == "string" and input[2]:sub(1, 500) or nil
+        local caseNumber <const> = trimmed(input[1], 20)
+        local name <const> = trimmed(input[2], 30)
+
+        metadata.caseNumber = caseNumber
+        metadata.boxName = name
+        metadata.description = trimmed(input[3], 500)
+
+        if caseNumber and name then
+            metadata.label = locale("evidences.evidence_box_label_dialog.case_label_with_name", caseNumber, name)
+        elseif caseNumber then
+            metadata.label = locale("evidences.evidence_box_label_dialog.case_label", caseNumber)
+        else
+            metadata.label = name -- nil puts the item's own label back
+        end
+
+        metadata.labelledBy = (caseNumber or name) and framework.getPlayerName(playerId) or nil
         exports.ox_inventory:SetMetadata(playerId, slot, metadata)
     end
 end)

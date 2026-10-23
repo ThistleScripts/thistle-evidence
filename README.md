@@ -71,6 +71,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Review evidence / link it to a citizen | Laptop → Evidence: pick it from the evidence log or what you carry |
 | Look up a case file | Lab → Case files, then paste a gun ID, DNA profile or fingerprint |
 | See a bullet's path | Point the UV light at the bullet |
+| Label an evidence box | Right-click it in your inventory → Label: a case number and a name (shown as "Case 1042 · Davis Ave shooting"), and a description. It keeps the label in stashes |
 | Scan a fingerprint | Use `forensic_fingerprint_scanner`; the other player targets it |
 | Place a spy microphone | Use `spy_microphone` |
 | Clear evidence around you | `/clearEvidences <radius>` (`group.admin`) |

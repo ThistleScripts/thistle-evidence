@@ -16,10 +16,16 @@
     "evidences": {
         "evidence_box_label_dialog": {
             "title": "ラベルボックス",
+            "case_textfield_title": "Case number",
+            "case_textfield_details": "Shown first on the box's name, e.g. 1042 or LSPD-26-0142",
             "name_textfield_title": "名称",
             "name_textfield_details": "インベントリに表示される名前",
             "description_textfield_title": "説明",
-            "description_textfield_details": "インベントリ内のアイテム名の下に表示される短い説明"
+            "description_textfield_details": "インベントリ内のアイテム名の下に表示される短い説明",
+            "case_label": "Case %s",
+            "case_label_with_name": "Case %s · %s",
+            "case_metadata": "Case",
+            "labelled_by_metadata": "Labelled by"
         },
         "fingerprint": {
             "collecting_label": "指紋を採取する",

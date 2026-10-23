@@ -16,10 +16,16 @@
     "evidences": {
         "evidence_box_label_dialog": {
             "title": "Kutu etiketi",
+            "case_textfield_title": "Case number",
+            "case_textfield_details": "Shown first on the box's name, e.g. 1042 or LSPD-26-0142",
             "name_textfield_title": "İsim",
             "name_textfield_details": "Envanterde görüntülenen isim",
             "description_textfield_title": "Açıklama",
-            "description_textfield_details": "Envanterde öğenin altında göreceğiniz kısa açıklama"
+            "description_textfield_details": "Envanterde öğenin altında göreceğiniz kısa açıklama",
+            "case_label": "Case %s",
+            "case_label_with_name": "Case %s · %s",
+            "case_metadata": "Case",
+            "labelled_by_metadata": "Labelled by"
         },
         "fingerprint": {
             "collecting_label": "Parmak izini güvenceye al",

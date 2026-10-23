@@ -16,10 +16,16 @@
     "evidences": {
         "evidence_box_label_dialog": {
             "title": "Přejmenovat krabici",
+            "case_textfield_title": "Case number",
+            "case_textfield_details": "Shown first on the box's name, e.g. 1042 or LSPD-26-0142",
             "name_textfield_title": "Název",
             "name_textfield_details": "Název zobrazený v inventáři",
             "description_textfield_title": "Popis",
-            "description_textfield_details": "Krátký popis, který uvidíte v inventáři pod předmětem"
+            "description_textfield_details": "Krátký popis, který uvidíte v inventáři pod předmětem",
+            "case_label": "Case %s",
+            "case_label_with_name": "Case %s · %s",
+            "case_metadata": "Case",
+            "labelled_by_metadata": "Labelled by"
         },
         "fingerprint": {
             "collecting_label": "Zajistit otisk prstu",
