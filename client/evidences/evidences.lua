@@ -2,6 +2,7 @@ local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local evidenceTypes <const> = require "common.evidence_types"
 local utils <const> = require "client.evidences.utils"
+local uv <const> = require "client.evidences.uv"
 
 --[[
 AddStateBagChangeHandler(nil, nil, function(bagName, key, value)
@@ -96,6 +97,11 @@ local function createVehicleDoorTarget(evidenceType, options, action)
         bones = { "door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r" },
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            -- traces on vehicles and props only show under UV light (config.uvLight)
+            if not uv.reveals(entity, coords) then
                 return false
             end
 
@@ -222,6 +228,11 @@ local function createEntityTarget(evidenceType, options, action)
                 return false
             end
 
+            -- traces on vehicles and props only show under UV light (config.uvLight)
+            if not uv.reveals(entity, coords) then
+                return false
+            end
+
             if distance > 2 then
                 return false
             end
@@ -281,6 +292,11 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
         items = options.target[action].requiredItem or nil,
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            -- traces on vehicles and props only show under UV light (config.uvLight)
+            if not uv.reveals(entity, coords) then
                 return false
             end
 

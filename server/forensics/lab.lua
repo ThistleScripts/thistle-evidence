@@ -200,3 +200,25 @@ Thistle.Callback.Register("evidences:lab:getCaseFile", function(source, argument
 
     return { success = true, response = getCaseFile(arguments.kind, arguments.key) }
 end)
+
+-- The laptop's evidence log: every analysis, newest first, ten at a time. Analysis itself only happens at a microscope.
+Thistle.Callback.Register("evidences:getEvidenceLog", function(source, arguments)
+    if not framework.hasPermission(config.permissions.access, source) then
+        return deny()
+    end
+
+    arguments = type(arguments) == "table" and arguments or {}
+    local searchText <const> = type(arguments.searchText) == "string" and arguments.searchText:sub(1, 50) or ""
+    local offset <const> = math.max(0, math.floor(tonumber(arguments.offset) or 0))
+    local pattern <const> = ("%%%s%%"):format(searchText)
+
+    return database.query(
+        [[
+            SELECT * FROM forensic_matches
+            WHERE ? = '' OR matchKey LIKE ? OR crimeScene LIKE ? OR evidenceType LIKE ? OR weaponType LIKE ? OR analysedBy LIKE ?
+            ORDER BY analysedAt DESC
+            LIMIT 10 OFFSET ?
+        ]],
+        searchText, pattern, pattern, pattern, pattern, pattern, offset
+    )
+end)

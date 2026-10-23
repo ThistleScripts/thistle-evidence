@@ -6,6 +6,7 @@ import { useTranslation } from "../TranslationContext";
 
 // This is the interface for the props parsed by the parent component.
 interface ScreenSaverScreenProps {
+    brand: string;
     switchScreen: (newScreen: ScreenType) => void;
 }
 
@@ -53,8 +54,8 @@ export default function ScreenSaverScreen(props: ScreenSaverScreenProps) {
                     <Microscope size={44} />
                 </div>
                 <div>
-                    <p className="text-20 font-semibold uppercase tracking-[0.2em] text-accent">Thistle Forensics</p>
-                    <p className="font-display text-45 font-black leading-none text-white">{t("laptop.brand")}</p>
+                    <p className="text-20 font-semibold uppercase tracking-[0.2em] text-accent">{t("laptop.brand")}</p>
+                    <p className="font-display text-45 font-black leading-none text-white">{props.brand}</p>
                 </div>
             </div>
 

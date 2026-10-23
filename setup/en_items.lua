@@ -136,4 +136,32 @@
     client = {
         export = 'thistle-evidence.spy_microphone'
     }
+},
+['forensic_microscope'] = {
+    label = 'Forensic Microscope',
+    description = 'Microscope for analysing collected evidence',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.forensic_microscope'
+    }
+},
+['cleaning_kit'] = {
+    label = 'Cleaning Kit',
+    description = 'Gloves, bags and bleach to get rid of casings, bullets and magazines',
+    weight = 500,
+    stack = true
+},
+['evidence_marker'] = {
+    label = 'Evidence Marker Kit',
+    description = 'Reusable set of evidence markers for crime scenes',
+    weight = 50,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.evidence_marker'
+    }
 }
+
+-- The UV flashlight is a weapon: see weapons.lua in this folder.

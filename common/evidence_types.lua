@@ -1,32 +1,13 @@
+local config <const> = require "config"
 local utils <const> = require "client.evidences.utils"
 
-local forensicKitCheckedAt, forensicKitPresent = 0, false
+local bulletPath <const> = require "client.evidences.bullet_path"
 
--- ox_inventory's Search is an export call, so don't repeat it every frame for every bullet
-local function hasForensicKit()
-    if GetGameTimer() - forensicKitCheckedAt > 500 then
-        forensicKitCheckedAt = GetGameTimer()
-        forensicKitPresent = exports.ox_inventory:Search("count", "forensic_kit") > 0
-    end
-
-    return forensicKitPresent
-end
-
--- Where the shot came from. Bullets in vehicles and props store it relative to the entity,
--- so the path still points the right way after the vehicle has moved.
-local function getShooterCoords(point, data)
-    local offset <const> = data.shooterOffset
-    if offset and point.entity and DoesEntityExist(point.entity) then
-        return GetOffsetFromEntityInWorldCoords(point.entity, offset.x, offset.y, offset.z)
-    end
-
-    return data.shooterCoords
-end
-
--- The bullet's path: a line from the bullet back to where it was fired from, with a dot at the shooter's end
-local function drawBulletPath(bulletCoords, shooterCoords)
-    DrawLine(bulletCoords.x, bulletCoords.y, bulletCoords.z, shooterCoords.x, shooterCoords.y, shooterCoords.z, 255, 0, 0, 200)
-    DrawMarker(28, shooterCoords.x, shooterCoords.y, shooterCoords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.05, 0.05, 255, 0, 0, 200, false, false, 2, false, nil, nil, false)
+-- Required on first use: this file is also loaded on the server, where the UV flashlight doesn't exist
+local uv
+local function isInUvBeam(coords)
+    uv = uv or require "client.evidences.uv"
+    return uv.isInBeam(coords)
 end
 
 local function createMetadata(evidenceType, data, coords, holder)
@@ -77,7 +58,7 @@ return {
             destroy = {
                 label = locale("evidences.fingerprint.destroying_label"),
                 icon = "fa-solid fa-fingerprint",
-                requiredItem = "hydrogen_peroxide"
+                requiredItem = config.destroyItems.fingerprint
             }
         },
         visualize = {}
@@ -94,7 +75,7 @@ return {
             destroy = {
                 label = locale("evidences.blood.destroying_label"),
                 icon = "fa-solid fa-droplet",
-                requiredItem = "hydrogen_peroxide"
+                requiredItem = config.destroyItems.blood
             }
         },
         visualize = {
@@ -135,7 +116,7 @@ return {
             destroy = {
                 label = locale("evidences.saliva.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.saliva
             }
         },
         visualize = {}
@@ -153,7 +134,7 @@ return {
             destroy = {
                 label = locale("evidences.magazine.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.magazine
             }
         },
         visualize = {
@@ -202,7 +183,7 @@ return {
             destroy = {
                 label = locale("evidences.casing.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.casing
             }
         },
         visualize = {
@@ -235,22 +216,23 @@ return {
             destroy = {
                 label = locale("evidences.bullet.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.bullet
             }
         },
         visualize = {
+            -- The path back to the shooter only shows while a UV light points at the bullet
             show = function(point, data, no_thread)
                 if no_thread then
                     -- called every frame by the entity evidence display thread
-                    local shooterCoords <const> = getShooterCoords(point, data)
-                    if shooterCoords and hasForensicKit() then
-                        drawBulletPath(point.coords, shooterCoords)
+                    local shooterCoords <const> = bulletPath.getShooterCoords(point, data)
+                    if shooterCoords and isInUvBeam(point.coords) then
+                        bulletPath.draw(point.coords, shooterCoords)
                     end
 
                     return
                 end
 
-                local shooterCoords <const> = getShooterCoords(point, data)
+                local shooterCoords <const> = bulletPath.getShooterCoords(point, data)
                 if not shooterCoords or not point.coords then
                     return
                 end
@@ -259,11 +241,12 @@ return {
 
                 CreateThread(function()
                     while point.isThreadRunning do
-                        if hasForensicKit() and exports.ox_target:isActive() then
-                            drawBulletPath(point.coords, shooterCoords)
+                        if isInUvBeam(point.coords) then
+                            bulletPath.draw(point.coords, shooterCoords)
+                            Wait(0)
+                        else
+                            Wait(100)
                         end
-
-                        Wait(0)
                     end
                 end)
             end,
@@ -284,7 +267,7 @@ return {
             destroy = {
                 label = locale("evidences.gunshot_residue.destroying_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = nil
+                requiredItem = config.destroyItems.gunshot_residue
             }
         },
         visualize = {}

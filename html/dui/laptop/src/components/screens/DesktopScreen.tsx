@@ -58,11 +58,6 @@ export default function DesktopScreen(props: DesktopScreenProps) {
     // Sets the app's minimized state to false and brings it into focus.
     // Called when the user opens an app.
     function handleAppOpen(app: App, args?: AppArgs) {
-        if (app.onOpen) {
-            app.onOpen();
-            return;
-        }
-
         const openApp: OpenApp = { ...app, minimized: false, zIndex: 1, args: args };
 
         const existingApp = openApps.find((a) => a.name === app.name);

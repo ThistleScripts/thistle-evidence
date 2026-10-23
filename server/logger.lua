@@ -33,7 +33,7 @@ if config.logging and config.logging.service == "discord" then
         citizens = webhooks.citizens,
         wiretap = webhooks.wiretap,
         firearms = webhooks.firearms,
-        botName = "Thistle Evidence"
+        botName = ("%s Evidence"):format(config.cityName or "Thistle")
     })
 end
 

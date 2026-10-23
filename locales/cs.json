@@ -374,6 +374,38 @@
                     "fired_at": "Čas výstřelu"
                 }
             },
+            "evidence_app": {
+                "name": "Evidence",
+                "tabs": {
+                    "log": "Evidence log",
+                    "carried": "Carried"
+                },
+                "search": "Search ID, scene, type or officer…",
+                "empty_log": "Nothing has been analysed yet. Evidence analysed at a forensic microscope is logged here.",
+                "empty_carried": "You aren't carrying any evidence.",
+                "select": "Select a piece of evidence.",
+                "details": "Evidence",
+                "crime_scene": "Crime scene",
+                "collected": "Collected",
+                "analysed": "Analysed",
+                "analysed_by": "Analysed by %s",
+                "notes": "Notes",
+                "notes_placeholder": "Add notes for this evidence…",
+                "not_analysed": "Not analysed yet",
+                "not_analysed_hint": "Take it to a forensic microscope to analyse it. Its DNA profile, fingerprint or gun ID shows here afterwards.",
+                "suspect": "Linked citizen",
+                "not_linked": "Not linked to a citizen",
+                "not_linked_hint": "Link this profile to the citizen it belongs to. All evidence with the same profile then points to them.",
+                "search_citizens": "Search citizens…",
+                "link": "Link",
+                "unlink": "Unlink",
+                "open_citizen": "Open citizen",
+                "open_firearm": "Open in registry",
+                "open_evidence": "Open in Evidence",
+                "linked_success": "Linked to %s",
+                "unlinked_success": "Link removed",
+                "link_error": "Couldn't link it. The profile has to belong to a known citizen's biometric data."
+            },
             "wiretap_app": {
                 "name": "Odposlech",
                 "warning_popup": {
@@ -458,6 +490,33 @@
         "target_collect": "Sebrat špionážní mikrofon"
     },
     "lab": {
-        "target": "Use forensics lab"
+        "target": "Use microscope",
+        "pickup": "Pick up microscope",
+        "input_help": "Press %s to place the microscope.%sUse %s to cancel this action",
+        "notifications": {
+            "error_creation": {
+                "title": "Evidence",
+                "description": "Error while placing the microscope"
+            },
+            "error_pickup": {
+                "title": "Evidence",
+                "description": "Error picking up the microscope"
+            }
+        }
+    },
+    "markers": {
+        "menu_title": "Evidence markers",
+        "menu_description": "Click to place, as many as you need",
+        "pickup": "Pick up evidence marker",
+        "pickup_all": "Pick up all markers here",
+        "picked_up_all": {
+            "title": "Evidence",
+            "description": "Picked up %s evidence markers"
+        },
+        "limit": {
+            "title": "Evidence",
+            "description": "You have too many evidence markers down. Pick some up first"
+        },
+        "placer_help": "%s Place marker%s%s Rotate%s%s / %s Finish"
     }
 }

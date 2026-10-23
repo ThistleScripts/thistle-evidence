@@ -3,6 +3,9 @@
 ]]
 local config = {}
 
+-- Your city's name. It's shown as "<name> Evidence" on the laptop, in the forensics lab and on Discord logs.
+config.cityName = "Thistle"
+
 
 -- Players don't leave fingerprints when wearing gloves. If you have custom clothing on your server, you need to add the ids of hands without gloves to this exceptions-list.
 -- Note: Fingerprints are only created if the function returns false! This means you have to ability to add further conditions, which have to be fulfilled in order for a player not to leave any fingerprints.
@@ -104,10 +107,85 @@ config.citizens = {
 }
 
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
--- It opens from any evidence laptop and at these stations. Who can use it is set by config.permissions.access.
+-- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
+-- Who can use it is set by config.permissions.access.
 config.forensicsLab = {
+    -- The microscope prop
+    model = `v_med_microscope`,
+
+    -- Microscopes spawned at fixed spots, e.g. on a lab bench in your PD (x, y, z, heading).
+    -- Officers can also place microscopes anywhere with the forensic_microscope item.
     stations = {
-        -- example: { coords = vec3(0.0, 0.0, 0.0), radius = 1.0 },
+        -- vec4(0.0, 0.0, 0.0, 0.0),
+    },
+
+    permissions = {
+        place = { -- Allowed jobs and their minimum grades required to place a microscope
+            police = 0,
+            fib = 0
+        },
+
+        pickup = { -- Allowed jobs and their minimum grades required to pick up a placed microscope
+            police = 0,
+            fib = 0
+        }
+    }
+}
+
+-- Items needed to destroy each kind of evidence. One is used up per destroy (a whole pile counts as one).
+config.destroyItems = {
+    fingerprint = "hydrogen_peroxide",
+    blood = "hydrogen_peroxide",
+    saliva = "hydrogen_peroxide",
+    gunshot_residue = "hydrogen_peroxide",
+    casing = "cleaning_kit",
+    bullet = "cleaning_kit",
+    magazine = "cleaning_kit"
+}
+
+-- The UV flashlight is an addon weapon, WEAPON_UVFLASHLIGHT, held and swung like the game's flashlight but with a blue
+-- beam. Add it to ox_inventory/data/weapons.lua (see setup/weapons.lua), then give it or sell it in shops like any
+-- other weapon. While it's equipped, evidence caught in its beam shows up and can be targeted.
+config.uvLight = {
+    -- true: blood, casings, bullets, magazines and traces on vehicles and props are only visible and targetable under UV light.
+    -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.
+    required = true,
+
+    -- Right click with the flashlight in hand: "toggle" switches the light on and off, "hold" keeps it on while held
+    mode = "toggle",
+
+    range = 12.0, -- how far the beam reaches (metres)
+    angle = 30.0, -- how wide the beam is (degrees from the centre)
+    memory = 8000, -- how long evidence stays visible after the beam has passed over it (ms)
+    colour = { r = 60, g = 90, b = 255 }, -- the beam's colour
+
+    -- While the light is on, evidence nearby that isn't in the beam yet glows faintly so officers know where to look
+    hints = {
+        enabled = true,
+        range = 15.0, -- how far away evidence gets a hint (metres)
+        size = 0.035, -- the hint's size (metres)
+        alpha = 110 -- how strong the hint is (0-255)
+    }
+}
+
+-- The evidence_marker item: a reusable kit of marker props officers put down at a crime scene. Using it opens a menu
+-- to pick the prop, then click to place as many as needed. Officers target a marker to pick it up, or all at the scene.
+config.evidenceMarkers = {
+    -- The props in the menu, in order. The three numbered markers are streamed by this resource (stream/markers.ytyp).
+    props = {
+        { label = "Marker 1", model = `marker1` },
+        { label = "Marker 2", model = `marker2` },
+        { label = "Marker 3", model = `marker3` },
+        { label = "Cone", model = `prop_roadcone02c` }
+    },
+
+    sceneRadius = 50.0, -- "Pick up all markers" picks up every marker within this distance of the targeted one
+    maxPerPlayer = 50, -- most markers one player can have down at once
+    lifetime = 120, -- minutes before a marker removes itself (they're also gone after a restart)
+
+    permissions = { -- Allowed jobs and their minimum grades required to place and pick up markers
+        police = 0,
+        fib = 0
     }
 }
 

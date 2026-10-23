@@ -15,6 +15,7 @@ export default function LabApp() {
     const { t, setLang } = useTranslation();
     const [visible, setVisible] = useState(!inGame);
     const [officer, setOfficer] = useState("");
+    const [brand, setBrand] = useState("Thistle Evidence"); // "<config.cityName> Evidence", sent by the client
     const [tab, setTab] = useState<Tab>("analysis");
     const [inventories, setInventories] = useState<LabInventory[]>([]);
     const [loading, setLoading] = useState(false);
@@ -34,6 +35,7 @@ export default function LabApp() {
             if (data?.action === "openLab") {
                 if (data.language) setLang(data.language);
                 setOfficer(data.playerName || "");
+                if (data.brand) setBrand(data.brand);
                 setSelection(null);
                 setTab("analysis");
                 setVisible(true);
@@ -86,7 +88,7 @@ export default function LabApp() {
                             <Microscope size={22} />
                         </div>
                         <div>
-                            <p className="th-label text-accent">{t("lab.brand")}</p>
+                            <p className="th-label text-accent">{brand}</p>
                             <h1 className="font-display text-xl font-black leading-tight">{t("lab.title")}</h1>
                         </div>
                     </div>

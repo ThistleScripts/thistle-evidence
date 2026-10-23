@@ -17,7 +17,11 @@ require "client.scanner.scanner"
 
 require "client.items"
 
-require "client.lab.lab"
+require "client.lab.microscopes"
+
+require "client.evidences.uv"
+require "client.evidences.uv_hints"
+require "client.evidences.markers"
 
 local config <const> = require "config"
 

@@ -103,7 +103,8 @@ end)
 ---@param owner number|string The evidence owner, or a player's server id when taking their biometrics directly
 ---@param remove? { fun: string, arguments: table } Where to remove the evidence from once collected
 ---@param metadata? table
-function actions.collect(source, evidenceType, owner, remove, metadata)
+---@param amount? number How many pieces this item holds (a pile of casings from one gun), 1 by default
+function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     if not framework.hasPermission(config.permissions.collect, source) then
         return false
     end
@@ -146,6 +147,11 @@ function actions.collect(source, evidenceType, owner, remove, metadata)
     metadata = sanitizeMetadata(metadata)
     metadata.description = require "server.evidences.evidence_information"(metadata.information)
 
+    if amount and amount > 1 then
+        local item <const> = exports.ox_inventory:Items(collectedItem)
+        metadata.label = ("%s ×%d"):format(item and item.label or collectedItem, amount)
+    end
+
     object:atItem(source, response[1].slot, metadata)
 
 
@@ -169,6 +175,97 @@ Thistle.Callback.Register("evidences:collect", function(source, evidenceType, ow
     end
 
     return actions.collect(source, evidenceType, owner, remove, metadata)
+end)
+
+
+-- A pile of ground evidence (e.g. casings from automatic fire) is collected or destroyed in one go.
+-- Every piece is checked like a single one; pieces sharing an owner (the same gun or DNA) become one item.
+local maxPileSize <const> = 50
+
+---@param entries { owner: string, coords: vector3, metadata?: table }[]
+---@return table<string, { coords: vector3[], metadata?: table }>, string[] owners in the order they were found
+local function groupPile(source, evidenceType, entries)
+    local groups, owners, seen = {}, {}, {}
+
+    if type(entries) ~= "table" or #entries > maxPileSize then
+        return groups, owners
+    end
+
+    for _, entry in ipairs(entries) do
+        local remove <const> = type(entry) == "table" and { fun = "removeFromCoords", arguments = { entry.coords } }
+        if remove and not seen[entry.coords] and isEvidenceInReach(source, evidenceType, entry.owner, remove) then
+            seen[entry.coords] = true
+
+            if not groups[entry.owner] then
+                groups[entry.owner] = { coords = {}, metadata = entry.metadata }
+                owners[#owners + 1] = entry.owner
+            end
+
+            table.insert(groups[entry.owner].coords, entry.coords)
+        end
+    end
+
+    return groups, owners
+end
+
+---@return number collected How many pieces were collected
+Thistle.Callback.Register("evidences:collectPile", function(source, evidenceType, entries)
+    if not evidenceTypes[evidenceType] then
+        return 0
+    end
+
+    local groups <const>, owners <const> = groupPile(source, evidenceType, entries)
+    local collected = 0
+
+    for _, owner in ipairs(owners) do
+        local group <const> = groups[owner]
+        local first <const> = { fun = "removeFromCoords", arguments = { group.coords[1] } }
+
+        -- stops at the first failure (no kit, inventory full...), leaving the rest on the ground
+        if not actions.collect(source, evidenceType, owner, first, group.metadata, #group.coords) then
+            break
+        end
+
+        local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
+        for i = 2, #group.coords do
+            object:removeFromCoords(group.coords[i])
+        end
+
+        collected += #group.coords
+    end
+
+    return collected
+end)
+
+---@return number destroyed How many pieces were destroyed
+Thistle.Callback.Register("evidences:destroyPile", function(source, evidenceType, entries)
+    if not evidenceTypes[evidenceType] then
+        return 0
+    end
+
+    local groups <const>, owners <const> = groupPile(source, evidenceType, entries)
+    if #owners == 0 then
+        return 0
+    end
+
+    -- one bottle of hydrogen peroxide cleans the whole pile
+    local requiredItem <const> = evidenceTypes[evidenceType].target.destroy.requiredItem
+    if requiredItem and not exports.ox_inventory:RemoveItem(source, requiredItem, 1) then
+        return 0
+    end
+
+    local destroyed = 0
+
+    for _, owner in ipairs(owners) do
+        local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
+        for _, coords in ipairs(groups[owner].coords) do
+            object:removeFromCoords(coords)
+            destroyed += 1
+        end
+    end
+
+    logger.log(source, "Evidence destroyed", { evidenceType = evidenceType, amount = destroyed, owners = #owners })
+    return destroyed
 end)
 
 return actions

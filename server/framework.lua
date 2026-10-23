@@ -13,18 +13,6 @@ function framework.getPlayerName(playerId)
     return Thistle.GetCharacterName(Thistle.GetPlayerObject(playerId)) or "undefined"
 end
 
--- Thistle.HasJob checks the active job. qbx players can also hold several jobs at once
--- (PlayerData.jobs = { [name] = grade }), so those count as well.
-local function hasJob(player, job, minGrade)
-    if Thistle.HasJob(player, job, minGrade) then
-        return true
-    end
-
-    local jobs <const> = player.PlayerData and player.PlayerData.jobs
-    local grade <const> = jobs and tonumber(jobs[job])
-    return grade ~= nil and grade >= (tonumber(minGrade) or 0)
-end
-
 -- Checks whether a player has permission to perform a specific action.
 ---@param requiredPermissions table<string, number> Jobs and their minimum grades
 ---@param playerId number
@@ -36,7 +24,9 @@ function framework.hasPermission(requiredPermissions, playerId)
     end
 
     for job, minGrade in pairs(requiredPermissions or {}) do
-        if hasJob(player, job, minGrade) then
+        -- Only the active job counts. Qbox keeps every job a player has held in PlayerData.jobs,
+        -- so counting those let someone switched to mechanic keep their police access.
+        if Thistle.HasJob(player, job, minGrade) then
             return true
         end
     end
@@ -108,6 +98,8 @@ Thistle.Callback.Register("evidences:getPlayerInfo", function(source)
         name = framework.getPlayerName(source),
         permissions = {
             place = framework.hasPermission(config.permissions.place, source),
+            placeMicroscope = framework.hasPermission(config.forensicsLab.permissions.place, source),
+            placeMarkers = framework.hasPermission(config.evidenceMarkers.permissions, source),
             access = framework.hasPermission(config.permissions.access, source),
             interceptCalls = framework.hasPermission(config.wiretap.calls.permissions, source),
             interceptRadio = framework.hasPermission(config.wiretap.radio.permissions, source),

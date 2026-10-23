@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Link2 } from "lucide-react";
+import { FileSearch, Link2 } from "lucide-react";
+import { useAppContext } from "@/hooks/useAppContext";
 import { useTranslation } from "@/components/TranslationContext";
 import useLuaCallback from "@/hooks/useLuaCallback";
 import type { CaseFile } from "@/lab/types";
@@ -7,6 +8,7 @@ import type { CaseFile } from "@/lab/types";
 // Evidence analysed in the forensics lab that came from this gun (bullets and casings carry its ID)
 export default function LinkedEvidence({ serial }: { serial: string }) {
     const { t } = useTranslation();
+    const appContext = useAppContext();
     const { data: caseFile, trigger: fetchCaseFile, loading } = useLuaCallback<{ kind: "ballistics", key: string }, CaseFile>({
         name: "evidences:lab:getCaseFile"
     });
@@ -20,6 +22,10 @@ export default function LinkedEvidence({ serial }: { serial: string }) {
             <Link2 size={22} className="text-accent" />
             <p className="text-20 leading-none m-0 uppercase">{t("lab.links.title")}</p>
             <p className="text-20 leading-none text-muted">· {t("lab.links.count", matches.length)}</p>
+            <div className="ml-auto flex items-center gap-2 px-2 py-1 rounded-10 hoverable hover:bg-accent/30" onClick={() => appContext.openApp("evidence", { kind: "ballistics", matchKey: serial })}>
+                <FileSearch size={18} />
+                <p className="text-20 leading-none">{t("laptop.desktop_screen.evidence_app.open_evidence")}</p>
+            </div>
         </div>
 
         {loading
