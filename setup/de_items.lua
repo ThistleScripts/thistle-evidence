@@ -41,7 +41,7 @@
         export = 'thistle-evidence.hydrogen_peroxide'
     }
 },
-['fingerprint_scanner'] = {
+['forensic_fingerprint_scanner'] = {
     label = 'Fingerabdruckscanner',
     description = 'Hiermit kannst den Fingerabdruck deines Gegenübers einscannen. Bei einem Datenbanktreffer zu dem Fingerabdruck wird dir dessen Identität angezeigt.',
     weight = 500,
@@ -49,7 +49,7 @@
     close = true,
     consume = 0,
     client = {
-        export = 'thistle-evidence.fingerprint_scanner',
+        export = 'thistle-evidence.forensic_fingerprint_scanner',
     }
 },
 ['collected_blood'] = {

@@ -11,7 +11,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - In-world evidence laptop: an Evidence app to review everything analysed and the evidence you carry, add notes and link DNA profiles and fingerprints to citizens, plus citizens, firearms registry and wiretap apps. Analysis itself only happens at a microscope.
 - Your city's name on the laptop, the lab and the Discord logs (`config.cityName`, shown as "<name> Evidence").
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
-- UV flashlight: hold right click to raise it and shine it where you look. Evidence nearby glows faintly while it's on, evidence it has shown glows brightly so it can be found and collected, and blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
+- UV flashlight: hold right click to point it and shine it where you look, while still walking and strafing. Evidence nearby glows faintly while it's on, evidence it has shown glows brightly so it can be found and collected, and blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
 - Evidence markers: officers pick a numbered marker prop from a menu and click to put down as many as they need, then pick them up one at a time or all at once.
 - Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.
@@ -53,6 +53,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 4. Logging: `config.logging.webhook` became `config.logging.webhooks` with per-category URLs (`default`, `evidences`, `citizens`, `wiretap`, `firearms`).
 5. ND_Core and ox_core are no longer supported (thistle-lib supports Qbox, QBCore and ESX).
 6. Analysis moved from the laptop's DNA, Fingerprint and Ballistics apps to the forensics lab. Evidence analysed before the upgrade still shows as analysed, but only evidence analysed in the lab appears in case files.
+7. The fingerprint scanner item is now `forensic_fingerprint_scanner` (it was `fingerprint_scanner`, which other scripts also use). Replace the old entry in `ox_inventory/data/items.lua`, copy the renamed image, and swap any `fingerprint_scanner` in shops or stashes.
 
 ## Usage
 
@@ -70,6 +71,6 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Review evidence / link it to a citizen | Laptop → Evidence: pick it from the evidence log or what you carry |
 | Look up a case file | Lab → Case files, then paste a gun ID, DNA profile or fingerprint |
 | See a bullet's path | Point the UV light at the bullet |
-| Scan a fingerprint | Use `fingerprint_scanner`; the other player targets it |
+| Scan a fingerprint | Use `forensic_fingerprint_scanner`; the other player targets it |
 | Place a spy microphone | Use `spy_microphone` |
 | Clear evidence around you | `/clearEvidences <radius>` (`group.admin`) |

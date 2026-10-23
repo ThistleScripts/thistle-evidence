@@ -27,6 +27,11 @@ end
 
 -- Evidence held by a vehicle or prop, as points that follow the entity: { entity, offset?, bone?, bullet? }
 local function addEntityPoints(points, entity)
+    -- Evidence is only ever kept on networked entities; local ones (like the casing props this script spawns) have none
+    if not NetworkGetEntityIsNetworked(entity) then
+        return
+    end
+
     local state <const> = Entity(entity).state
 
     for evidenceType, key in pairs(stateKeys) do

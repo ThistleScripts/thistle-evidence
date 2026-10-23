@@ -41,7 +41,7 @@
 		export = 'thistle-evidence.hydrogen_peroxide'
 	}
 },
-['fingerprint_scanner'] = {
+['forensic_fingerprint_scanner'] = {
 	label = 'Parmak İzi Tarayıcısı',
 	description = 'Bununla karşındaki kişinin parmak izini tarayabilirsin. Parmak izi veritabanındaki bir kayıtla eşleşirse, kimliği sana gösterilir.',
 	weight = 500,
@@ -49,7 +49,7 @@
 	close = true,
 	consume = 0,
 	client = {
-		export = 'thistle-evidence.fingerprint_scanner',
+		export = 'thistle-evidence.forensic_fingerprint_scanner',
 	}
 },
 ['collected_blood'] = {

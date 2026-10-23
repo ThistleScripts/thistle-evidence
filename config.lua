@@ -151,10 +151,9 @@ config.uvLight = {
     -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.
     required = true,
 
-    -- Right click with the flashlight in hand raises it and shines it where the player looks.
-    -- "hold": while right click is held. "toggle": right click raises it and right click again lowers it.
+    -- Right click with the flashlight in hand points it where the player looks (the right arm points, so they can
+    -- still walk and strafe). "hold": while right click is held. "toggle": right click on, right click again off.
     mode = "hold",
-    animation = { dict = "amb@world_human_security_shine_torch@male@base", clip = "base" }, -- the raised-torch pose
 
     range = 12.0, -- how far the beam reaches (metres)
     angle = 30.0, -- how wide the beam is (degrees from the centre)

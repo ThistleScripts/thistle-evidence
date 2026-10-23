@@ -57,7 +57,7 @@ eventHandler.onNui("keydown", function(event)
 end)
 
 -- Export to control the item registered in items.lua!
-exports("fingerprint_scanner", function(data, slot)
+exports("forensic_fingerprint_scanner", function(data, slot)
     if not scannerProp then
         exports.ox_inventory:useItem(data, function(data)
             TriggerEvent("ox_inventory:disarm", cache.ped, true)

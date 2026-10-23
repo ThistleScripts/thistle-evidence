@@ -251,7 +251,12 @@ CreateThread(function()
             local visible <const> = #(pedCoords - evidence.coords) <= 25.0 and uv.reveals(evidence, evidence.coords)
 
             if visible ~= evidence.visible then
-                evidence:setVisible(visible)
+                -- A piece that fails to draw (e.g. a magazine model that won't load) mustn't stop this loop:
+                -- every later piece would stay hidden and untargetable for the rest of the session
+                local success <const>, err <const> = pcall(evidence.setVisible, evidence, visible)
+                if not success then
+                    lib.print.error(("Couldn't show %s evidence at %s: %s"):format(evidence.evidenceType, evidence.coords, err))
+                end
 
                 if evidence.pile then
                     changedPiles[evidence.pile] = true
@@ -260,7 +265,10 @@ CreateThread(function()
         end
 
         for pile in pairs(changedPiles) do
-            refreshPileZone(pile)
+            local success <const>, err <const> = pcall(refreshPileZone, pile)
+            if not success then
+                lib.print.error(("Couldn't update the target for %s evidence: %s"):format(pile.evidenceType, err))
+            end
         end
 
         Wait(uv.isOn() and 100 or 250)

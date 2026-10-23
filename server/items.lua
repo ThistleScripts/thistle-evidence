@@ -1,7 +1,7 @@
 local config <const> = require "config"
 local logger <const> = require "server.logger"
 
-for _, item in pairs({"evidence_laptop", "evidence_box", "forensic_kit", "hydrogen_peroxide", "fingerprint_scanner", "collected_blood", "collected_saliva", "collected_fingerprint", "collected_magazine", "collected_casing", "collected_bullet", "collected_gunshot_residue"}) do
+for _, item in pairs({"evidence_laptop", "evidence_box", "forensic_kit", "hydrogen_peroxide", "forensic_fingerprint_scanner", "collected_blood", "collected_saliva", "collected_fingerprint", "collected_magazine", "collected_casing", "collected_bullet", "collected_gunshot_residue"}) do
     if not exports.ox_inventory:Items(item) then
         lib.print.error("Setup step missing: The script requires you to create the " .. item .. " item")
         return false
