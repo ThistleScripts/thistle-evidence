@@ -1,5 +1,5 @@
--- UV floodlights at crime scenes (server/evidences/floodlights.lua). Each one lights the ground around it in UV
--- and shows every piece of evidence within config.uvFloodlight.radius, without anyone holding a flashlight.
+-- UV lamps at crime scenes (server/evidences/floodlights.lua), in the styles of config.uvFloodlight.styles: one lights
+-- all round it, the other a cone in front of it. Evidence they light shows up without anyone holding a flashlight.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local placement <const> = require "client.utils.placement"
@@ -8,102 +8,122 @@ local uv <const> = require "client.evidences.uv"
 
 local settings <const> = config.uvFloodlight
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
-local areaKey <const> = "floodlight:%s"
+local areaKey <const> = "uvlamp:%s"
 
-local floodlights = {} -- id -> { point, entity }
+local lamps = {} -- id -> { point, entity, zone }
 
-local function addFloodlight(data)
-    if floodlights[data.id] then
+-- The lamp's beam in the world: its direction on the model turned by the lamp's heading
+local function getWorldDirection(style, heading)
+    local direction <const> = style.direction
+    local radians <const> = math.rad(heading)
+    local cos <const>, sin <const> = math.cos(radians), math.sin(radians)
+    local world <const> = vector3(direction.x * cos - direction.y * sin, direction.x * sin + direction.y * cos, direction.z)
+    return world / #world
+end
+
+-- How far to turn the lamp from facing away from the officer, so its head (not its back) faces away
+local function getHeadingOffset(style)
+    if not style.direction then
+        return 0.0
+    end
+
+    return -math.deg(math.atan(-style.direction.x, style.direction.y))
+end
+
+local function addLamp(data)
+    local style <const> = settings.styles[data.style]
+    if lamps[data.id] or not style then
         return
     end
 
     local coords <const> = vector4(data.coords.x, data.coords.y, data.coords.z, data.coords.w)
-    local lampCoords <const> = coords.xyz + vector3(0.0, 0.0, settings.lampHeight)
-    local floodlight = {}
+    local lampCoords <const> = GetOffsetFromCoordAndHeadingInWorldCoords(coords.x, coords.y, coords.z, coords.w, style.lamp.x, style.lamp.y, style.lamp.z)
+    local direction <const> = style.direction and getWorldDirection(style, coords.w) or nil
+    local lamp = {}
 
-    floodlight.point = lib.points.new({
+    lamp.point = lib.points.new({
         coords = coords.xyz,
-        distance = settings.radius + 40.0,
+        distance = style.radius + 40.0,
         onEnter = function()
-            if not floodlight.entity then
-                lib.requestModel(settings.model)
-                floodlight.entity = CreateObject(settings.model, coords.x, coords.y, coords.z, false, true, false)
-                SetEntityHeading(floodlight.entity, coords.w)
-                PlaceObjectOnGroundProperly(floodlight.entity)
-                FreezeEntityPosition(floodlight.entity, true)
-                SetModelAsNoLongerNeeded(settings.model)
+            if not lamp.entity then
+                lib.requestModel(style.model)
+                lamp.entity = CreateObject(style.model, coords.x, coords.y, coords.z, false, true, false)
+                SetEntityHeading(lamp.entity, coords.w)
+                PlaceObjectOnGroundProperly(lamp.entity)
+                FreezeEntityPosition(lamp.entity, true)
+                SetModelAsNoLongerNeeded(style.model)
             end
 
-            uv.setArea(areaKey:format(data.id), coords.xyz, settings.radius)
+            uv.setArea(areaKey:format(data.id), lampCoords, style.radius, direction, style.angle)
         end,
         onExit = function()
             uv.removeArea(areaKey:format(data.id))
 
-            if floodlight.entity and DoesEntityExist(floodlight.entity) then
-                DeleteObject(floodlight.entity)
+            if lamp.entity and DoesEntityExist(lamp.entity) then
+                DeleteObject(lamp.entity)
             end
-            floodlight.entity = nil
+            lamp.entity = nil
         end,
         nearby = function()
-            -- a soft blue glow over the whole area, and the lamp's beam angled down onto it
-            DrawLightWithRange(lampCoords.x, lampCoords.y, lampCoords.z, colour.r, colour.g, colour.b, settings.radius + 2.0, settings.intensity)
-            DrawSpotLight(lampCoords.x, lampCoords.y, lampCoords.z, 0.0, 0.0, -1.0, colour.r, colour.g, colour.b, settings.radius + 4.0, settings.intensity * 3.0, 0.0, 65.0, 1.0)
+            if direction then
+                DrawSpotLight(lampCoords.x, lampCoords.y, lampCoords.z, direction.x, direction.y, direction.z, colour.r, colour.g, colour.b, style.radius + 4.0, settings.intensity * 3.0, 0.0, style.angle * 1.2, 1.0)
+                DrawLightWithRange(lampCoords.x, lampCoords.y, lampCoords.z, colour.r, colour.g, colour.b, 2.0, settings.intensity) -- the glowing head
+            else
+                DrawLightWithRange(lampCoords.x, lampCoords.y, lampCoords.z, colour.r, colour.g, colour.b, style.radius + 2.0, settings.intensity)
+            end
         end
     })
 
-    floodlights[data.id] = floodlight
+    -- A target zone instead of the model, so picking it up doesn't depend on the prop having collision
+    lamp.zone = exports.ox_target:addSphereZone({
+        coords = coords.xyz + vector3(0.0, 0.0, 0.9),
+        radius = 0.8,
+        drawSprite = false,
+        options = {
+            {
+                name = "evidences:uv_lamp_pickup",
+                label = locale("uv_floodlight.pickup"),
+                icon = "fa-solid fa-arrow-up-from-bracket",
+                distance = 2.5,
+                groups = settings.permissions or false,
+                onSelect = function()
+                    if Thistle.Callback.Await("evidences:pickupUvFloodlight", data.id) then
+                        lib.playAnim(cache.ped, "random@domestic", "pickup_low")
+                    end
+                end
+            }
+        }
+    })
+
+    lamps[data.id] = lamp
 end
 
-local function removeFloodlight(id)
-    local floodlight <const> = floodlights[id]
-    if not floodlight then
+local function removeLamp(id)
+    local lamp <const> = lamps[id]
+    if not lamp then
         return
     end
 
-    floodlight.point:onExit()
-    floodlight.point:remove()
-    floodlights[id] = nil
-end
-
-local function getFloodlightId(entity)
-    for id, floodlight in pairs(floodlights) do
-        if floodlight.entity == entity then
-            return id
-        end
-    end
+    lamp.point:onExit()
+    lamp.point:remove()
+    exports.ox_target:removeZone(lamp.zone, true)
+    lamps[id] = nil
 end
 
 CreateThread(function()
     for _, data in ipairs(Thistle.Callback.Await("evidences:getUvFloodlights") or {}) do
-        addFloodlight(data)
+        addLamp(data)
     end
 end)
 
-RegisterNetEvent("evidences:addUvFloodlight", addFloodlight)
-RegisterNetEvent("evidences:removeUvFloodlight", removeFloodlight)
-
-exports.ox_target:addModel(settings.model, {
-    {
-        name = "evidences:uv_floodlight_pickup",
-        label = locale("uv_floodlight.pickup"),
-        icon = "fa-solid fa-arrow-up-from-bracket",
-        distance = 2,
-        groups = settings.permissions or false,
-        canInteract = function(entity)
-            return getFloodlightId(entity) ~= nil
-        end,
-        onSelect = function(data)
-            local id <const> = getFloodlightId(data.entity)
-            if id and Thistle.Callback.Await("evidences:pickupUvFloodlight", id) then
-                lib.playAnim(cache.ped, "random@domestic", "pickup_low")
-            end
-        end
-    }
-})
+RegisterNetEvent("evidences:addUvFloodlight", addLamp)
+RegisterNetEvent("evidences:removeUvFloodlight", removeLamp)
 
 local isPlacing = false
 
-local function placeFloodlight()
+local function placeLamp(styleName)
+    local style <const> = settings.styles[styleName]
+
     local info <const> = player.getInfo()
     if info.setupIncomplete then
         return
@@ -114,37 +134,38 @@ local function placeFloodlight()
         return
     end
 
-    local coords <const> = placement.place(settings.model, locale("uv_floodlight.input_help"))
+    local coords <const> = placement.place(style.model, locale("uv_floodlight.input_help"), getHeadingOffset(style))
 
-    -- The server takes the item, so a floodlight can't be placed without one
-    if coords and Thistle.Callback.Await("evidences:placeUvFloodlight", coords) then
+    -- The server takes the item, so a lamp can't be placed without one
+    if coords and Thistle.Callback.Await("evidences:placeUvFloodlight", coords, styleName) then
         lib.playAnim(cache.ped, "random@domestic", "pickup_low")
     end
 end
 
-exports("uv_floodlight", function(data, slot)
-    if isPlacing then
-        return
-    end
-
-    -- ox_inventory calls this export from its own resource, so the waiting runs in a thread
-    isPlacing = true
-    CreateThread(function()
-        local success <const>, err <const> = pcall(placeFloodlight)
-        isPlacing = false
-
-        if not success then
-            error(err)
+-- Each style's item (uv_floodlight, uv_spotlight) calls the export of the same name
+for styleName in pairs(settings.styles) do
+    exports(styleName, function(data, slot)
+        if isPlacing then
+            return
         end
+
+        -- ox_inventory calls this export from its own resource, so the waiting runs in a thread
+        isPlacing = true
+        CreateThread(function()
+            local success <const>, err <const> = pcall(placeLamp, styleName)
+            isPlacing = false
+
+            if not success then
+                error(err)
+            end
+        end)
     end)
-end)
+end
 
 eventHandler.onLocal("onResourceStop", function(event)
     if event.arguments[1] == cache.resource then
-        exports.ox_target:removeModel(settings.model, "evidences:uv_floodlight_pickup")
-
-        for id in pairs(floodlights) do
-            removeFloodlight(id)
+        for id in pairs(lamps) do
+            removeLamp(id)
         end
     end
 end)

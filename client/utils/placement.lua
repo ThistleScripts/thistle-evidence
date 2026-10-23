@@ -7,8 +7,9 @@ local tempObject = nil
 
 ---@param model string|number
 ---@param inputHelpText string Placement help with placeholders for the accept key, a line break and the cancel key
+---@param headingOffset number? Turns the object from facing away from the player (e.g. so a lamp shines away)
 ---@return vector4|nil coords Where the object was placed, or nil when cancelled
-function placement.place(model, inputHelpText)
+function placement.place(model, inputHelpText, headingOffset)
     if tempObject then
         return nil
     end
@@ -44,7 +45,7 @@ function placement.place(model, inputHelpText)
 
             local camCoords <const> = GetGameplayCamCoord()
             local heading <const> = math.deg(math.atan2(camCoords.y - endCoords.y, camCoords.x - endCoords.x))
-            SetEntityHeading(tempObject, heading + 90.0)
+            SetEntityHeading(tempObject, heading + 90.0 + (headingOffset or 0.0))
         end
 
         Wait(0)

@@ -30,8 +30,10 @@ if not exports.ox_inventory:Items("evidence_marker") then
     lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")
 end
 
-if not exports.ox_inventory:Items("uv_floodlight") then
-    lib.print.warn("The uv_floodlight item doesn't exist, so UV floodlights can't be placed.")
+for style in pairs(config.uvFloodlight.styles) do
+    if not exports.ox_inventory:Items(style) then
+        lib.print.warn(("The %s item doesn't exist, so that UV lamp can't be placed."):format(style))
+    end
 end
 
 

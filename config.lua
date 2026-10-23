@@ -183,17 +183,32 @@ config.uvLight = {
     }
 }
 
--- The uv_floodlight item: a UV work light officers stand at a crime scene. Every piece of evidence within its radius
--- shows up (and can be collected) as if under the UV flashlight. Only matters while config.uvLight.required is on.
+-- UV lamps officers stand at a crime scene. Evidence they light shows up (and can be collected) as if under the UV
+-- flashlight. Only matters while config.uvLight.required is on. Each style is its own item, named by its key.
 config.uvFloodlight = {
-    model = `prop_worklight_03b`,
-    radius = 15.0, -- how far round it evidence shows up (metres)
-    lampHeight = 1.8, -- where the light comes from, above the floodlight's base (metres)
-    intensity = 6.0, -- how bright the blue light is
-    maxPerPlayer = 2, -- most floodlights one player can have standing at once
-    lifetime = 120, -- minutes before a floodlight switches itself off (the item is lost; they're also gone after a restart)
+    styles = {
+        -- Lights all round it
+        uv_floodlight = {
+            model = `bzzz_dream_of_lights_purple`,
+            lamp = vec3(0.0, 0.0, 2.1), -- where the light comes from, from the lamp's base (metres)
+            radius = 12.0 -- how far round it evidence shows up (metres)
+        },
 
-    permissions = { -- Allowed jobs and their minimum grades required to place and pick up floodlights
+        -- Lights a cone in front of it, further. It's turned to shine away from the officer placing it.
+        uv_spotlight = {
+            model = `bzzz_world_of_lamps_purple`,
+            lamp = vec3(0.0, -0.3, 1.45),
+            direction = vec3(0.0, -1.0, -0.35), -- which way the lamp head points on the model
+            angle = 35.0, -- how wide the beam is (degrees from the centre)
+            radius = 25.0 -- how far the beam reaches (metres)
+        }
+    },
+
+    intensity = 6.0, -- how bright the blue light is
+    maxPerPlayer = 2, -- most lamps one player can have standing at once
+    lifetime = 120, -- minutes before a lamp switches itself off (the item is lost; they're also gone after a restart)
+
+    permissions = { -- Allowed jobs and their minimum grades required to place and pick up lamps
         police = 0,
         fib = 0
     }

@@ -83,12 +83,20 @@ function uv.isInBeam(coords)
     return (offset.x * direction.x + offset.y * direction.y + offset.z * direction.z) / distance >= minDot
 end
 
--- A lit area, such as a UV floodlight: evidence inside it shows as if in the beam
+-- A lit area, such as a UV lamp: evidence inside it shows as if in the beam. With a direction, only a cone of
+-- the given angle (degrees from the centre) is lit, like the flashlight's beam.
 ---@param id any
 ---@param coords vector3
 ---@param radius number
-function uv.setArea(id, coords, radius)
-    areas[id] = { coords = coords, radius = radius }
+---@param direction vector3?
+---@param angle number?
+function uv.setArea(id, coords, radius, direction, angle)
+    areas[id] = {
+        coords = coords,
+        radius = radius,
+        direction = direction,
+        minDot = direction and math.cos(math.rad(angle or 35.0)) or nil
+    }
 end
 
 function uv.removeArea(id)
@@ -107,8 +115,18 @@ function uv.isInArea(coords)
     end
 
     for _, area in pairs(areas) do
-        if #(coords - area.coords) <= area.radius then
-            return true
+        local offset <const> = coords - area.coords
+        local distance <const> = #offset
+
+        if distance <= area.radius then
+            if not area.direction or distance < 1.0 then
+                return true
+            end
+
+            local direction <const> = area.direction
+            if (offset.x * direction.x + offset.y * direction.y + offset.z * direction.z) / distance >= area.minDot then
+                return true
+            end
         end
     end
 

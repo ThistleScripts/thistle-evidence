@@ -165,12 +165,22 @@
 },
 ['uv_floodlight'] = {
     label = 'UV Floodlight',
-    description = 'Work light that lights a whole crime scene in UV, showing all evidence around it',
+    description = 'UV lamp that lights all round it, showing all evidence nearby',
     weight = 3000,
     stack = false,
     close = true,
     client = {
         export = 'thistle-evidence.uv_floodlight'
+    }
+},
+['uv_spotlight'] = {
+    label = 'UV Spotlight',
+    description = 'Directional UV lamp that lights a long cone of a crime scene, showing the evidence in it',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_spotlight'
     }
 }
 

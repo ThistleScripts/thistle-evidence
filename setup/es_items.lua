@@ -172,6 +172,16 @@
     client = {
         export = 'thistle-evidence.uv_floodlight'
     }
+},
+['uv_spotlight'] = {
+    label = 'Proyector UV',
+    description = 'Lámpara UV direccional que ilumina un cono largo de la escena del crimen y muestra las pruebas en él',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_spotlight'
+    }
 }
 
 -- The UV flashlight is a weapon: see weapons.lua in this folder.

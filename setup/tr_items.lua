@@ -172,6 +172,16 @@
     client = {
         export = 'thistle-evidence.uv_floodlight'
     }
+},
+['uv_spotlight'] = {
+    label = 'UV spot lambası',
+    description = 'Olay yerinin uzun bir koni alanını aydınlatıp içindeki delilleri gösteren yönlü UV lamba',
+    weight = 3000,
+    stack = false,
+    close = true,
+    client = {
+        export = 'thistle-evidence.uv_spotlight'
+    }
 }
 
 -- The UV flashlight is a weapon: see weapons.lua in this folder.
