@@ -151,12 +151,14 @@ config.uvLight = {
     -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.
     required = true,
 
-    -- Right click with the flashlight in hand: "toggle" switches the light on and off, "hold" keeps it on while held
-    mode = "toggle",
+    -- Right click with the flashlight in hand raises it and shines it where the player looks.
+    -- "hold": while right click is held. "toggle": right click raises it and right click again lowers it.
+    mode = "hold",
+    animation = { dict = "amb@world_human_security_shine_torch@male@base", clip = "base" }, -- the raised-torch pose
 
     range = 12.0, -- how far the beam reaches (metres)
     angle = 30.0, -- how wide the beam is (degrees from the centre)
-    memory = 8000, -- how long evidence stays visible after the beam has passed over it (ms)
+    memory = 15000, -- how long evidence stays visible and targetable after the beam has passed over it (ms)
     colour = { r = 60, g = 90, b = 255 }, -- the beam's colour
 
     -- While the light is on, evidence nearby that isn't in the beam yet glows faintly so officers know where to look

@@ -1,5 +1,7 @@
 -- While the UV light is on, evidence nearby that isn't in the beam yet glows faintly (config.uvLight.hints), so
 -- officers know where to point it. Switching the light off or putting the flashlight away removes the hints.
+-- Evidence the beam has shown that has nothing else to see (a bullet in a wall, saliva, traces on a vehicle)
+-- glows brightly for as long as it stays revealed, so officers can find it to target it.
 -- Bullets in vehicles and props also show their path back to the shooter while the beam is on them.
 local config <const> = require "config"
 local evidenceTypes <const> = require "common.evidence_types"
@@ -71,17 +73,33 @@ local function drawHint(coords, colour)
     DrawMarker(28, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, size, size, size, colour.r, colour.g, colour.b, alpha, false, false, 2, false, nil, nil, false)
 end
 
+-- Revealed evidence: a bright dot, a little bigger than a hint
+local function drawRevealed(coords, colour)
+    local revealedSize <const> = size * 1.6
+    DrawMarker(28, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, revealedSize, revealedSize, revealedSize, colour.r, colour.g, colour.b, 230, false, false, 2, false, nil, nil, false)
+end
+
+-- Ground evidence the game shows nothing for once revealed (blood leaves a decal, casings and magazines a prop)
+local function hasNoVisual(evidence)
+    return evidence.evidenceType == "bullet" or not (evidence.options.visualize and evidence.options.visualize.show)
+end
+
 local groundHints = {} -- vector3s of ground evidence not showing yet
+local groundRevealed = {} -- vector3s of revealed ground evidence with nothing else to see
 local entityPoints = {}
 
 -- Finding the evidence is too slow for every frame, so it's done a few times a second
 local function scan()
     local pedCoords <const> = GetEntityCoords(cache.ped)
 
-    local ground = {}
+    local ground, revealed = {}, {}
     for _, evidence in ipairs(EvidencesAtCoords or {}) do
-        if not evidence.visible and #(pedCoords - evidence.coords) <= range then
-            ground[#ground + 1] = evidence.coords
+        if #(pedCoords - evidence.coords) <= range then
+            if not evidence.visible then
+                ground[#ground + 1] = evidence.coords
+            elseif hasNoVisual(evidence) then
+                revealed[#revealed + 1] = evidence.coords
+            end
         end
     end
 
@@ -93,25 +111,31 @@ local function scan()
         addEntityPoints(points, object.object)
     end
 
-    groundHints, entityPoints = ground, points
+    groundHints, groundRevealed, entityPoints = ground, revealed, points
 end
 
 CreateThread(function()
     while true do
-        if uv.isOn() then
+        if uv.wasOnRecently() then
             local colour <const> = uv.getColour()
             local nextScan = 0
 
-            while uv.isOn() do
+            while uv.wasOnRecently() do
+                local isOn <const> = uv.isOn()
+
                 if GetGameTimer() >= nextScan then
                     nextScan = GetGameTimer() + 300
                     scan()
                 end
 
-                if settings.enabled ~= false then
+                if isOn and settings.enabled ~= false then
                     for _, coords in ipairs(groundHints) do
                         drawHint(coords, colour)
                     end
+                end
+
+                for _, coords in ipairs(groundRevealed) do
+                    drawRevealed(coords, colour)
                 end
 
                 for _, point in ipairs(entityPoints) do
@@ -120,7 +144,9 @@ CreateThread(function()
                     if coords then
                         local inBeam <const> = uv.isInBeam(coords)
 
-                        if settings.enabled ~= false and not inBeam then
+                        if inBeam or (config.uvLight.required and uv.isRevealed(point.entity)) then
+                            drawRevealed(coords, colour)
+                        elseif isOn and settings.enabled ~= false then
                             drawHint(coords, colour)
                         end
 
@@ -136,7 +162,7 @@ CreateThread(function()
                 Wait(0)
             end
 
-            groundHints, entityPoints = {}, {}
+            groundHints, groundRevealed, entityPoints = {}, {}, {}
         end
 
         Wait(250)
