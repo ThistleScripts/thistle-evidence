@@ -157,21 +157,19 @@ config.uvLight = {
     colour = { r = 60, g = 90, b = 255 } -- the beam's colour
 }
 
--- The evidence_marker item: numbered markers officers put down at a crime scene.
+-- The evidence_marker item: a reusable kit of marker props officers put down at a crime scene. Using it opens a menu
+-- to pick the prop, then click to place as many as needed. Officers target a marker to pick it up, or all at the scene.
 config.evidenceMarkers = {
-    -- Numbered marker props: marker 1 at a scene uses the first, marker 2 the second, and so on.
-    -- The three below are streamed by this resource (stream/markers.ytyp). Add more to number further.
-    models = {
-        `marker1`,
-        `marker2`,
-        `marker3`
+    -- The props in the menu, in order. The three numbered markers are streamed by this resource (stream/markers.ytyp).
+    props = {
+        { label = "Marker 1", model = `marker1` },
+        { label = "Marker 2", model = `marker2` },
+        { label = "Marker 3", model = `marker3` },
+        { label = "Cone", model = `prop_roadcone02c` }
     },
 
-    -- Used once a scene has more markers than there are numbered props; its number floats above it
-    model = `prop_roadcone02c`,
-    numberHeight = 0.55, -- how high the floating number sits above the fallback prop (metres)
-
-    sceneRadius = 50.0, -- markers within this distance count as one scene and are numbered 1, 2, 3...
+    sceneRadius = 50.0, -- "Pick up all markers" picks up every marker within this distance of the targeted one
+    maxPerPlayer = 50, -- most markers one player can have down at once
     lifetime = 120, -- minutes before a marker removes itself (they're also gone after a restart)
 
     permissions = { -- Allowed jobs and their minimum grades required to place and pick up markers

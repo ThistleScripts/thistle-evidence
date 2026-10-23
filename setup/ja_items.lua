@@ -154,10 +154,10 @@
     stack = true
 },
 ['evidence_marker'] = {
-    label = '証拠マーカー',
-    description = '事件現場用の番号付きマーカー',
+    label = '証拠マーカーキット',
+    description = '事件現場用の繰り返し使える証拠マーカーセット',
     weight = 50,
-    stack = true,
+    stack = false,
     close = true,
     client = {
         export = 'thistle-evidence.evidence_marker'

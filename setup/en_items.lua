@@ -154,10 +154,10 @@
     stack = true
 },
 ['evidence_marker'] = {
-    label = 'Evidence Marker',
-    description = 'Numbered marker for crime scenes',
+    label = 'Evidence Marker Kit',
+    description = 'Reusable set of evidence markers for crime scenes',
     weight = 50,
-    stack = true,
+    stack = false,
     close = true,
     client = {
         export = 'thistle-evidence.evidence_marker'

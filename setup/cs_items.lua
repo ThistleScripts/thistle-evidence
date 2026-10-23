@@ -154,10 +154,10 @@
     stack = true
 },
 ['evidence_marker'] = {
-    label = 'Označovač důkazů',
-    description = 'Číslovaný označovač pro místa činu',
+    label = 'Sada označovačů důkazů',
+    description = 'Opakovaně použitelná sada označovačů pro místa činu',
     weight = 50,
-    stack = true,
+    stack = false,
     close = true,
     client = {
         export = 'thistle-evidence.evidence_marker'

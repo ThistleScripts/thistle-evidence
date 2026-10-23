@@ -12,7 +12,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Your city's name on the laptop, the lab and the Discord logs (`config.cityName`, shown as "<name> Evidence").
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
 - UV flashlight: blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
-- Numbered evidence markers officers put down at a scene.
+- Evidence markers: officers pick a numbered marker prop from a menu and click to put down as many as they need, then pick them up one at a time or all at once.
 - Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.
 - Server-validated: collecting, destroying and reporting evidence, placing laptops and microphones, and every laptop action are checked server-side.
@@ -59,7 +59,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Action | How |
 | --- | --- |
 | Find evidence | Equip the UV flashlight (`WEAPON_UVFLASHLIGHT`) and aim it around the scene |
-| Mark evidence | Use an `evidence_marker` and place it; markers number themselves per scene and can be picked back up |
+| Mark evidence | Use the `evidence_marker` kit, pick a prop, then click to place (scroll rotates, ENTER or ESC finishes). Target a marker to pick it up, or to pick up every marker at the scene |
 | Collect evidence | Target it with a `forensic_kit` (jobs from `config.permissions.collect`) |
 | Destroy evidence | Target it with the item from `config.destroyItems` (`hydrogen_peroxide` or `cleaning_kit`) |
 | Take fingerprints / DNA | Target a player with a `forensic_kit`; they get a consent prompt unless cuffed or down |

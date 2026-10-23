@@ -154,10 +154,10 @@
     stack = true
 },
 ['evidence_marker'] = {
-    label = 'Delil işaretçisi',
-    description = 'Olay yerleri için numaralı işaretçi',
+    label = 'Delil işaretçisi seti',
+    description = 'Olay yerleri için tekrar kullanılabilir işaretçi seti',
     weight = 50,
-    stack = true,
+    stack = false,
     close = true,
     client = {
         export = 'thistle-evidence.evidence_marker'

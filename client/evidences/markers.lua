@@ -1,57 +1,27 @@
--- Numbered evidence markers at crime scenes (server/evidences/markers.lua). Marker N uses the Nth numbered prop
--- (config.evidenceMarkers.models); past those, the fallback prop with the number floating above it.
+-- Evidence markers at crime scenes (server/evidences/markers.lua). Using the evidence_marker kit opens a menu of the
+-- props in config.evidenceMarkers.props; the chosen one follows the camera and every click puts one down until the
+-- officer presses ENTER or ESC. Officers target a marker to pick it up, or every marker at the scene.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
-local placement <const> = require "client.utils.placement"
 local player <const> = require "client.player"
 
 local settings <const> = config.evidenceMarkers
 
-local function toHash(model)
-    return type(model) == "string" and joaat(model) or model
+local allModels = {}
+for _, prop in ipairs(settings.props) do
+    allModels[#allModels + 1] = prop.model
 end
 
-local numberedModels = {}
-for index, model in ipairs(settings.models or {}) do
-    numberedModels[index] = toHash(model)
-end
-
-local fallbackModel <const> = toHash(settings.model)
-
--- The prop for marker number n, and whether the number has to be drawn above it
-local function getModel(number)
-    local numbered <const> = numberedModels[number]
-    return numbered or fallbackModel, numbered == nil
-end
-
-local allModels = { fallbackModel }
-for _, model in ipairs(numberedModels) do
-    allModels[#allModels + 1] = model
-end
-
-local markers = {} -- id -> { number, point, entity }
-
-local function drawNumber(coords, number)
-    SetDrawOrigin(coords.x, coords.y, coords.z + (settings.numberHeight or 0.55), 0)
-    SetTextScale(0.0, 0.45)
-    SetTextFont(4)
-    SetTextCentre(true)
-    SetTextOutline()
-    SetTextColour(255, 214, 10, 255)
-    BeginTextCommandDisplayText("STRING")
-    AddTextComponentSubstringPlayerName(tostring(number))
-    EndTextCommandDisplayText(0.0, 0.0)
-    ClearDrawOrigin()
-end
+local markers = {} -- id -> { point, entity }
 
 local function addMarker(data)
-    if markers[data.id] then
+    local prop <const> = settings.props[data.prop]
+    if markers[data.id] or not prop then
         return
     end
 
     local coords <const> = vector4(data.coords.x, data.coords.y, data.coords.z, data.coords.w)
-    local model <const>, showNumber <const> = getModel(data.number)
-    local marker = { number = data.number }
+    local marker = {}
 
     marker.point = lib.points.new({
         coords = coords.xyz,
@@ -61,23 +31,18 @@ local function addMarker(data)
                 return
             end
 
-            lib.requestModel(model)
-            marker.entity = CreateObject(model, coords.x, coords.y, coords.z, false, true, false)
+            lib.requestModel(prop.model)
+            marker.entity = CreateObject(prop.model, coords.x, coords.y, coords.z, false, true, false)
             SetEntityHeading(marker.entity, coords.w)
             PlaceObjectOnGroundProperly(marker.entity)
             FreezeEntityPosition(marker.entity, true)
-            SetModelAsNoLongerNeeded(model)
+            SetModelAsNoLongerNeeded(prop.model)
         end,
         onExit = function()
             if marker.entity and DoesEntityExist(marker.entity) then
                 DeleteObject(marker.entity)
             end
             marker.entity = nil
-        end,
-        nearby = function(point)
-            if showNumber and point.currentDistance < 20.0 then
-                drawNumber(coords.xyz, marker.number)
-            end
         end
     })
 
@@ -128,53 +93,167 @@ exports.ox_target:addModel(allModels, {
                 lib.playAnim(cache.ped, "random@domestic", "pickup_low")
             end
         end
+    },
+    {
+        name = "evidences:evidence_marker_pickup_all",
+        label = locale("markers.pickup_all"),
+        icon = "fa-solid fa-layer-group",
+        distance = 2,
+        groups = settings.permissions or false,
+        canInteract = function(entity)
+            return getMarkerId(entity) ~= nil
+        end,
+        onSelect = function(data)
+            local id <const> = getMarkerId(data.entity)
+            local count <const> = id and Thistle.Callback.Await("evidences:pickupAllEvidenceMarkers", id) or 0
+            if count > 0 then
+                lib.playAnim(cache.ped, "random@domestic", "pickup_low")
+                config.notify({ key = "markers.picked_up_all", arguments = { count } }, "success")
+            end
+        end
     }
 })
 
-local isPlacing = false
+local ghost = nil
 
-exports("evidence_marker", function(data, slot)
-    if isPlacing then
+-- Keeps the game's own use of the placer's keys (shooting, the weapon wheel, the pause menu) off for this frame
+local function disablePlacerControls()
+    DisablePlayerFiring(cache.playerId, true)
+    DisableControlAction(0, 24, true) -- attack
+    DisableControlAction(0, 25, true) -- aim
+    DisableControlAction(0, 140, true) -- melee attacks
+    DisableControlAction(0, 141, true)
+    DisableControlAction(0, 142, true)
+    DisableControlAction(0, 14, true) -- weapon wheel scroll
+    DisableControlAction(0, 15, true)
+    DisableControlAction(0, 16, true)
+    DisableControlAction(0, 17, true)
+    DisableControlAction(0, 37, true) -- weapon wheel
+    DisableControlAction(0, 200, true) -- pause menu
+end
+
+-- Click to place the prop, scroll to rotate it, ENTER or ESC to stop
+local function runPlacer(propIndex)
+    local model <const> = settings.props[propIndex].model
+    local pedCoords <const> = GetEntityCoords(cache.ped)
+
+    ghost = CreateObject(lib.requestModel(model), pedCoords.x, pedCoords.y, pedCoords.z - 5.0, false, true, false)
+    SetModelAsNoLongerNeeded(model)
+    SetEntityAlpha(ghost, 150, false)
+    SetEntityCollision(ghost, false, false)
+    FreezeEntityPosition(ghost, true)
+
+    config.inputHelp.show(locale("markers.placer_help"), {
+        tildeDelimitedCodes = { "~INPUT_ATTACK~", "~n~", "~INPUT_WEAPON_WHEEL_PREV~", "~n~", "~INPUT_FRONTEND_ACCEPT~", "~INPUT_FRONTEND_CANCEL~" },
+        mappedValues = { "[LMB]", "\n", "[SCROLL]", "\n", "[ENTER]", "[ESC]" }
+    })
+
+    local rotation = 0.0
+    local sending = false
+
+    while true do
+        disablePlacerControls()
+
+        if IsControlJustPressed(0, 201) or IsControlJustPressed(0, 202) or IsDisabledControlJustPressed(0, 200) then
+            break
+        end
+
+        if IsDisabledControlJustPressed(0, 15) then
+            rotation += 15.0
+        elseif IsDisabledControlJustPressed(0, 14) then
+            rotation -= 15.0
+        end
+
+        local hit <const>, _, endCoords <const> = lib.raycast.fromCamera(339, 4, 10)
+        local valid <const> = hit and endCoords ~= vector3(0, 0, 0)
+
+        if valid then
+            local camCoords <const> = GetGameplayCamCoord()
+            local heading <const> = math.deg(math.atan(camCoords.y - endCoords.y, camCoords.x - endCoords.x)) + 90.0 + rotation
+
+            SetEntityCoords(ghost, endCoords.x, endCoords.y, endCoords.z, false, false, false, false)
+            SetEntityHeading(ghost, heading % 360.0)
+        end
+
+        if valid and not sending and IsDisabledControlJustPressed(0, 24) then
+            local coords <const> = GetEntityCoords(ghost)
+            local placeAt <const> = vector4(coords.x, coords.y, coords.z, GetEntityHeading(ghost))
+
+            -- Sent from its own thread so the preview keeps following the camera while the server answers
+            sending = true
+            CreateThread(function()
+                if Thistle.Callback.Await("evidences:placeEvidenceMarker", placeAt, propIndex) then
+                    PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                end
+                sending = false
+            end)
+        end
+
+        Wait(0)
+    end
+
+    DeleteObject(ghost)
+    ghost = nil
+    config.inputHelp.hide()
+
+    -- ESC is held for a moment after stopping; keep it from opening the pause menu
+    local releaseUntil <const> = GetGameTimer() + 500
+    while GetGameTimer() < releaseUntil do
+        DisableControlAction(0, 200, true)
+        Wait(0)
+    end
+end
+
+exports("evidence_marker", function()
+    if ghost then
         return
     end
 
-    -- ox_inventory calls this export from its own resource, so the placement runs in a thread
-    isPlacing = true
+    -- ox_inventory calls this export from its own resource, so the permission check runs in a thread
     CreateThread(function()
-        local success <const>, err <const> = pcall(function()
-            local info <const> = player.getInfo()
-            if info.setupIncomplete then
-                return
-            end
-
-            if not info.permissions.placeMarkers then
-                config.notify({ key = "laptop.notifications.no_permission" }, "error")
-                return
-            end
-
-            local coords <const> = placement.place(numberedModels[1] or fallbackModel, locale("markers.input_help"))
-            if not coords then
-                return
-            end
-
-            local number <const> = Thistle.Callback.Await("evidences:placeEvidenceMarker", coords)
-            if number then
-                lib.playAnim(cache.ped, "random@domestic", "pickup_low")
-                config.notify({ key = "markers.placed", arguments = { number } }, "success")
-            end
-        end)
-
-        isPlacing = false
-
-        if not success then
-            error(err)
+        local info <const> = player.getInfo()
+        if info.setupIncomplete then
+            return
         end
+
+        if not info.permissions.placeMarkers then
+            config.notify({ key = "laptop.notifications.no_permission" }, "error")
+            return
+        end
+
+        local options = {}
+        for index, prop in ipairs(settings.props) do
+            options[index] = {
+                title = prop.label,
+                description = locale("markers.menu_description"),
+                icon = "location-dot",
+                onSelect = function()
+                    if not ghost then
+                        CreateThread(function()
+                            runPlacer(index)
+                        end)
+                    end
+                end
+            }
+        end
+
+        lib.registerContext({
+            id = "evidences:evidence_markers",
+            title = locale("markers.menu_title"),
+            options = options
+        })
+        lib.showContext("evidences:evidence_markers")
     end)
 end)
 
 eventHandler.onLocal("onResourceStop", function(event)
     if event.arguments[1] == cache.resource then
-        exports.ox_target:removeModel(allModels, "evidences:evidence_marker_pickup")
+        exports.ox_target:removeModel(allModels, { "evidences:evidence_marker_pickup", "evidences:evidence_marker_pickup_all" })
+
+        if ghost then
+            DeleteObject(ghost)
+            config.inputHelp.hide()
+        end
 
         for id in pairs(markers) do
             removeMarker(id)

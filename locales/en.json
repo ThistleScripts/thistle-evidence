@@ -581,11 +581,18 @@
         }
     },
     "markers": {
+        "menu_title": "Evidence markers",
+        "menu_description": "Click to place, as many as you need",
         "pickup": "Pick up evidence marker",
-        "input_help": "Press %s to place the evidence marker.%sUse %s to cancel this action",
-        "placed": {
+        "pickup_all": "Pick up all markers here",
+        "picked_up_all": {
             "title": "Evidence",
-            "description": "Evidence marker %s placed"
-        }
+            "description": "Picked up %s evidence markers"
+        },
+        "limit": {
+            "title": "Evidence",
+            "description": "You have too many evidence markers down. Pick some up first"
+        },
+        "placer_help": "%s Place marker%s%s Rotate%s%s / %s Finish"
     }
 }

@@ -154,10 +154,10 @@
     stack = true
 },
 ['evidence_marker'] = {
-    label = 'Beweismarker',
-    description = 'Nummerierter Marker für Tatorte',
+    label = 'Beweismarker-Set',
+    description = 'Wiederverwendbares Set Beweismarker für Tatorte',
     weight = 50,
-    stack = true,
+    stack = false,
     close = true,
     client = {
         export = 'thistle-evidence.evidence_marker'
