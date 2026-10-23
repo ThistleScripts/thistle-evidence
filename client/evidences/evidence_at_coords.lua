@@ -68,7 +68,7 @@ local function refreshPileZone(pile)
 
     pile.zone = exports.ox_target:addSphereZone({
         coords = pile.center,
-        radius = 0.3,
+        radius = 0.5,
         drawSprite = true,
         options = {
             {
