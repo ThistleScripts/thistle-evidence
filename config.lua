@@ -106,6 +106,20 @@ config.citizens = {
     synced = true
 }
 
+-- The forensic_fingerprint_scanner item: the holder holds out a phone (p_cs_cam_phone) and another player puts their
+-- finger on it. The holder can walk about while holding it; ESC, Backspace or using the item again puts it away.
+config.fingerprintScanner = {
+    animation = { dict = "cellphone@", clip = "cellphone_text_read_base" }, -- holding the phone out (loops)
+    enterAnimation = { dict = "cellphone@", clip = "cellphone_text_in", duration = 600 }, -- raising it
+    exitAnimation = { dict = "cellphone@", clip = "cellphone_text_out", duration = 700 }, -- lowering it
+    pressAnimation = { dict = "mp_common", clip = "givetake1_a", duration = 1500 }, -- the scanned player's finger press
+
+    -- How the phone sits in the right hand (bone 28422 is PH_R_Hand). Tune these if it floats or clips.
+    bone = 28422,
+    offset = vec3(0.0, 0.0, 0.0),
+    rotation = vec3(0.0, 0.0, 0.0)
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.
