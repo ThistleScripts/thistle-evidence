@@ -155,6 +155,14 @@ config.uvLight = {
     -- "hold": while right click is held. "toggle": right click raises it and right click again lowers it.
     mode = "hold",
     animation = { dict = "amb@world_human_security_shine_torch@male@base", clip = "base" }, -- the raised-torch pose
+    -- The pose holds the torch in the left hand, so while it's raised this torch is put there and the flashlight in
+    -- the right hand is hidden. bone 60309 is PH_L_Hand; offset and rotation fine-tune how it sits in the hand.
+    torch = {
+        model = `prop_cs_police_torch`,
+        bone = 60309,
+        offset = vec3(0.0, 0.0, 0.0),
+        rotation = vec3(0.0, 0.0, 0.0)
+    },
 
     range = 12.0, -- how far the beam reaches (metres)
     angle = 30.0, -- how wide the beam is (degrees from the centre)

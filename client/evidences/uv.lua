@@ -1,6 +1,7 @@
 -- The UV flashlight: the WEAPON_UVFLASHLIGHT addon weapon (data/weapons), held and swung like the game's flashlight.
 -- Right click raises it and switches the blue beam on (held, or toggled with config.uvLight.mode): the player turns to
--- where the camera looks and shines the torch from their hand. Evidence caught in the beam shows up, and
+-- where the camera looks and shines a torch held in the left hand, as the shine-torch pose expects. The weapon in the
+-- right hand is hidden meanwhile. Evidence caught in the beam shows up, and
 -- client/evidences/uv_hints.lua draws faint hints of the evidence around while it's on.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
@@ -16,6 +17,8 @@ local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until 
 local minDot <const> = math.cos(math.rad(config.uvLight.angle))
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
 local animation <const> = config.uvLight.animation or { dict = "amb@world_human_security_shine_torch@male@base", clip = "base" }
+local torch <const> = config.uvLight.torch or { model = `prop_cs_police_torch`, bone = 60309, offset = vec3(0.0, 0.0, 0.0), rotation = vec3(0.0, 0.0, 0.0) }
+local torchObject = nil -- the torch in the left hand while it's raised
 
 -- How far up and down the torch can be pointed (degrees)
 local minPitch <const>, maxPitch <const> = -70.0, 45.0
@@ -32,33 +35,23 @@ local function getWeaponEntity()
 end
 
 local function getBeamOrigin()
+    if torchObject and DoesEntityExist(torchObject) then
+        return GetEntityCoords(torchObject)
+    end
+
     local weapon <const> = getWeaponEntity()
     return weapon and GetEntityCoords(weapon) or GetEntityCoords(cache.ped)
 end
 
--- The beam leaves the torch in the direction the hand points it (weapon models point along their X axis),
--- tilted up or down with the camera since the raised-torch pose can't. If the torch points somewhere odd
--- (mid-animation), the player's facing is used instead.
+-- The player faces where the camera looks while the torch is raised, so the beam goes the way they face,
+-- tilted up or down with the camera since the raised-torch pose can't
 local function getBeamDirection()
-    local pedForward <const> = GetEntityForwardVector(cache.ped)
-    local flat = vector2(pedForward.x, pedForward.y)
-
-    local weapon <const> = getWeaponEntity()
-    if weapon then
-        local axis <const> = GetOffsetFromEntityInWorldCoords(weapon, 1.0, 0.0, 0.0) - GetEntityCoords(weapon)
-        local axisFlat <const> = vector2(axis.x, axis.y)
-
-        if #axisFlat > 0.2 then
-            local normalised <const> = axisFlat / #axisFlat
-            if normalised.x * flat.x + normalised.y * flat.y > 0.5 then
-                flat = normalised
-            end
-        end
-    end
+    local forward <const> = GetEntityForwardVector(cache.ped)
+    local flat <const> = vector2(forward.x, forward.y)
+    local length <const> = #flat > 0 and #flat or 1.0
 
     local pitch <const> = math.rad(math.max(minPitch, math.min(maxPitch, GetGameplayCamRot(2).x)))
     local horizontal <const> = math.cos(pitch)
-    local length <const> = #flat > 0 and #flat or 1.0
 
     return vector3(flat.x / length * horizontal, flat.y / length * horizontal, math.sin(pitch))
 end
@@ -133,9 +126,18 @@ local function cleanUpRevealed()
     end
 end
 
--- Raised torch: the shine-torch pose on the upper body, so the player can still walk
+local function removeTorchObject()
+    if torchObject and DoesEntityExist(torchObject) then
+        DeleteObject(torchObject)
+    end
+    torchObject = nil
+end
+
+-- Raised torch: the shine-torch pose on the upper body, so the player can still walk. The pose holds the torch in
+-- the left hand, so a torch is put there (config.uvLight.torch) and the flashlight weapon in the right hand is hidden.
 local function raiseTorch()
     if cache.vehicle then
+        removeTorchObject()
         return
     end
 
@@ -143,6 +145,18 @@ local function raiseTorch()
         lib.requestAnimDict(animation.dict)
         TaskPlayAnim(cache.ped, animation.dict, animation.clip, 4.0, 4.0, -1, 49, 0.0, false, false, false)
     end
+
+    if not torchObject or not DoesEntityExist(torchObject) then
+        local coords <const> = GetEntityCoords(cache.ped)
+        torchObject = CreateObject(lib.requestModel(torch.model), coords.x, coords.y, coords.z, false, false, false)
+        SetModelAsNoLongerNeeded(torch.model)
+        SetEntityCollision(torchObject, false, false)
+        AttachEntityToEntity(torchObject, cache.ped, GetPedBoneIndex(cache.ped, torch.bone),
+            torch.offset.x, torch.offset.y, torch.offset.z, torch.rotation.x, torch.rotation.y, torch.rotation.z,
+            true, true, false, true, 1, true)
+    end
+
+    SetPedCurrentWeaponVisible(cache.ped, false, true, false, false)
 
     -- Turn to where the camera looks, as when aiming a gun
     SetEntityHeading(cache.ped, GetGameplayCamRot(2).z)
@@ -152,6 +166,9 @@ local function lowerTorch()
     if IsEntityPlayingAnim(cache.ped, animation.dict, animation.clip, 3) then
         StopAnimTask(cache.ped, animation.dict, animation.clip, 2.0)
     end
+
+    removeTorchObject()
+    SetPedCurrentWeaponVisible(cache.ped, true, true, false, false)
 end
 
 local function setLight(on)
@@ -238,6 +255,7 @@ end)
 eventHandler.onLocal("onResourceStop", function(event)
     if event.arguments[1] == cache.resource then
         unequip()
+        removeTorchObject()
     end
 end)
 
