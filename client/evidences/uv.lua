@@ -1,5 +1,5 @@
--- The UV flashlight: GTA's flashlight weapon (WEAPON_FLASHLIGHT) with metadata type "uv". While it's equipped the
--- game's white beam is switched off and a blue one is drawn instead; evidence caught in it shows up (config.uvLight).
+-- The UV flashlight: the WEAPON_UVFLASHLIGHT addon weapon (data/weapons), held and swung like the game's flashlight.
+-- While it's equipped a blue beam is drawn from it; evidence caught in the beam shows up (config.uvLight).
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 
@@ -11,8 +11,10 @@ local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until 
 local minDot <const> = math.cos(math.rad(config.uvLight.angle))
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
 
+AddTextEntry("WT_UVFLASHLIGHT", "UV Flashlight") -- the weapon's name on the weapon wheel and HUD
+
 local function isUvFlashlight(weapon)
-    return weapon ~= nil and weapon.name == "WEAPON_FLASHLIGHT" and type(weapon.metadata) == "table" and weapon.metadata.type == "uv"
+    return weapon ~= nil and weapon.name == "WEAPON_UVFLASHLIGHT"
 end
 
 local function normalise(vector)
@@ -99,8 +101,6 @@ local function switchOn()
         local nextCleanup = 0
 
         while isOn do
-            -- the game's own white flashlight beam, replaced by the blue one
-            SetFlashLightEnabled(cache.ped, false)
 
             local origin <const> = getBeamOrigin()
             local direction <const> = getBeamDirection()

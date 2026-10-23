@@ -143,9 +143,9 @@ config.destroyItems = {
     magazine = "cleaning_kit"
 }
 
--- The UV flashlight is GTA's flashlight weapon (WEAPON_FLASHLIGHT) with metadata type "uv", equipped and used like the
--- normal one but with a blue beam. Give one with /giveitem <id> WEAPON_FLASHLIGHT 1 uv, or sell it in an ox_inventory
--- shop with metadata = { type = "uv" }. While it's equipped, evidence caught in its beam shows up and can be targeted.
+-- The UV flashlight is an addon weapon, WEAPON_UVFLASHLIGHT, held and swung like the game's flashlight but with a blue
+-- beam. Add it to ox_inventory/data/weapons.lua (see setup/weapons.lua), then give it or sell it in shops like any
+-- other weapon. While it's equipped, evidence caught in its beam shows up and can be targeted.
 config.uvLight = {
     -- true: blood, casings, bullets, magazines and traces on vehicles and props are only visible and targetable under UV light.
     -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.

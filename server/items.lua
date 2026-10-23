@@ -20,26 +20,10 @@ for _, item in pairs(config.destroyItems) do
     end
 end
 
-if config.uvLight.required and not exports.ox_inventory:Items("WEAPON_FLASHLIGHT") then
-    lib.print.error("Setup step missing: The UV flashlight is ox_inventory's WEAPON_FLASHLIGHT with metadata type \"uv\", but WEAPON_FLASHLIGHT doesn't exist (evidence is only visible under UV light, see config.uvLight)")
+if config.uvLight.required and not exports.ox_inventory:Items("WEAPON_UVFLASHLIGHT") then
+    lib.print.error("Setup step missing: Add the WEAPON_UVFLASHLIGHT weapon to ox_inventory/data/weapons.lua (see setup/weapons.lua). Evidence is only visible under UV light, see config.uvLight")
     return false
 end
-
--- A flashlight given with metadata type "uv" (/giveitem <id> WEAPON_FLASHLIGHT 1 uv, or a shop item with
--- metadata = { type = "uv" }) shows as the UV flashlight in inventories
-exports.ox_inventory:registerHook("createItem", function(payload)
-    local metadata <const> = payload.metadata
-    if type(metadata) == "table" and metadata.type == "uv" then
-        metadata.label = metadata.label or "UV Flashlight"
-        metadata.image = metadata.image or "uv_flashlight"
-    end
-
-    return metadata
-end, {
-    itemFilter = {
-        WEAPON_FLASHLIGHT = true
-    }
-})
 
 if not exports.ox_inventory:Items("evidence_marker") then
     lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")

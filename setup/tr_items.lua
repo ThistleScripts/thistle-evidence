@@ -164,6 +164,4 @@
     }
 }
 
--- The UV flashlight isn't an item of its own: it's WEAPON_FLASHLIGHT (already in ox_inventory/data/weapons.lua)
--- with metadata type "uv". Give one with /giveitem <id> WEAPON_FLASHLIGHT 1 uv, or add it to a shop with metadata = { type = 'uv' }.
--- Copy images/uv_flashlight.png to ox_inventory/web/images/ for its inventory image.
+-- The UV flashlight is a weapon: see weapons.lua in this folder.

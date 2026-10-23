@@ -33,7 +33,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 
 1. The built laptop and lab UI is included in `html/dui/laptop/dist`. After changing the UI source, rebuild it with `cd html/dui/laptop && bun install && bun run build` and commit the new `dist`.
 2. Drop `thistle-evidence` in your resources folder and add `ensure thistle-evidence` **after** `ox_lib`, `thistle-lib`, `oxmysql`, `ox_inventory`, `ox_target` and your framework.
-3. Add the items from one of the language files in [`setup/`](setup) ([en](setup/en_items.lua), [de](setup/de_items.lua), [es](setup/es_items.lua), [cs](setup/cs_items.lua), [tr](setup/tr_items.lua), [fr](setup/fr_items.lua), [ja](setup/ja_items.lua)) to `ox_inventory/data/items.lua`, and copy [`setup/images`](setup/images) to `ox_inventory/web/images/`.
+3. Add the items from one of the language files in [`setup/`](setup) ([en](setup/en_items.lua), [de](setup/de_items.lua), [es](setup/es_items.lua), [cs](setup/cs_items.lua), [tr](setup/tr_items.lua), [fr](setup/fr_items.lua), [ja](setup/ja_items.lua)) to `ox_inventory/data/items.lua`, the UV flashlight from [`setup/weapons.lua`](setup/weapons.lua) to `ox_inventory/data/weapons.lua`, and copy [`setup/images`](setup/images) to `ox_inventory/web/images/`.
 4. On ox_inventory older than 2.44.4, make `evidence_box` a container in `ox_inventory/modules/items/containers.lua`:
     ```lua
     setContainerProperties('evidence_box', {
@@ -58,7 +58,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 
 | Action | How |
 | --- | --- |
-| Find evidence | Equip the UV flashlight and aim it around the scene (it's `WEAPON_FLASHLIGHT` with metadata type `uv`: `/giveitem <id> WEAPON_FLASHLIGHT 1 uv`, or a shop item with `metadata = { type = 'uv' }`) |
+| Find evidence | Equip the UV flashlight (`WEAPON_UVFLASHLIGHT`) and aim it around the scene |
 | Mark evidence | Use an `evidence_marker` and place it; markers number themselves per scene and can be picked back up |
 | Collect evidence | Target it with a `forensic_kit` (jobs from `config.permissions.collect`) |
 | Destroy evidence | Target it with the item from `config.destroyItems` (`hydrogen_peroxide` or `cleaning_kit`) |
