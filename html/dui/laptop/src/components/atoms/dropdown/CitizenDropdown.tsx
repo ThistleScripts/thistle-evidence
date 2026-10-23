@@ -4,6 +4,7 @@ import type Citizen from "@/types/citizen.type";
 import useLuaCallback from "@/hooks/useLuaCallback";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useTranslation } from "@/components/TranslationContext";
+import { useAppContext } from "@/hooks/useAppContext";
 
 interface CitizenDropdownProps {
     className?: string;
@@ -13,6 +14,7 @@ interface CitizenDropdownProps {
 
 export default function CitizenDropdown(props: CitizenDropdownProps) {
     const { t } = useTranslation();
+    const appContext = useAppContext(false);
 
     const [citizens, setCitizens] = useState<Citizen[]>([]);
     const offset = useRef<number>(0);
@@ -68,6 +70,8 @@ export default function CitizenDropdown(props: CitizenDropdownProps) {
             loading={loading}
             searchText={searchText}
             onSearchTextChange={text => setSearchText(text)}
+            // Without synced citizens, only citizens officers have created in the Citizens app can be picked
+            emptyText={appContext?.options?.areCitizensSynced === false && !searchText ? t("laptop.desktop_screen.common.dropdowns.no_citizens_on_record") : undefined}
             className={props.className}
         >
             <DropdownSelection<Citizen> placeholder={t("laptop.desktop_screen.common.dropdowns.select_citizen")} includeSearch={item => item.fullName}>
