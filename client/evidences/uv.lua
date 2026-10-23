@@ -1,10 +1,13 @@
 -- The UV flashlight: the WEAPON_UVFLASHLIGHT addon weapon (data/weapons), held and swung like the game's flashlight.
--- While it's equipped a blue beam is drawn from it; evidence caught in the beam shows up (config.uvLight).
+-- Right click switches the blue beam on and off (or holds it on, config.uvLight.mode); evidence caught in the beam
+-- shows up, and client/evidences/uv_hints.lua draws faint hints of the evidence around while it's on.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 
 local uv = {}
 
+local isEquipped = false
+local equipCount = 0 -- so a quick unequip and equip doesn't leave two threads running
 local isOn = false
 local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until which it stays visible
 
@@ -22,17 +25,12 @@ local function normalise(vector)
     return length > 0 and vector / length or vector
 end
 
--- Aiming points the light where the camera looks; otherwise it hangs in front of the player, angled at the ground
+-- The light points where the camera looks
 local function getBeamDirection()
-    if IsPlayerFreeAiming(cache.playerId) then
-        local rotation <const> = GetGameplayCamRot(2)
-        local pitch <const>, yaw <const> = math.rad(rotation.x), math.rad(rotation.z)
-        local flat <const> = math.abs(math.cos(pitch))
-        return vector3(-math.sin(yaw) * flat, math.cos(yaw) * flat, math.sin(pitch))
-    end
-
-    local forward <const> = GetEntityForwardVector(cache.ped)
-    return normalise(vector3(forward.x, forward.y, -0.35))
+    local rotation <const> = GetGameplayCamRot(2)
+    local pitch <const>, yaw <const> = math.rad(rotation.x), math.rad(rotation.z)
+    local flat <const> = math.abs(math.cos(pitch))
+    return vector3(-math.sin(yaw) * flat, math.cos(yaw) * flat, math.sin(pitch))
 end
 
 local function getBeamOrigin()
@@ -42,6 +40,11 @@ end
 
 function uv.isOn()
     return isOn
+end
+
+---@return { r: integer, g: integer, b: integer }
+function uv.getColour()
+    return colour
 end
 
 ---@param coords vector3
@@ -86,35 +89,59 @@ function uv.reveals(key, coords)
     return visibleUntil ~= nil and visibleUntil > now
 end
 
-local function switchOff()
+local function cleanUpRevealed()
+    local now <const> = GetGameTimer()
+    for key, visibleUntil in pairs(revealedUntil) do
+        if visibleUntil < now then
+            revealedUntil[key] = nil
+        end
+    end
+end
+
+local function setLight(on)
+    if isOn ~= on then
+        isOn = on
+        PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+    end
+end
+
+local function unequip()
+    isEquipped = false
     isOn = false
 end
 
-local function switchOn()
-    if isOn then
+-- While the flashlight is in hand, right click (the aim key, kept from aiming the baton) works the light
+local function equip()
+    if isEquipped then
         return
     end
 
-    isOn = true
+    isEquipped = true
+    equipCount += 1
+    local current <const> = equipCount
 
     CreateThread(function()
+        local hold <const> = config.uvLight.mode == "hold"
         local nextCleanup = 0
 
-        while isOn do
+        while isEquipped and equipCount == current do
+            DisableControlAction(0, 25, true)
 
-            local origin <const> = getBeamOrigin()
-            local direction <const> = getBeamDirection()
-            DrawSpotLight(origin.x, origin.y, origin.z, direction.x, direction.y, direction.z, colour.r, colour.g, colour.b, config.uvLight.range + 3.0, 12.0, 0.0, config.uvLight.angle * 1.2, 1.0)
+            if hold then
+                setLight(IsDisabledControlPressed(0, 25) and not IsNuiFocused())
+            elseif IsDisabledControlJustPressed(0, 25) and not IsNuiFocused() then
+                setLight(not isOn)
+            end
+
+            if isOn then
+                local origin <const> = getBeamOrigin()
+                local direction <const> = getBeamDirection()
+                DrawSpotLight(origin.x, origin.y, origin.z, direction.x, direction.y, direction.z, colour.r, colour.g, colour.b, config.uvLight.range + 3.0, 12.0, 0.0, config.uvLight.angle * 1.2, 1.0)
+            end
 
             if GetGameTimer() > nextCleanup then
                 nextCleanup = GetGameTimer() + 5000
-
-                local now <const> = GetGameTimer()
-                for key, visibleUntil in pairs(revealedUntil) do
-                    if visibleUntil < now then
-                        revealedUntil[key] = nil
-                    end
-                end
+                cleanUpRevealed()
             end
 
             Wait(0)
@@ -125,21 +152,21 @@ end
 -- ox_inventory tells us whenever the equipped weapon changes (nil when holstered)
 AddEventHandler("ox_inventory:currentWeapon", function(weapon)
     if isUvFlashlight(weapon) then
-        switchOn()
+        equip()
     else
-        switchOff()
+        unequip()
     end
 end)
 
 CreateThread(function()
     if isUvFlashlight(exports.ox_inventory:getCurrentWeapon()) then
-        switchOn()
+        equip()
     end
 end)
 
 eventHandler.onLocal("onResourceStop", function(event)
     if event.arguments[1] == cache.resource then
-        switchOff()
+        unequip()
     end
 end)
 

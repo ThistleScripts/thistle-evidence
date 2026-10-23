@@ -151,10 +151,21 @@ config.uvLight = {
     -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.
     required = true,
 
+    -- Right click with the flashlight in hand: "toggle" switches the light on and off, "hold" keeps it on while held
+    mode = "toggle",
+
     range = 12.0, -- how far the beam reaches (metres)
     angle = 30.0, -- how wide the beam is (degrees from the centre)
     memory = 8000, -- how long evidence stays visible after the beam has passed over it (ms)
-    colour = { r = 60, g = 90, b = 255 } -- the beam's colour
+    colour = { r = 60, g = 90, b = 255 }, -- the beam's colour
+
+    -- While the light is on, evidence nearby that isn't in the beam yet glows faintly so officers know where to look
+    hints = {
+        enabled = true,
+        range = 15.0, -- how far away evidence gets a hint (metres)
+        size = 0.035, -- the hint's size (metres)
+        alpha = 110 -- how strong the hint is (0-255)
+    }
 }
 
 -- The evidence_marker item: a reusable kit of marker props officers put down at a crime scene. Using it opens a menu
