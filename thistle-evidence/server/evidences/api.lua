@@ -134,7 +134,8 @@ local clientMethods <const> = {
     removeFromItem = function(source, inventory) return inventory == source end,
     atWeaponOf = function(source, attacker)
         attacker = tonumber(attacker)
-        return attacker ~= nil and attacker ~= source and DoesPlayerExist(attacker)
+        -- 0 is what the client gets for an attacker who isn't a player (a local, an animal)
+        return attacker ~= nil and attacker > 0 and attacker ~= source and DoesPlayerExist(attacker)
             and api.isNear(source, GetEntityCoords(GetPlayerPed(attacker)), 10.0)
     end
 }
