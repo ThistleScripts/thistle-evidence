@@ -8,6 +8,38 @@ local function isPlayerNear(playerId, otherPlayerId, maxDistance)
     return ped ~= 0 and otherPed ~= 0 and #(GetEntityCoords(ped) - GetEntityCoords(otherPed)) <= maxDistance
 end
 
+-- A print with no match goes on a fingerprint card in the officer's inventory, the same item a forensic kit gives, so
+-- they can put it on the citizen's record from the citizen's page (laptop or booking terminal).
+---@return boolean given
+local function giveFingerprintCard(officer, fingerprint)
+    if not fingerprint or not exports.ox_inventory:CanCarryItem(officer, "collected_fingerprint", 1) then
+        return false
+    end
+
+    local now <const> = os.time()
+    local information <const> = {
+        collectionTime = os.date("%d/%m/%Y %H:%M", now),
+        additionalData = locale("fingerprint_scanner.card_note")
+    }
+
+    local success <const> = exports.ox_inventory:AddItem(officer, "collected_fingerprint", 1, {
+        fingerprint = { owner = fingerprint, createdAt = now },
+        createdAt = now,
+        collectedAt = now, -- taken straight from the person, so a perfect sample (config.evidenceAging)
+        information = information,
+        description = require "server.evidences.evidence_information"(information)
+    })
+
+    return success and true or false
+end
+
+-- Tells the officer the result: the matching citizen, or the print itself (on a card) when nobody matches
+local function sendResult(officer, citizen, fingerprint)
+    local matched <const> = citizen and citizen.success and citizen.response
+    local gaveCard <const> = not matched and giveFingerprintCard(officer, fingerprint) or false
+    TriggerClientEvent("evidences:fingerprintScanned", officer, citizen, not matched and fingerprint or nil, gaveCard)
+end
+
 Thistle.Callback.Register("evidences:scanFingerprint", function(scanningPlayerId, playerHoldingScanner)
     -- The result goes to the player holding the scanner, so they must be right there and actually have one
     playerHoldingScanner = tonumber(playerHoldingScanner)
@@ -21,7 +53,7 @@ Thistle.Callback.Register("evidences:scanFingerprint", function(scanningPlayerId
     local fingerprint = biometricsProvider.getFingerprint(scanningPlayerId) -- correct/real fingerprint
     local citizen = linkedBiometrics.getCitizenLinkedToBiometricData("fingerprint", fingerprint) -- citizen linked to the fingerprint (can be a different one)
 
-    TriggerClientEvent("evidences:fingerprintScanned", playerHoldingScanner, citizen)
+    sendResult(playerHoldingScanner, citizen, fingerprint)
 
     if citizen and citizen.success then
         logger.log(playerHoldingScanner, "Fingerprint scanned", { scanningPlayerId = scanningPlayerId, fingerprint = fingerprint })
@@ -63,7 +95,7 @@ Thistle.Callback.Register("evidences:scanPlayerFingerprint", function(officer, t
     local fingerprint <const> = biometricsProvider.getFingerprint(targetId)
     local citizen <const> = linkedBiometrics.getCitizenLinkedToBiometricData("fingerprint", fingerprint)
 
-    TriggerClientEvent("evidences:fingerprintScanned", officer, citizen)
+    sendResult(officer, citizen, fingerprint)
     logger.log(officer, "Fingerprint scanned", { scanningPlayerId = targetId, fingerprint = fingerprint, enforced = enforce and "true" or "false" })
 
     return true
