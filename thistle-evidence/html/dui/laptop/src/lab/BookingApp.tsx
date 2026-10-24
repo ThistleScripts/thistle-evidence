@@ -138,7 +138,7 @@ export function CitizenFinder({ synced, selected, onSelect }: { synced: boolean;
                     <input className="th-input py-2 pl-9 pr-3 text-sm" placeholder={t("booking.search")} maxLength={25}
                         value={searchText} onChange={event => setSearchText(event.target.value)} />
                 </div>
-                {creating && <NewCitizen onCreated={citizen => { setCreating(false); setCitizens(list => [citizen, ...list]); onSelect(citizen); }} />}
+                {creating && <NewCitizen onCreated={citizen => { setCreating(false); setCitizens(list => [citizen, ...list.filter(other => other.identifier !== citizen.identifier)]); onSelect(citizen); }} />}
             </div>
 
             <ul className="th-scroll min-h-0 flex-1 space-y-1 overflow-y-auto px-3 pb-5">
@@ -173,6 +173,23 @@ function NewCitizen({ onCreated }: { onCreated: (citizen: Citizen) => void }) {
     const [gender, setGender] = useState("male");
     const [saving, setSaving] = useState(false);
 
+    const [nearby, setNearby] = useState<{ serverId: number; fullName: string }[]>([]);
+
+    // the players standing near the officer: picking one makes the record from their character's real details
+    useEffect(() => {
+        callServer<{ serverId: number; fullName: string }[]>("evidences:getNearbyCharacters").then(result => {
+            setNearby(result.success && Array.isArray(result.response) ? result.response : []);
+        });
+    }, []);
+
+    const createFromPlayer = async (serverId: number) => {
+        setSaving(true);
+        const result = await callServer<Citizen>("evidences:storeCitizenFromPlayer", { serverId });
+        setSaving(false);
+
+        if (result.success && result.response) onCreated(result.response);
+    };
+
     const create = async () => {
         if (!fullName.trim() || !birthdate.trim()) return;
 
@@ -185,6 +202,21 @@ function NewCitizen({ onCreated }: { onCreated: (citizen: Citizen) => void }) {
 
     return (
         <Card className="space-y-2 p-3">
+            {nearby.length > 0 && (
+                <div className="space-y-1.5 pb-1">
+                    <p className="text-xs text-muted">{t("booking.nearby")}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                        {nearby.map(player => (
+                            <button key={player.serverId} type="button" disabled={saving} onClick={() => createFromPlayer(player.serverId)}
+                                className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2 py-1 text-xs transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-50">
+                                <UserRound size={12} />
+                                {player.fullName}
+                            </button>
+                        ))}
+                    </div>
+                    <p className="pt-1 text-[11px] text-muted">{t("booking.or_by_hand")}</p>
+                </div>
+            )}
             <input className="th-input px-3 py-2 text-sm" placeholder={t("booking.full_name")} maxLength={25} value={fullName} onChange={event => setFullName(event.target.value)} />
             <input className="th-input px-3 py-2 text-sm" placeholder={t("booking.birthdate")} maxLength={25} value={birthdate} onChange={event => setBirthdate(event.target.value)} />
             <div className="flex gap-1 rounded-lg border border-line bg-surface p-1">

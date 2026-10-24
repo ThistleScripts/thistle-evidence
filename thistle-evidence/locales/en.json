@@ -752,7 +752,9 @@
         "notes": "Notes",
         "note_title": "Title, e.g. Booked for armed robbery",
         "note_text": "Details",
-        "add_note": "Add note"
+        "add_note": "Add note",
+        "nearby": "People near you: pick the suspect to create their record from who they really are",
+        "or_by_hand": "Or enter the details by hand:"
     },
     "locker": {
         "open": "Open %s",

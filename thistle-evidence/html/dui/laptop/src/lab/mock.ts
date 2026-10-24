@@ -128,6 +128,10 @@ export async function mockCallback<T>(name: string, args: any): Promise<ServerRe
             ] as T };
         case "evidences:firearmTerminal:register":
             return { success: true, response: {} as T };
+        case "evidences:getNearbyCharacters":
+            return { success: true, response: [{ serverId: 7, fullName: "Luke Smith" }, { serverId: 12, fullName: "Rosa Lindqvist" }] as T };
+        case "evidences:storeCitizenFromPlayer":
+            return { success: true, response: { identifier: "BLRP-000207", fullName: "Luke Smith", birthdate: "1991-05-14", gender: "male" } as T };
         default:
             return { success: true };
     }

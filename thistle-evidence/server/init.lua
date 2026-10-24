@@ -73,6 +73,7 @@ require "server.firearms.firearms"
 require "server.firearms.terminal"
 
 require "server.biometrics.linked_biometrics"
+require "server.citizens.nearby"
 require "server.biometrics.biometrics_taking"
 
 require "server.scanner.scanner"
