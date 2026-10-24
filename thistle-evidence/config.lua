@@ -4,7 +4,7 @@
 local config = {}
 
 -- Your city's name. It's shown as "<name> Evidence" on the laptop, in the forensics lab and on Discord logs.
-config.cityName = "Thistle"
+config.cityName = "Blacklist"
 
 
 -- Players don't leave fingerprints when wearing gloves. Gloves are worn on the arms (clothing component 3), and the
@@ -12,12 +12,12 @@ config.cityName = "Thistle"
 -- If you have custom clothing on your server, add the ids of its bare-handed arms to the right list.
 config.barehandedArms = {
     [`mp_m_freemode_01`] = {
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 26, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
-        112, 113, 114, 118, 125, 132, 184, 196, 198
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
+        112, 113, 114, 118, 125, 132, 184, 196, 198, 202, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224
     },
     [`mp_f_freemode_01`] = {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
-        129, 130, 131, 135, 142, 149, 153, 157, 161, 165
+        129, 130, 131, 135, 142, 149, 153, 157, 161, 165, 229, 233, 241, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265
     }
 }
 
@@ -59,7 +59,7 @@ config.wiretap = {
 
     calls = {
         -- If you have npwd, roadphone, lb-phone or yphone installed on your server you can choose between phone numbers or player names
-        displayPhoneNumbers = false,
+        displayPhoneNumbers = true,
 
         -- Allowed jobs and their minimum grades required to intercept phone calls.
         -- If permissions = {} the phone call section is disabled for everyone.
@@ -120,7 +120,7 @@ config.permissions = {
 -- if set to false, all citizens must be registered manually by police
 -- if set to true, citizens are synced; they cannot be edited or deleted (buttons for that actions are not visible, too)
 config.citizens = {
-    synced = true
+    synced = false
 }
 
 -- The forensic_fingerprint_scanner item: the holder holds out a phone (p_cs_cam_phone) and another player puts their
@@ -143,7 +143,7 @@ config.fingerprintScanner = {
 -- Using it needs config.permissions.access.
 config.bookingTerminals = {
     stations = {
-        -- vec3(459.5, -989.0, 24.9), -- e.g. the booking room computer at Mission Row
+        vec3(466.47, -1008.16, 21.96)
     },
     radius = 0.6 -- how big the target is round each spot (metres)
 }
@@ -151,14 +151,14 @@ config.bookingTerminals = {
 -- Evidence lockers: shared stashes at the station where evidence is kept, with a log of who put in and took out what,
 -- and when (target the locker and choose View log). Opening one needs its groups (config.permissions.access by default).
 config.evidenceLockers = {
-    -- {
-    --     id = "mrpd_evidence", -- unique; the stash's id in ox_inventory
-    --     label = "Mission Row Evidence",
-    --     coords = vec3(474.3, -990.3, 26.3),
-    --     radius = 0.8,
-    --     slots = 200,
-    --     weight = 1000000
-    -- }
+    {
+        id = "mrpd_evidence", -- unique; the stash's id in ox_inventory
+        label = "Intelligence Evidence",
+        coords = vec3(466.09, -1001.60, 21.61),
+        radius = 0.8,
+        slots = 200,
+        weight = 1000000
+    }
 }
 
 -- Labelling an evidence box with a case number seals it. Opening a sealed box breaks the seal and records who opened it
@@ -363,7 +363,7 @@ config.inputHelp = {
         -- Here is an example for ox_lib's text ui (like https://overextended.dev/docs/ox_lib/Interface/Client/textui)
         -- local replacements <const> = codes.mappedValues
         -- text = string.format(text, table.unpack(replacements))
-        
+
         -- lib.showTextUI(text, {
         --     position = "top-center",
         --     icon = "fa-solid fa-keyboard",
