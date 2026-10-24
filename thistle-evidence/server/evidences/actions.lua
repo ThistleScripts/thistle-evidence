@@ -34,7 +34,7 @@ local function isEvidenceInReach(source, evidenceType, owner, remove)
 
     if remove.fun == "removeFromPlayer" then
         local playerId <const> = tonumber(target)
-        if not playerId or not DoesPlayerExist(playerId) then
+        if not playerId or playerId <= 0 or not DoesPlayerExist(playerId) then
             return false
         end
 
