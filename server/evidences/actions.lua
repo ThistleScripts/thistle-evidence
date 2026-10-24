@@ -189,7 +189,13 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     end
 
     -- before the evidence is removed, while the vehicle's state still holds it
-    local vehicleLocation <const>, plate <const> = getVehicleLocation(evidenceType, remove)
+    local vehicleLocation, plate = getVehicleLocation(evidenceType, remove)
+
+    -- ground evidence that was left on something in particular (exports.leaveFingerprint)
+    if not vehicleLocation and type(remove) == "table" and remove.fun == "removeFromCoords" then
+        local metadata <const> = object.coordsMetadata and object.coordsMetadata[remove.arguments[1]]
+        vehicleLocation = metadata and metadata.surface or nil
+    end
 
     if remove then
         object[remove.fun](object, table.unpack(remove.arguments))

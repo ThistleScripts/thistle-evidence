@@ -60,6 +60,17 @@ end
 api.syncEvidence = syncEvidence
 exports("syncEvidence", syncEvidence)
 
+-- Leaves a player's fingerprints on something they touched in another script (an ATM, till, safe or door).
+-- The player's own client checks their gloves, so this asks it to. See client/evidences/registry/fingerprint.lua.
+---@param playerId number
+---@param coords vector3? where the print is, by default just in front of the player's hands
+---@param surface string? a short label shown as "Found on", e.g. "ATM keypad"
+exports("leaveFingerprint", function(playerId, coords, surface)
+    if DoesPlayerExist(playerId) then
+        TriggerClientEvent("evidences:leaveFingerprint", playerId, coords, surface)
+    end
+end)
+
 
 ---@param playerId number
 ---@param coords vector3|vector4|table

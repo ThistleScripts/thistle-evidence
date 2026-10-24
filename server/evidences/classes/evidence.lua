@@ -255,7 +255,14 @@ function evidence:atCoords(coords, metadata)
     metadata = metadata or {}
     metadata.createdAt = metadata.createdAt or os.time()
 
+    -- what it was left on comes from the client, so keep it a short label
+    metadata.surface = type(metadata.surface) == "string" and metadata.surface:sub(1, 40) or nil
+
     TriggerClientEvent("evidences:sync:atCoords", -1, self.__name, self.owner, coords, metadata)
+
+    -- kept for collecting, which reads what the evidence is on (e.g. "ATM keypad" for a print left in a robbery)
+    self.coordsMetadata = self.coordsMetadata or {}
+    self.coordsMetadata[coords] = metadata
 
     -- Sync the evidence at the given coords with players joining after the creation.
     -- This is not done for the other holding types beacuse the metadata in statebags is synced by default.
@@ -270,6 +277,10 @@ end
 ---@param coords vector3
 function evidence:removeFromCoords(coords)
     if not EvidencesAtCoords[coords] then return end
+
+    if self.coordsMetadata then
+        self.coordsMetadata[coords] = nil
+    end
 
     TriggerClientEvent("evidences:remove:atCoords", -1, self.__name, coords)
 
