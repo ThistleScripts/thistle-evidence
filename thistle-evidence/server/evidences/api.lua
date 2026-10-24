@@ -69,9 +69,17 @@ exports("syncEvidence", syncEvidence)
 ---@param coords vector3? where the print is, by default just in front of the player's hands
 ---@param surface string? a short label shown as "Found on", e.g. "ATM keypad"
 exports("leaveFingerprint", function(playerId, coords, surface)
-    if DoesPlayerExist(playerId) then
-        TriggerClientEvent("evidences:leaveFingerprint", playerId, coords, surface)
+    local id <const> = tonumber(playerId)
+
+    -- a calling script that lost `source` (it's gone after a Wait or inside a thread) passes nil; say which one
+    if not id or not DoesPlayerExist(id) then
+        lib.print.warn(("leaveFingerprint was called by %s without a valid player id (got %s). Pass the player's server id."):format(
+            GetInvokingResource() or "an unknown resource", tostring(playerId)))
+        return false
     end
+
+    TriggerClientEvent("evidences:leaveFingerprint", id, coords, surface)
+    return true
 end)
 
 

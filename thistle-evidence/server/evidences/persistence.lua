@@ -316,7 +316,10 @@ end)
 
 -- Players: put back once their character is known (the client reports in before a character is picked)
 RegisterNetEvent("evidences:playerLoaded", function()
-    local playerId <const> = source
+    local playerId <const> = tonumber(source)
+    if not playerId then
+        return
+    end
 
     CreateThread(function()
         for _ = 1, 120 do -- ten minutes to pick a character
