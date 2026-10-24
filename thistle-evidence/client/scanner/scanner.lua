@@ -187,6 +187,28 @@ local function watchScanner()
     end)
 end
 
+-- Raises the phone for a scan of someone the officer targeted (Scan fingerprint below). The result
+-- (evidences:fingerprintScanned) puts it away again.
+local function holdUpPhone()
+    if scannerOut then
+        return
+    end
+
+    TriggerEvent("ox_inventory:disarm", cache.ped, true)
+    scannerOut = true
+    LocalPlayer.state:set(stateKey, true, true)
+    lib.requestModel(`p_cs_cam_phone`)
+    syncProps()
+
+    local enter <const> = settings.enterAnimation
+    if enter then
+        lib.playAnim(cache.ped, enter.dict, enter.clip, 4.0, 4.0, enter.duration or 600, 48, 0.0, false, 0, false)
+        Wait(enter.duration or 600)
+    end
+
+    lib.playAnim(cache.ped, settings.animation.dict, settings.animation.clip, 4.0, 4.0, -1, 49, 0.0, false, 0, false)
+end
+
 -- Using the forensic_fingerprint_scanner item (setup/<lang>_items.lua). Using it again puts it away.
 local function useScanner(data, slot)
     if not permissions.has("fingerprints") then
@@ -337,5 +359,55 @@ eventHandler.onLocal("onResourceStop", function(event)
     if event.arguments[1] == cache.resource then
         exports.ox_target:removeGlobalPlayer("evidences:give_fingerprint")
         exports.ox_target:removeModel(`p_cs_cam_phone`, "evidences:give_fingerprint_phone")
+    end
+end)
+
+
+-- Officers scan a player's finger by targeting them, as long as they carry the scanner. The player is asked first, as
+-- when taking prints with a forensic kit, unless they're cuffed or down (server/scanner/scanner.lua).
+local scanning = false
+
+Thistle.Callback.Register("evidences:isWearingGloves", function()
+    return config.isPedWearingGloves()
+end)
+
+exports.ox_target:addGlobalPlayer({
+    {
+        name = "evidences:scan_fingerprint",
+        label = locale("fingerprint_scanner.scan_player"),
+        icon = "fa-solid fa-mobile-screen",
+        distance = 2.5,
+        items = "forensic_fingerprint_scanner",
+        canInteract = function(entity)
+            return not scanning and not config.isPedDead(cache.ped) and not config.isPedCuffed(cache.ped)
+                and permissions.has("fingerprints")
+        end,
+        onSelect = function(data)
+            if scanning then
+                return
+            end
+
+            scanning = true
+            CreateThread(function()
+                local target <const> = data.entity
+                local targetId <const> = GetPlayerServerId(NetworkGetPlayerIndexFromPed(target))
+                local enforce <const> = config.isPedCuffed(target) or config.isPedDead(target)
+
+                holdUpPhone()
+                local scanned <const> = Thistle.Callback.Await("evidences:scanPlayerFingerprint", targetId, enforce)
+                scanning = false
+
+                -- a scan puts the phone away when its result arrives; anything else puts it away now
+                if not scanned then
+                    cancel()
+                end
+            end)
+        end
+    }
+})
+
+eventHandler.onLocal("onResourceStop", function(event)
+    if event.arguments[1] == cache.resource then
+        exports.ox_target:removeGlobalPlayer("evidences:scan_fingerprint")
     end
 end)

@@ -191,6 +191,11 @@
         "scan_error": {
             "title": "Tarama başarısız",
             "description": "Parmak izi taranamadı"
+        },
+        "scan_player": "Scan fingerprint",
+        "scan_target_gloves": {
+            "title": "Scan failed",
+            "description": "They're wearing gloves"
         }
     },
     "steel_file": {

@@ -26,7 +26,8 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Evidence admin panel (`/evidenceadmin`): clear ground evidence from the whole map, by type or all at once, and choose which officers can use the laptop and each of its apps, the microscopes, collecting, swabs, fingerprints, the UV flashlight and lamps, markers and lockers. Admins are listed by licence in `permissions.lua`. The booking terminal stays open to every officer.
 - Firearm registration terminals (`config.firearmTerminals`): like the booking terminal, any officer can target one to register a gun they're carrying to a citizen, creating the citizen's record first if needed (when citizens aren't synced). No laptop needed.
 - Swab kit (`swab_kit`): any officer can take DNA mouth swabs and test for gunshot residue without a full forensic kit, e.g. on someone in custody.
-- Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
+- Fingerprint scanner: target a player and choose Scan fingerprint to check their print against the database (they're asked first unless cuffed or down), or hold it out for them to put a finger on.
+- Evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.
 - Server-validated: collecting, destroying and reporting evidence, placing laptops and microphones, and every laptop action are checked server-side.
 - Optional Discord webhook logs per category via thistle-lib, or ox_lib's logger (Datadog, Grafana Loki, Fivemanage).
