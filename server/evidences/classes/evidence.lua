@@ -216,6 +216,17 @@ function evidence:removeFromVehicleDoors(vehicle, doorIds)
 end
 
 
+-- Removes the evidence from a door and the seat next to it, which are collected together from outside the vehicle
+-- (the driver's print on the steering wheel through the driver's door).
+---@param vehicle number The netId of the vehicle
+---@param doorId number
+---@param seatId number
+function evidence:removeFromVehicleDoorAndSeat(vehicle, doorId, seatId)
+    self:removeFromVehicleDoors(vehicle, doorId)
+    self:removeFromVehicleSeats(vehicle, seatId)
+end
+
+
 -- Binds the evidence to a player. It can be destroyed or collected by targetting the player.
 -- While destroying the evidence triggers the removeFromPlayer() function, collecting the evidence also transfers it to an item created for that purpose.
 ---@param playerId number The serverId of the player the evidence should be bound to

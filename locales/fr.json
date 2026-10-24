@@ -105,6 +105,18 @@
                     "destroy": {
                         "title": "Preuves",
                         "description": "Erreur lors de la destruction des preuves"
+                    },
+                    "missing_item": {
+                        "title": "Evidences",
+                        "description": "The %s item is missing from ox_inventory. Ask a server admin to add it."
+                    },
+                    "cannot_carry": {
+                        "title": "Evidences",
+                        "description": "You can't carry any more evidence."
+                    },
+                    "no_kit": {
+                        "title": "Evidences",
+                        "description": "You need a forensic kit."
                     }
                 }
             },

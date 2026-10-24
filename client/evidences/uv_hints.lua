@@ -45,15 +45,25 @@ local function addEntityPoints(points, entity)
                         bullet = evidenceType == "bullet" and specificData or nil
                     }
                 end
-            elseif data.doorIds then
-                for doorId in pairs(data.doorIds) do
-                    local bone <const> = GetEntityBoneIndexByName(entity, doorHandles[tonumber(doorId)] or "")
+            elseif data.doorIds or data.seatIds then
+                -- at the door's handle; prints on a seat (the driver's on the steering wheel) are collected through
+                -- the door next to it, so they glow there too
+                local doors = {}
+                for doorId in pairs(data.doorIds or {}) do
+                    doors[tonumber(doorId)] = true
+                end
+                for seatId in pairs(data.seatIds or {}) do
+                    doors[tonumber(seatId) + 1] = true
+                end
+
+                for doorId in pairs(doors) do
+                    local bone <const> = GetEntityBoneIndexByName(entity, doorHandles[doorId] or "")
                     if bone ~= -1 then
                         points[#points + 1] = { entity = entity, bone = bone }
                     end
                 end
-            elseif not data.seatIds then
-                -- on the entity as a whole; seats are exempt from UV light (they can't be seen from outside)
+            else
+                -- on the entity as a whole
                 points[#points + 1] = { entity = entity }
             end
         end
