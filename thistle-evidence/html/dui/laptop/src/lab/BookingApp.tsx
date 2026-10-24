@@ -104,7 +104,8 @@ export default function BookingApp() {
     );
 }
 
-function CitizenFinder({ synced, selected, onSelect }: { synced: boolean; selected: Citizen | null; onSelect: (citizen: Citizen) => void }) {
+// Also used by the firearm registration terminal (FirearmTerminalApp.tsx)
+export function CitizenFinder({ synced, selected, onSelect }: { synced: boolean; selected: Citizen | null; onSelect: (citizen: Citizen) => void }) {
     const { t } = useTranslation();
     const [searchText, setSearchText] = useState("");
     const debouncedSearchText = useDebounce(searchText, 400);

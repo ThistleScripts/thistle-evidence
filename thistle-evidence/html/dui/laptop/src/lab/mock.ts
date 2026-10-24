@@ -118,6 +118,16 @@ export async function mockCallback<T>(name: string, args: any): Promise<ServerRe
             } as T };
         case "evidences:admin:clearGroundEvidence":
             return { success: true, response: (args.evidenceType ? 64 : 775) as T };
+        case "evidences:firearmTerminal:getRegistered":
+            return { success: true, response: [{ serial: "482913KQZ771204", label: "Pistol", imagePath: image("Pistol"), status: "registered", reason: "Personal protection", registeredBy: "Ofc. Grant", registeredAt: Date.now() - 864e6 }] as T };
+        case "evidences:firearmTerminal:getCarried":
+            return { success: true, response: [
+                { serial: "771204QKZ482913", label: "Combat Pistol", imagePath: image("Combat") },
+                { serial: "482913KQZ771204", label: "Pistol", imagePath: image("Pistol"), registeredTo: "ABC123", status: "registered" },
+                { serial: "903114HTR550812", label: "Pump Shotgun", imagePath: image("Shotgun"), registeredTo: "XYZ789", status: "registered" }
+            ] as T };
+        case "evidences:firearmTerminal:register":
+            return { success: true, response: {} as T };
         default:
             return { success: true };
     }

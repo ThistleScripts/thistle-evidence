@@ -21,6 +21,7 @@ require "client.items"
 
 require "client.lab.microscopes"
 require "client.booking.booking"
+require "client.firearms.terminal"
 require "client.admin"
 require "client.permissions"
 

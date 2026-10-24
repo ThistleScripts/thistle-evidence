@@ -148,6 +148,17 @@ config.bookingTerminals = {
     radius = 0.6 -- how big the target is round each spot (metres)
 }
 
+-- Firearm registration terminals: like the booking terminals, officers target one of these spots to open a screen
+-- where they find the citizen (or create their record, when citizens aren't synced), pick a gun they're carrying and
+-- register it to them. Every officer with config.permissions.access can use one; it doesn't need the laptop's Firearms
+-- registry app. Needs config.firearmsRegistry.enabled.
+config.firearmTerminals = {
+    stations = {
+        -- vec3(441.0, -978.9, 30.7), -- e.g. the front desk at Mission Row
+    },
+    radius = 0.6 -- how big the target is round each spot (metres)
+}
+
 -- Evidence lockers: shared stashes at the station where evidence is kept, with a log of who put in and took out what,
 -- and when (target the locker and choose View log). Opening one needs its groups (config.permissions.access by default).
 config.evidenceLockers = {
