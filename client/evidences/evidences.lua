@@ -85,7 +85,14 @@ local function createPlayerTarget(evidenceType, options, action)
 end
 
 -- atVehicleDoor
--- may only be targeted when the player targets the vehicle door from outside
+-- may only be targeted when the player targets the vehicle door from outside. The door also reaches the seat next to
+-- it, so the driver's print on the steering wheel can be collected through the driver's door.
+local seatByDoor <const> = { [0] = -1, [1] = 0, [2] = 1, [3] = 2 }
+
+local function isAtDoor(data, doorId)
+    return (data.doorIds and data.doorIds[doorId]) or (data.seatIds and data.seatIds[seatByDoor[doorId]]) or false
+end
+
 local function createVehicleDoorTarget(evidenceType, options, action)
     return {
         name = string.format("%s:vehicle_door:%s", evidenceType, action),
@@ -93,10 +100,15 @@ local function createVehicleDoorTarget(evidenceType, options, action)
         icon = options.target[action].icon or "fa-solid fa-magnifying-glass",
         groups = config.permissions.collect or false,
         items = options.target[action].requiredItem or nil,
-        distance = 2,
-        bones = { "door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r" },
+        distance = 2.5,
+        -- no ox_target bones: those only match within a metre of the door's hinge, not at the handle or window.
+        -- utils.getTargetedVehicleDoorId works out the door from anywhere along it.
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            if cache.vehicle then
                 return false
             end
 
@@ -105,19 +117,15 @@ local function createVehicleDoorTarget(evidenceType, options, action)
                 return false
             end
 
-            if cache.vehicle then
-                return false
-            end
-
             local targetedDoorId <const> = utils.getTargetedVehicleDoorId(entity, coords)
             if not targetedDoorId then
                 return false
             end
-            
-            -- get all evidences of evidenceType at the targeted vehicle door
+
+            -- get all evidences of evidenceType at the targeted vehicle door or the seat next to it
             local evidences <const> = Entity(entity).state[string.format("evidences:%s", evidenceType)] or {}
             return #getTargetedEvidences(evidences, function(data)
-                return data.doorIds and data.doorIds[targetedDoorId]
+                return isAtDoor(data, targetedDoorId)
             end) > 0
         end,
         onSelect = function(data)
@@ -125,19 +133,20 @@ local function createVehicleDoorTarget(evidenceType, options, action)
             if not targetedDoorId then
                 return
             end
-            
-            -- get all evidences of evidenceType at the targeted vehicle door
+
+            -- get all evidences of evidenceType at the targeted vehicle door or the seat next to it
             local evidences <const> = Entity(data.entity).state[string.format("evidences:%s", evidenceType)] or {}
             local targetedEvidences <const> = getTargetedEvidences(evidences, function(evidenceData)
-                return evidenceData.doorIds and evidenceData.doorIds[targetedDoorId]
+                return isAtDoor(evidenceData, targetedDoorId)
             end)
 
+            -- one item per person, whether they left it on the door, the seat or both
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords, { door = targetedDoorId }) or nil
 
                 local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
-                    fun = "removeFromVehicleDoors",
-                    arguments = { VehToNet(data.entity), targetedDoorId }
+                    fun = "removeFromVehicleDoorAndSeat",
+                    arguments = { VehToNet(data.entity), targetedDoorId, seatByDoor[targetedDoorId] }
                 }, metadata)
 
                 if not success then
