@@ -259,18 +259,29 @@ exports("forensic_fingerprint_scanner", useScanner)
 -- The item's export before it was renamed, so an items.lua entry that still calls it keeps working
 exports("fingerprint_scanner", useScanner)
 
-RegisterNetEvent("evidences:fingerprintScanned", function(result)
+-- fingerprint is set when nobody matched: the print itself, so it can be put on file. gaveCard says whether it's
+-- on a fingerprint card in the officer's inventory (server/scanner/scanner.lua).
+RegisterNetEvent("evidences:fingerprintScanned", function(result, fingerprint, gaveCard)
     CreateThread(function()
         Wait(1500)
         cancel()
     end)
+
+    if fingerprint then
+        lib.setClipboard(fingerprint)
+        config.notify({
+            key = gaveCard and "fingerprint_scanner.scan_no_match_card" or "fingerprint_scanner.scan_no_match_print",
+            arguments = { fingerprint }
+        }, "inform", 12000)
+        return
+    end
 
     if not result then
         config.notify({ key = "fingerprint_scanner.scan_no_match" }, "inform")
         return
     end
 
-    if not result.success then
+    if not result.success or not result.response then
         config.notify({ key = "fingerprint_scanner.scan_error" }, "error")
         return
     end

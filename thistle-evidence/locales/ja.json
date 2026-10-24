@@ -196,7 +196,16 @@
         "scan_target_gloves": {
             "title": "Scan failed",
             "description": "They're wearing gloves"
-        }
+        },
+        "scan_no_match_card": {
+            "title": "Fingerprint scanned",
+            "description": "No match in the database. Fingerprint %s is copied to your clipboard and on a fingerprint card in your inventory: put it on file from the citizen's page."
+        },
+        "scan_no_match_print": {
+            "title": "Fingerprint scanned",
+            "description": "No match in the database. Fingerprint %s is copied to your clipboard (no room for a fingerprint card)."
+        },
+        "card_note": "Taken with the fingerprint scanner"
     },
     "steel_file": {
         "serial_removed": {
