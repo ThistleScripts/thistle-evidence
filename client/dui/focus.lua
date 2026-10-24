@@ -3,6 +3,7 @@ local eventHandler <const> = require "common.events.handler"
 local player <const> = require "client.player"
 local dui <const> = require "client.dui.dui"
 local texture <const> = require "client.dui.laptops.texture.texture"
+local permissions <const> = require "client.permissions"
 
 local started = false
 local lastX, lastY = 0, 0
@@ -86,12 +87,20 @@ function focus.start(laptop)
             table.insert(disabledApps, "firearms_registry")
         end
 
+        -- laptop apps the evidence admin panel hasn't given this officer
+        local appCapabilities <const> = { citizens = "app_citizens", firearms_registry = "app_firearms", evidence = "app_evidence", cases = "app_cases", wiretap = "app_wiretap" }
+        for app, capability in pairs(appCapabilities) do
+            if not permissions.has(capability) then
+                table.insert(disabledApps, app)
+            end
+        end
+
         dui:sendMessage({
             action = "focus",
             brand = ("%s Evidence"):format(config.cityName or "Thistle"),
             language = GetConvar("ox:locale", "en"),
             playerName = info.name,
-            canAccess = info.permissions.access or false,
+            canAccess = (info.permissions.access and permissions.has("laptop")) or false,
             options = {
                 areCitizensSynced = config.citizens.synced,
                 displayPhoneNumbers = config.wiretap.calls.displayPhoneNumbers or false,

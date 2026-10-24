@@ -21,6 +21,8 @@ require "client.items"
 
 require "client.lab.microscopes"
 require "client.booking.booking"
+require "client.admin"
+require "client.permissions"
 
 require "client.evidences.uv"
 require "client.evidences.uv_hints"

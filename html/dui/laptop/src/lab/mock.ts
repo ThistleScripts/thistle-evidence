@@ -94,6 +94,23 @@ export async function mockCallback<T>(name: string, args: any): Promise<ServerRe
                 : [{ slot: 8, label: "Collected Fingerprint", imagePath: image("Print"), details: { identifier: "FP7Q2W9E4R1T6Y3U" } }] }] as T };
         case "evidences:getNotes":
             return { success: true, response: [{ id: 1, identifier: "ABC123", modifiedAt: Date.now() - 3600e3, modifiedBy: "Ofc. Grant", title: "Booked for armed robbery", text: "Arrested at Davis Ave. Fingerprints and swab taken on booking." }] as T };
+        case "evidences:admin:get":
+            return { success: true, response: {
+                enabled: true,
+                capabilities: [
+                    { key: "laptop", group: "laptop" }, { key: "app_citizens", group: "laptop", needs: "laptop" }, { key: "app_firearms", group: "laptop", needs: "laptop" },
+                    { key: "app_evidence", group: "laptop", needs: "laptop" }, { key: "app_cases", group: "laptop", needs: "laptop" }, { key: "app_wiretap", group: "laptop", needs: "laptop" },
+                    { key: "microscope", group: "lab" }, { key: "collect", group: "field" }, { key: "swab", group: "field" }, { key: "fingerprints", group: "field" },
+                    { key: "uv_flashlight", group: "equipment" }, { key: "uv_lamps", group: "equipment" }, { key: "markers", group: "equipment" }, { key: "lockers", group: "equipment" }
+                ],
+                defaults: { laptop: false, app_citizens: true, app_firearms: true, app_evidence: true, app_cases: true, app_wiretap: false, microscope: false,
+                    collect: true, swab: true, fingerprints: true, uv_flashlight: true, uv_lamps: true, markers: true, lockers: true },
+                officers: [
+                    { identifier: "ABC12345", name: "Det. Sarah Shaw", capabilities: { laptop: true, microscope: true, app_wiretap: true }, updatedBy: "Kieran Grant", updatedAt: Date.now() - 864e5 },
+                    { identifier: "QWE98765", name: "Ofc. Tom Reilly", capabilities: { collect: false }, updatedBy: "Kieran Grant", updatedAt: Date.now() - 36e5 }
+                ],
+                online: [{ identifier: "ZXC44556", name: "Ofc. Priya Nair", serverId: 14 }, { identifier: "ABC12345", name: "Det. Sarah Shaw", serverId: 3 }]
+            } as T };
         default:
             return { success: true };
     }

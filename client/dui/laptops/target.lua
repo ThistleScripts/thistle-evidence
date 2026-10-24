@@ -3,6 +3,7 @@ local config <const> = require "config"
 local dui <const> = require "client.dui.dui"
 local sync <const> = require "client.dui.laptops.sync"
 local focus <const> = require "client.dui.focus"
+local permissions <const> = require "client.permissions"
 
 local lastTargetCoords = nil
 
@@ -42,6 +43,10 @@ exports.ox_target:addModel(`p_laptop_02_s`, {
         distance = 2,
         groups = config.permissions.pickup or false,
         canInteract = function(entity)
+            if not permissions.has("laptop") then
+                return false
+            end
+
             for _, point in pairs(sync.points) do
                 if point.entity == entity then
                     return true

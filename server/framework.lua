@@ -105,7 +105,9 @@ Thistle.Callback.Register("evidences:getPlayerInfo", function(source)
             interceptCalls = framework.hasPermission(config.wiretap.calls.permissions, source),
             interceptRadio = framework.hasPermission(config.wiretap.radio.permissions, source),
             listenToSpyMicrophones = framework.hasPermission(config.wiretap.spyMicrophones.permissions, source)
-        }
+        },
+        -- what the evidence admin panel lets this officer do (server/permissions.lua, which requires this file)
+        capabilities = require("server.permissions").resolve(source)
     }
 end)
 

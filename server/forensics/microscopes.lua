@@ -2,6 +2,7 @@
 local config <const> = require "config"
 local framework <const> = require "server.framework"
 local database <const> = require "server.database"
+local officerPermissions <const> = require "server.permissions"
 
 local item <const> = "forensic_microscope"
 local permissions <const> = config.forensicsLab.permissions
@@ -28,7 +29,7 @@ Thistle.Callback.Register("evidences:getMicroscopes", function()
 end)
 
 Thistle.Callback.Register("evidences:placeMicroscope", function(source, coords)
-    if not framework.hasPermission(permissions.place, source) then
+    if not framework.hasPermission(permissions.place, source) or not officerPermissions.has(source, "microscope") then
         TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end
@@ -58,7 +59,7 @@ Thistle.Callback.Register("evidences:placeMicroscope", function(source, coords)
 end)
 
 Thistle.Callback.Register("evidences:pickupMicroscope", function(source, id)
-    if not framework.hasPermission(permissions.pickup, source) then
+    if not framework.hasPermission(permissions.pickup, source) or not officerPermissions.has(source, "microscope") then
         TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end

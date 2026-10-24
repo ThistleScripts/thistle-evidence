@@ -2,6 +2,7 @@ local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local config <const> = require "config"
 local logger <const> = require "server.logger"
+local officerPermissions <const> = require "server.permissions"
 
 if not config.firearmsRegistry.enabled then
     return
@@ -83,7 +84,7 @@ exports("registerFirearm", function(data)
 end)
 
 Thistle.Callback.Register("evidences:registerFirearm", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_firearms") then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"
@@ -106,7 +107,7 @@ Thistle.Callback.Register("evidences:registerFirearm", function(source, argument
 end)
 
 Thistle.Callback.Register("evidences:unregisterFirearm", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_firearms") then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"
@@ -118,7 +119,7 @@ Thistle.Callback.Register("evidences:unregisterFirearm", function(source, argume
 end)
 
 Thistle.Callback.Register("evidences:getRegisteredFirearms", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_firearms") then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"

@@ -1,9 +1,11 @@
 -- The UV flashlight: the WEAPON_UVFLASHLIGHT addon weapon (data/weapons), held and swung like the game's flashlight.
 -- Right click switches the blue beam on (held, or toggled with config.uvLight.mode). The beam shines from the
--- flashlight where the camera looks, and the player can still walk and strafe. Evidence caught in the beam shows up, and client/evidences/uv_hints.lua draws faint hints of the evidence
+-- flashlight where the camera looks, and the player can still walk and strafe. Evidence caught in the beam shows up,
+-- for everyone nearby too (the beam is shared), and client/evidences/uv_hints.lua draws faint hints of the evidence
 -- around while it's on.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
+local permissions <const> = require "client.permissions"
 
 local uv = {}
 
@@ -11,6 +13,7 @@ local isEquipped = false
 local equipCount = 0 -- so a quick unequip and equip doesn't leave two threads running
 local isOn = false
 local lastOnAt = 0
+local lastDeniedAt = 0
 local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until which it stays visible
 local areas = {} -- lit areas (UV floodlights, client/evidences/floodlights.lua): id -> { coords, radius }
 
@@ -57,14 +60,8 @@ function uv.getColour()
     return colour
 end
 
----@param coords vector3
----@return boolean
-function uv.isInBeam(coords)
-    if not isOn or not coords then
-        return false
-    end
-
-    local offset <const> = coords - getBeamOrigin()
+local function isInCone(coords, origin, direction)
+    local offset <const> = coords - origin
     local distance <const> = #offset
     if distance > config.uvLight.range then
         return false
@@ -74,8 +71,41 @@ function uv.isInBeam(coords)
         return true
     end
 
-    local direction <const> = getBeamDirection()
     return (offset.x * direction.x + offset.y * direction.y + offset.z * direction.z) / distance >= minDot
+end
+
+-- Other players' flashlights (see "Sharing the beam" below): { ped, direction }
+local remoteBeams = {}
+
+local function getRemoteOrigin(ped)
+    local weapon <const> = GetCurrentPedWeaponEntityIndex(ped)
+    return (weapon ~= 0 and DoesEntityExist(weapon)) and GetEntityCoords(weapon) or GetEntityCoords(ped)
+end
+
+-- Whether a UV flashlight's beam is on these coords: this player's or anyone else's nearby, so everyone at a scene
+-- sees what any officer's flashlight shows (collecting it still needs the admin panel's permission)
+---@param coords vector3
+---@return boolean
+function uv.isInBeam(coords)
+    if not coords then
+        return false
+    end
+
+    if isOn and isInCone(coords, getBeamOrigin(), getBeamDirection()) then
+        return true
+    end
+
+    for _, beam in ipairs(remoteBeams) do
+        if DoesEntityExist(beam.ped) and isInCone(coords, getRemoteOrigin(beam.ped), beam.direction) then
+            return true
+        end
+    end
+
+    return false
+end
+
+function uv.hasRemoteBeams()
+    return #remoteBeams > 0
 end
 
 -- A lit area, such as a UV lamp: evidence inside it shows as if in the beam. With a direction, only a cone of
@@ -170,14 +200,54 @@ local function cleanUpRevealed()
     end
 end
 
+-- Sharing the beam: while it's on, the direction it points goes in this player's state bag (a few times a second, and
+-- only when it has moved), so other players nearby see the blue light and the evidence it shows
+local beamStateKey <const> = "evidences:uvBeam"
+local sharedDirection, lastSharedAt = nil, 0
+
+local function shareBeam(direction)
+    if direction == nil then
+        if sharedDirection then
+            sharedDirection = nil
+            LocalPlayer.state:set(beamStateKey, false, true)
+        end
+        return
+    end
+
+    local now <const> = GetGameTimer()
+    if now - lastSharedAt < 200 then
+        return
+    end
+
+    if sharedDirection and (sharedDirection.x * direction.x + sharedDirection.y * direction.y + sharedDirection.z * direction.z) > 0.996 then
+        return -- moved less than about five degrees
+    end
+
+    sharedDirection, lastSharedAt = direction, now
+    LocalPlayer.state:set(beamStateKey, { x = direction.x, y = direction.y, z = direction.z }, true)
+end
+
 local function setLight(on)
     if isOn == on then
+        return
+    end
+
+    -- only officers the evidence admin panel allows can switch the beam on
+    if on and not permissions.has("uv_flashlight") then
+        if GetGameTimer() - lastDeniedAt > 5000 then
+            lastDeniedAt = GetGameTimer()
+            config.notify({ key = "laptop.notifications.no_permission" }, "error")
+        end
         return
     end
 
     isOn = on
     lastOnAt = GetGameTimer()
     PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+
+    if not on then
+        shareBeam(nil)
+    end
 end
 
 local function unequip()
@@ -219,6 +289,7 @@ local function equip()
                 local origin <const> = getBeamOrigin()
                 local direction <const> = getBeamDirection()
                 DrawSpotLight(origin.x, origin.y, origin.z, direction.x, direction.y, direction.z, colour.r, colour.g, colour.b, config.uvLight.range + 3.0, 12.0, 0.0, config.uvLight.angle * 1.2, 1.0)
+                shareBeam(direction)
             end
 
             if GetGameTimer() > nextCleanup then
@@ -230,6 +301,46 @@ local function equip()
         end
     end)
 end
+
+-- Other players' beams: who nearby has theirs on, a few times a second, and their blue light every frame
+CreateThread(function()
+    local nextCleanup = 0
+
+    while true do
+        local beams = {}
+        for _, nearby in ipairs(lib.getNearbyPlayers(GetEntityCoords(cache.ped), config.uvLight.range + 30.0)) do
+            local direction <const> = Player(GetPlayerServerId(nearby.id)).state[beamStateKey]
+            if type(direction) == "table" and direction.x then
+                beams[#beams + 1] = { ped = nearby.ped, direction = vector3(direction.x, direction.y, direction.z) }
+            end
+        end
+        remoteBeams = beams
+
+        if GetGameTimer() > nextCleanup then
+            nextCleanup = GetGameTimer() + 5000
+            cleanUpRevealed()
+        end
+
+        Wait(250)
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if #remoteBeams > 0 then
+            for _, beam in ipairs(remoteBeams) do
+                if DoesEntityExist(beam.ped) then
+                    local origin <const> = getRemoteOrigin(beam.ped)
+                    local direction <const> = beam.direction
+                    DrawSpotLight(origin.x, origin.y, origin.z, direction.x, direction.y, direction.z, colour.r, colour.g, colour.b, config.uvLight.range + 3.0, 12.0, 0.0, config.uvLight.angle * 1.2, 1.0)
+                end
+            end
+            Wait(0)
+        else
+            Wait(250)
+        end
+    end
+end)
 
 -- ox_inventory tells us whenever the equipped weapon changes (nil when holstered)
 AddEventHandler("ox_inventory:currentWeapon", function(weapon)

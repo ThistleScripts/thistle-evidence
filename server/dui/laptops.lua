@@ -1,6 +1,7 @@
 local config <const> = require "config"
 local framework <const> = require "server.framework"
 local database <const> = require "server.database"
+local officerPermissions <const> = require "server.permissions"
 
 MySQL.update.await(
     [[
@@ -33,7 +34,7 @@ Thistle.Callback.Register("evidences:getLaptops", function(source)
 end)
 
 Thistle.Callback.Register("evidences:placeLaptop", function(source, coords)
-    if not framework.hasPermission(config.permissions.place, source) then
+    if not framework.hasPermission(config.permissions.place, source) or not officerPermissions.has(source, "laptop") then
         TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end
@@ -64,7 +65,7 @@ Thistle.Callback.Register("evidences:placeLaptop", function(source, coords)
 end)
 
 Thistle.Callback.Register("evidences:pickupLaptop", function(source, coords)
-    if not framework.hasPermission(config.permissions.pickup, source) then
+    if not framework.hasPermission(config.permissions.pickup, source) or not officerPermissions.has(source, "laptop") then
         TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end

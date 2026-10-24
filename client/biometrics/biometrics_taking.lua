@@ -1,5 +1,6 @@
 local config <const> = require "config"
 local evidenceTypes <const> = require "common.evidence_types"
+local permissions <const> = require "client.permissions"
 local pendingRequests = {}
 
 Thistle.Callback.Register("evidences:requestConsent", function(requester, type)
@@ -50,6 +51,10 @@ exports.ox_target:addGlobalPlayer({
     items = "forensic_kit",
     menuName = "evidences",
     canInteract = function(entity)
+        if not permissions.has("fingerprints") then
+            return false
+        end
+
         if not config.isPedDead(cache.ped) then
             if not config.isPedCuffed(cache.ped) then
                 return (not config.isPedDead(entity)) and (not config.isPedCuffed(entity)) and (not pendingRequests[entity])
@@ -72,6 +77,10 @@ exports.ox_target:addGlobalPlayer({
     anyItem = true,
     menuName = "evidences",
     canInteract = function(entity)
+        if not permissions.has("swab") then
+            return false
+        end
+
         if not config.isPedDead(cache.ped) then
             if not config.isPedCuffed(cache.ped) then
                 return (not config.isPedDead(entity)) and (not config.isPedCuffed(entity)) and (not pendingRequests[entity])
@@ -93,6 +102,10 @@ exports.ox_target:addGlobalPlayer({
     items = "forensic_kit",
     menuName = "evidences",
     canInteract = function(entity)
+        if not permissions.has("fingerprints") then
+            return false
+        end
+
         if not config.isPedDead(cache.ped) then
             if not config.isPedCuffed(cache.ped) then
                 return config.isPedCuffed(entity) or config.isPedDead(entity)
@@ -115,6 +128,10 @@ exports.ox_target:addGlobalPlayer({
     anyItem = true,
     menuName = "evidences",
     canInteract = function(entity)
+        if not permissions.has("swab") then
+            return false
+        end
+
         if not config.isPedDead(cache.ped) then
             if not config.isPedCuffed(cache.ped) then
                 return config.isPedCuffed(entity) or config.isPedDead(entity)

@@ -1,6 +1,7 @@
 local config <const> = require "config"
 local player <const> = require "client.player"
 local placement <const> = require "client.utils.placement"
+local permissions <const> = require "client.permissions"
 
 local isPlacing = false
 
@@ -10,7 +11,7 @@ local function placeLaptop()
         return
     end
 
-    if not info.permissions.place then
+    if not info.permissions.place or not permissions.has("laptop") then
         config.notify({ key = "laptop.notifications.no_permission" }, "error")
         return
     end

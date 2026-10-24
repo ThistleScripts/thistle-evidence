@@ -5,6 +5,7 @@ local eventHandler <const> = require "common.events.handler"
 local lab <const> = require "client.lab.lab"
 local player <const> = require "client.player"
 local placement <const> = require "client.utils.placement"
+local permissions <const> = require "client.permissions"
 
 local model <const> = type(config.forensicsLab.model) == "string" and joaat(config.forensicsLab.model) or config.forensicsLab.model or `v_med_microscope`
 
@@ -94,7 +95,7 @@ exports.ox_target:addModel(model, {
         distance = 2,
         groups = config.permissions.access or false,
         canInteract = function()
-            return not config.isPedDead(cache.ped)
+            return not config.isPedDead(cache.ped) and permissions.has("microscope")
         end,
         onSelect = function()
             lab.open()
@@ -107,7 +108,7 @@ exports.ox_target:addModel(model, {
         distance = 2,
         groups = config.forensicsLab.permissions.pickup or false,
         canInteract = function(entity)
-            return getPlacedId(entity) ~= nil
+            return permissions.has("microscope") and getPlacedId(entity) ~= nil
         end,
         onSelect = function(data)
             local id <const> = getPlacedId(data.entity)
@@ -126,7 +127,7 @@ local function placeMicroscope()
         return
     end
 
-    if not info.permissions.placeMicroscope then
+    if not info.permissions.placeMicroscope or not permissions.has("microscope") then
         config.notify({ key = "laptop.notifications.no_permission" }, "error")
         return
     end

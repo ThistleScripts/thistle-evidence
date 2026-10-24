@@ -2,6 +2,7 @@
 -- memory only: a restart clears them, and each removes itself after config.evidenceMarkers.lifetime minutes.
 local config <const> = require "config"
 local framework <const> = require "server.framework"
+local officerPermissions <const> = require "server.permissions"
 
 local item <const> = "evidence_marker"
 local settings <const> = config.evidenceMarkers
@@ -29,7 +30,7 @@ end
 
 -- The marker with this id if the player may pick it up from where they stand
 local function getMarkerInReach(source, id)
-    if not framework.hasPermission(settings.permissions, source) then
+    if not framework.hasPermission(settings.permissions, source) or not officerPermissions.has(source, "markers") then
         return nil
     end
 
@@ -50,7 +51,7 @@ Thistle.Callback.Register("evidences:getEvidenceMarkers", function()
 end)
 
 Thistle.Callback.Register("evidences:placeEvidenceMarker", function(source, coords, prop)
-    if not framework.hasPermission(settings.permissions, source) then
+    if not framework.hasPermission(settings.permissions, source) or not officerPermissions.has(source, "markers") then
         TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end

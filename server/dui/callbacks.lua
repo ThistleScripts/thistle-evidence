@@ -1,9 +1,10 @@
 local config <const> = require "config"
 local framework <const> = require "server.framework"
 local inventory <const> = require "server.evidences.inventory"
+local officerPermissions <const> = require "server.permissions"
 
 Thistle.Callback.Register("evidences:getPlayersFirearms", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_firearms") then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"
