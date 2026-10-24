@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Copy, Link2, ShieldAlert, ShieldCheck, UserCheck, UserSearch } from "lucide-react";
+import { Check, ClipboardList, Copy, Link2, ShieldAlert, ShieldCheck, UserCheck, UserSearch } from "lucide-react";
 import { useTranslation } from "@/components/TranslationContext";
 import { getStatusById, Status } from "@/types/firearm.type";
 import { cn } from "@/utils/cn";
@@ -30,16 +30,51 @@ export default function CaseFileView({ caseFile, evidence, onChanged }: CaseFile
     );
 }
 
+// The case file as plain text, to paste into an MDT, a report or Discord
+function useReport() {
+    const { t } = useTranslation();
+    const typeLabel = useTypeLabel();
+    const locales = t("laptop.desktop_screen.common.date_locales");
+
+    return (caseFile: CaseFile) => {
+        const lines = [
+            t("lab.report.title"),
+            `${t(`lab.result.key.${caseFile.kind}`)}: ${caseFile.key}`
+        ];
+
+        if (caseFile.kind === "ballistics") {
+            lines.push(caseFile.firearm
+                ? `${t("lab.result.registered")}: ${caseFile.firearm.label} · ${t("lab.result.registered_to")} ${caseFile.citizen?.fullName ?? t("laptop.desktop_screen.common.statuses.unknown")}`
+                : t("lab.result.unregistered"));
+        } else {
+            lines.push(caseFile.citizen
+                ? `${t("lab.result.citizen_match")}: ${caseFile.citizen.fullName} (${String(caseFile.citizen.birthdate)})`
+                : t("lab.result.no_citizen"));
+        }
+
+        const matches = caseFile.matches ?? [];
+        lines.push("", `${t("lab.links.title")} (${matches.length}):`);
+        for (const match of matches) {
+            const place = [match.crimeScene, vehiclePlace(match)].filter(Boolean).join(" · ");
+            lines.push(`- ${typeLabel(match.evidenceType)}${match.weaponType ? ` (${match.weaponType})` : ""} · ${place || "-"} · ${t("lab.report.collected")} ${match.collectionTime || "-"} · ${t("lab.report.analysed", formatDateTime(match.analysedAt, locales), match.analysedBy)}`);
+        }
+
+        lines.push("", t("lab.report.generated", formatDateTime(Date.now(), locales)));
+        return lines.join("\n");
+    };
+}
+
 function KeyRow({ caseFile }: { caseFile: CaseFile }) {
     const { t } = useTranslation();
-    const [copied, setCopied] = useState(false);
+    const [copied, setCopied] = useState<"key" | "report" | null>(null);
+    const report = useReport();
     const style = kindStyles[caseFile.kind];
     const Icon = style.icon;
 
-    const copy = () => {
-        copyText(caseFile.key!);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
+    const copy = (what: "key" | "report") => {
+        copyText(what === "key" ? caseFile.key! : report(caseFile));
+        setCopied(what);
+        setTimeout(() => setCopied(null), 1500);
     };
 
     return (
@@ -51,8 +86,12 @@ function KeyRow({ caseFile }: { caseFile: CaseFile }) {
                 <Label>{t(`lab.result.key.${caseFile.kind}`)}</Label>
                 <p className="truncate font-mono text-lg tracking-wider">{caseFile.key}</p>
             </div>
-            <button type="button" onClick={copy} className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent">
-                {copied ? <Check size={13} /> : <Copy size={13} />}
+            <button type="button" onClick={() => copy("report")} className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent">
+                {copied === "report" ? <Check size={13} /> : <ClipboardList size={13} />}
+                {t("lab.report.copy")}
+            </button>
+            <button type="button" onClick={() => copy("key")} className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent">
+                {copied === "key" ? <Check size={13} /> : <Copy size={13} />}
                 {t("lab.result.copy")}
             </button>
         </Card>

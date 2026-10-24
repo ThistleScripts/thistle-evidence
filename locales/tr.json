@@ -471,6 +471,13 @@
         "vehicle": {
             "found_on": "Found on",
             "plate": "Plate %s"
+        },
+        "report": {
+            "copy": "Copy report",
+            "title": "FORENSIC REPORT",
+            "collected": "collected",
+            "analysed": "analysed %s by %s",
+            "generated": "Report generated %s"
         }
     },
     "markers": {

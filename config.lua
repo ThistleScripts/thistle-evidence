@@ -354,6 +354,7 @@ config.logging = {
         ["Evidence destroyed"] = true,
         ["Evidence collected"] = true,
         ["Evidence analysed"] = true,
+        ["Forensic match"] = true, -- an analysis identified a citizen or a registered gun
         ["Fingerprint scanned"] = true,
         ["Observation started"] = true,
         ["Observation ended"] = true,
@@ -371,7 +372,7 @@ config.logging = {
     -- Each category falls back to `default` when left empty; leave everything empty to send nothing.
     webhooks = {
         default = "",
-        evidences = "", -- collecting, destroying and clearing evidence, taking biometrics, fingerprint scans
+        evidences = "", -- collecting, destroying and clearing evidence, taking biometrics, fingerprint scans, forensic matches
         citizens = "", -- citizens, notes and linked biometric data
         wiretap = "", -- observations and spy microphones
         firearms = "" -- firearms registry

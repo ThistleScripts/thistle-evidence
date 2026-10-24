@@ -190,6 +190,20 @@ Thistle.Callback.Register("evidences:lab:analyse", function(source, arguments)
         end
 
         logger.log(source, "Evidence analysed", { evidenceType = getEvidenceType(item, kind), key = key })
+
+        -- A match against a citizen or a registered gun gets its own log, so it can go to a channel detectives watch
+        local identified <const> = caseFile.citizen or caseFile.firearm
+        if identified then
+            logger.log(source, "Forensic match", {
+                evidence = getEvidenceType(item, kind),
+                [kind == "ballistics" and "gunId" or kind] = key,
+                identified = caseFile.citizen and caseFile.citizen.fullName or nil,
+                firearm = caseFile.firearm and caseFile.firearm.label or nil,
+                crimeScene = information.crimeScene,
+                foundOn = information.vehicleLocation and ("%s %s"):format(information.vehicleLocation, information.plate or "") or nil,
+                linkedEvidence = #(caseFile.matches or {})
+            })
+        end
         TriggerEvent("evidences:evidenceItemAnalysed", source, item)
     end
 
