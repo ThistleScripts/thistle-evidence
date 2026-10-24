@@ -65,7 +65,9 @@
                 "collection_time": "Heure de collecte",
                 "additionalData": "Information",
                 "weapon_type": "Type d'arme",
-                "serial": "Numéro de série"
+                "serial": "Numéro de série",
+                "vehicle_location": "Found on",
+                "plate": "Licence plate"
             },
             "seats": {
                 "-1": "siège conducteur avant",
@@ -78,7 +80,11 @@
                 "1": "porte avant droite (passager)",
                 "2": "porte arrière gauche",
                 "3": "porte arrière droite"
-            }
+            },
+            "steering_wheel": "steering wheel (%s)",
+            "seat_number": "seat %s",
+            "door_number": "door %s",
+            "vehicle_body": "vehicle bodywork"
         },
         "notifications": {
             "common": {
@@ -509,6 +515,11 @@
                 "title": "Evidence",
                 "description": "Error picking up the microscope"
             }
+        },
+        "result": {},
+        "vehicle": {
+            "found_on": "Found on",
+            "plate": "Plate %s"
         }
     },
     "markers": {

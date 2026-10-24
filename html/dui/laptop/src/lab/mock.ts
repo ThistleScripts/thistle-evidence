@@ -31,7 +31,7 @@ const evidence: LabInventory[] = [
             },
             {
                 imagePath: image("Print"), label: "Collected Fingerprint", slot: 2,
-                details: { evidence: [{ kind: "fingerprint", evidenceType: "fingerprint", analysed: false, crimeScene: "Vespucci Blvd", collectionTime: "21/10/2026, 18:02", additionalData: "" }] }
+                details: { evidence: [{ kind: "fingerprint", evidenceType: "fingerprint", analysed: false, crimeScene: "Vespucci Blvd", vehicleLocation: "Steering wheel (front driver's seat)", plate: "46EEK572", collectionTime: "21/10/2026, 18:02", additionalData: "" }] }
             },
             {
                 imagePath: image("Residue"), label: "Collected Gunshot Residue", slot: 3,
@@ -53,7 +53,10 @@ const caseFiles: Record<string, CaseFile> = {
         ]
     },
     dna: { kind: "dna", key: "GATTACAGCTAGCTAA", matches: [{ id: 4, kind: "dna", matchKey: "GATTACAGCTAGCTAA", evidenceType: "blood", crimeScene: "Grove Street", collectionTime: "22/10/2026, 20:58", analysedAt: Date.now(), analysedBy: "Ofc. Grant" }] },
-    fingerprint: { kind: "fingerprint", key: "9F3A11C07BD24E58", citizen: { identifier: "XYZ789", fullName: "Rosa Lindqvist", birthdate: "1988-07-02", gender: "female" }, matches: [] }
+    fingerprint: { kind: "fingerprint", key: "9F3A11C07BD24E58", citizen: { identifier: "XYZ789", fullName: "Rosa Lindqvist", birthdate: "1988-07-02", gender: "female" }, matches: [
+        { id: 7, kind: "fingerprint", matchKey: "9F3A11C07BD24E58", evidenceType: "fingerprint", crimeScene: "Vespucci Blvd", vehicleLocation: "Steering wheel (front driver's seat)", plate: "46EEK572", collectionTime: "21/10/2026, 18:02", analysedAt: Date.now() - 600e3, analysedBy: "Ofc. Grant" },
+        { id: 6, kind: "fingerprint", matchKey: "9F3A11C07BD24E58", evidenceType: "fingerprint", crimeScene: "Little Seoul", vehicleLocation: "Front driver's door", plate: "46EEK572", collectionTime: "19/10/2026, 02:41", analysedAt: Date.now() - 86400e3, analysedBy: "Det. Morgan" }
+    ] }
 };
 
 export async function mockCallback<T>(name: string, args: any): Promise<ServerResult<T>> {

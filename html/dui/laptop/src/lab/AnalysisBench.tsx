@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, CalendarClock, MapPin, Microscope, Play } from "lucide-react";
+import { AlertTriangle, CalendarClock, Car, MapPin, Microscope, Play } from "lucide-react";
 import { useTranslation } from "@/components/TranslationContext";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/utils/cn";
 import { callServer } from "./server";
 import type { CaseFile, LabEvidence, Selection } from "./types";
-import { Button, KindChip, Label, kindStyles, useTypeLabel } from "./ui";
+import { Button, KindChip, Label, kindStyles, useTypeLabel, vehiclePlace } from "./ui";
 import CaseFileView from "./CaseFileView";
 
 interface AnalysisBenchProps {
@@ -94,6 +94,7 @@ export default function AnalysisBench({ selection, onAnalysed }: AnalysisBenchPr
                     <h2 className="truncate font-display text-2xl font-bold">{item.label}</h2>
                     <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted">
                         <span className="flex items-center gap-1.5"><MapPin size={14} />{evidence.crimeScene || "-"}</span>
+                        {evidence.vehicleLocation && <span className="flex items-center gap-1.5 text-ink"><Car size={14} className="text-muted" />{vehiclePlace(evidence)}</span>}
                         <span className="flex items-center gap-1.5"><CalendarClock size={14} />{evidence.collectionTime || "-"}</span>
                     </div>
                 </div>

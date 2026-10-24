@@ -98,6 +98,54 @@ Thistle.Callback.Register("evidences:destroy", function(source, evidenceType, ow
     return true
 end)
 
+local vehicleMethods <const> = {
+    removeFromVehicleSeats = true,
+    removeFromVehicleDoors = true,
+    removeFromEntity = true,
+    removeFromRelativeEntityCoords = true
+}
+
+local function capitalise(text)
+    return (text:gsub("^%l", string.upper))
+end
+
+-- Where in a vehicle evidence was collected (the steering wheel, a seat, a door or the bodywork) and the vehicle's
+-- plate, worked out from where it's being removed, so the lab can tell the driver's prints from a passenger's.
+---@return string? location, string? plate
+local function getVehicleLocation(evidenceType, remove)
+    if type(remove) ~= "table" or type(remove.arguments) ~= "table" or not vehicleMethods[remove.fun] then
+        return nil
+    end
+
+    local entity <const> = api.entityFromNetId(remove.arguments[1])
+    if not entity or GetEntityType(entity) ~= 2 then
+        return nil
+    end
+
+    local plate <const> = (GetVehicleNumberPlateText(entity) or ""):gsub("^%s+", ""):gsub("%s+$", "")
+    local place = tonumber(remove.arguments[2])
+    local location
+
+    if remove.fun == "removeFromVehicleSeats" and place then
+        local key <const> = ("evidences.information.seats.%d"):format(place)
+        local seat = locale(key)
+        if not seat or seat == key then
+            seat = locale("evidences.information.seat_number", place + 2)
+        end
+
+        -- the driver's prints are on the wheel
+        location = (place == -1 and evidenceType == "fingerprint") and locale("evidences.information.steering_wheel", seat) or seat
+    elseif remove.fun == "removeFromVehicleDoors" and place then
+        local key <const> = ("evidences.information.doors.%d"):format(place)
+        local door = locale(key)
+        location = (door and door ~= key) and door or locale("evidences.information.door_number", place + 1)
+    else
+        location = locale("evidences.information.vehicle_body")
+    end
+
+    return capitalise(location), plate ~= "" and plate or nil
+end
+
 ---@param source number The collecting player
 ---@param evidenceType string
 ---@param owner number|string The evidence owner, or a player's server id when taking their biometrics directly
@@ -140,11 +188,16 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
         return false
     end
 
+    -- before the evidence is removed, while the vehicle's state still holds it
+    local vehicleLocation <const>, plate <const> = getVehicleLocation(evidenceType, remove)
+
     if remove then
         object[remove.fun](object, table.unpack(remove.arguments))
     end
 
     metadata = sanitizeMetadata(metadata)
+    metadata.information.vehicleLocation = vehicleLocation
+    metadata.information.plate = plate
     metadata.description = require "server.evidences.evidence_information"(metadata.information)
 
     if amount and amount > 1 then

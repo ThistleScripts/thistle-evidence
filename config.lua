@@ -7,13 +7,30 @@ local config = {}
 config.cityName = "Thistle"
 
 
--- Players don't leave fingerprints when wearing gloves. If you have custom clothing on your server, you need to add the ids of hands without gloves to this exceptions-list.
+-- Players don't leave fingerprints when wearing gloves. Gloves are worn on the arms (clothing component 3), and the
+-- male and female freemode bodies number their arms differently, so each has its own list of arms WITHOUT gloves.
+-- If you have custom clothing on your server, add the ids of its bare-handed arms to the right list.
+config.barehandedArms = {
+    [`mp_m_freemode_01`] = {
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 26, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62,
+        112, 113, 114, 118, 125, 132, 184, 196, 198
+    },
+    [`mp_f_freemode_01`] = {
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+        129, 130, 131, 135, 142, 149, 153, 157, 161, 165
+    }
+}
+
 -- Note: Fingerprints are only created if the function returns false! This means you have to ability to add further conditions, which have to be fulfilled in order for a player not to leave any fingerprints.
 config.isPedWearingGloves = function()
-    local handsVariation <const> = GetPedDrawableVariation(cache.ped, 3)
-    local exceptions <const>  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 112, 113, 114, 184, 196, 198}
+    local barehanded <const> = config.barehandedArms[GetEntityModel(cache.ped)]
 
-    return not lib.table.contains(exceptions, handsVariation)
+    -- Other ped models (story characters, animals, add-on peds) have no glove clothing, so they always leave prints
+    if not barehanded then
+        return false
+    end
+
+    return not lib.table.contains(barehanded, GetPedDrawableVariation(cache.ped, 3))
 end
 
 

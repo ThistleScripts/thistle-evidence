@@ -2,6 +2,8 @@ local translations <const> = {
     -- all evidences
     additionalData = locale("evidences.information.metadata.additionalData"),
     crimeScene = locale("evidences.information.metadata.crime_scene"),
+    vehicleLocation = locale("evidences.information.metadata.vehicle_location"),
+    plate = locale("evidences.information.metadata.plate"),
     collectionTime = locale("evidences.information.metadata.collection_time"),
 
     -- biometrics
@@ -13,7 +15,7 @@ local translations <const> = {
     serial = locale("evidences.information.metadata.serial")
 }
 
-local order <const> = {"additionalData", "crimeScene", "dna", "fingerprint",  "collectionTime", "weaponType", "serial"}
+local order <const> = {"additionalData", "crimeScene", "vehicleLocation", "plate", "dna", "fingerprint",  "collectionTime", "weaponType", "serial"}
 
 local function createInformation(evidenceInformation)
     local information = ""
