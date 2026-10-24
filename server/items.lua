@@ -30,6 +30,16 @@ if not exports.ox_inventory:Items("evidence_marker") then
     lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")
 end
 
+if not exports.ox_inventory:Items("scene_cleaning_kit") then
+    lib.print.warn("The scene_cleaning_kit item doesn't exist, so scenes can't be cleaned.")
+end
+
+for _, traceItem in ipairs({ "collected_footprint", "collected_tyre_mark" }) do
+    if not exports.ox_inventory:Items(traceItem) then
+        lib.print.warn(("The %s item doesn't exist, so footprints and tyre marks can't be collected."):format(traceItem))
+    end
+end
+
 for style in pairs(config.uvFloodlight.styles) do
     if not exports.ox_inventory:Items(style) then
         lib.print.warn(("The %s item doesn't exist, so that UV lamp can't be placed."):format(style))
@@ -104,9 +114,47 @@ RegisterNetEvent("evidences:renameEvidenceBox", function(slot, input)
         end
 
         metadata.labelledBy = (caseNumber or name) and framework.getPlayerName(playerId) or nil
+
+        -- Labelling a box with a case seals it; opening it breaks the seal (below). Relabelling reseals it.
+        if config.evidenceBoxSeals and caseNumber then
+            metadata.sealed = true
+            metadata.seal = locale("evidences.seal.intact", metadata.labelledBy, os.date("%d/%m/%Y %H:%M"))
+        else
+            metadata.sealed = nil
+            metadata.seal = nil
+        end
+
         exports.ox_inventory:SetMetadata(playerId, slot, metadata)
+        if metadata.sealed then
+            logger.log(playerId, "Evidence box sealed", { caseNumber = caseNumber, name = name })
+        end
     end
 end)
+
+
+-- Opening a sealed evidence box breaks its seal, recording who opened it and when. It still opens: the broken seal
+-- is the record that someone did.
+if config.evidenceBoxSeals then
+    exports.ox_inventory:registerHook("openInventory", function(payload)
+        if payload.inventoryType ~= "container" or not payload.slot then
+            return true
+        end
+
+        local box <const> = exports.ox_inventory:GetSlot(payload.source, payload.slot)
+        if not box or box.name ~= "evidence_box" or not (box.metadata and box.metadata.sealed) then
+            return true
+        end
+
+        local metadata <const> = box.metadata
+        local openedBy <const> = framework.getPlayerName(payload.source)
+        metadata.sealed = false
+        metadata.seal = locale("evidences.seal.broken", openedBy, os.date("%d/%m/%Y %H:%M"))
+        exports.ox_inventory:SetMetadata(payload.source, payload.slot, metadata)
+
+        logger.log(payload.source, "Evidence box seal broken", { caseNumber = metadata.caseNumber, label = metadata.label })
+        return true
+    end)
+end
 
 
 -- Set durability = 100 for newly created forensic_kit and steel_file items

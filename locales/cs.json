@@ -67,7 +67,8 @@
                 "weapon_type": "Typ zbraně",
                 "serial": "Sériové číslo",
                 "vehicle_location": "Found on",
-                "plate": "Licence plate"
+                "plate": "Licence plate",
+                "trace": "Shows"
             },
             "seats": {
                 "-1": "přední sedadlo řidiče",
@@ -131,6 +132,33 @@
                 "title": "Důkazy",
                 "description": "Důkazní materiál nebyl dosud analyzován"
             }
+        },
+        "seal": {
+            "metadata": "Seal",
+            "intact": "Intact, sealed by %s on %s",
+            "broken": "BROKEN, opened by %s on %s"
+        },
+        "footprint": {
+            "collecting_label": "Cast footprint",
+            "destroying_label": "Scuff out footprint",
+            "mens": "Men's",
+            "womens": "Women's",
+            "description": "%s shoe, UK size %s, tread pattern %s, heading %s"
+        },
+        "tyre_mark": {
+            "collecting_label": "Photograph tyre mark",
+            "destroying_label": "Scuff out tyre mark",
+            "description": "Tread matches a %s, heading %s"
+        },
+        "directions": {
+            "north": "north",
+            "north_east": "north-east",
+            "east": "east",
+            "south_east": "south-east",
+            "south": "south",
+            "south_west": "south-west",
+            "west": "west",
+            "north_west": "north-west"
         }
     },
     "fingerprint_scanner": {
@@ -299,27 +327,6 @@
                     "non_binary": "Nebinární"
                 }
             },
-            "fingerprint_app": {
-                "name": "Analýza otisků prstů",
-                "no_items_with_fingerprints": "Ve vašem inventáři nejsou žádné předměty s otisky prstů."
-            },
-            "dna_app": {
-                "name": "Analýza DNA",
-                "no_items_with_dna": "Ve vašem inventáři nejsou žádné předměty s DNA."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Spustit analýzu",
-                "matching_biometric_data": "Porovnávání %s s databází...",
-                "database_match": {
-                    "header": "Shoda v databázi!",
-                    "description": "Stopa %s na důkazu patří následující osobě:",
-                    "open_citizens_app": "Otevřít v aplikaci Občané"
-                },
-                "no_database_match": {
-                    "header": "Žádná shoda v databázi!",
-                    "description": "Stopa %s na důkazu patří osobě, která je zatím neznámá. Pokud dotyčnou osobu znáte, můžete k ní stopu %s z tohoto důkazu přiřadit v aplikaci občané."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Registr zbraní",
                 "firearm_information": "Informace",
@@ -357,34 +364,6 @@
                     "firearm_update_error": "Nepodařilo se uložit zbraň!",
                     "firearm_deletion_success": "Zbraň smazána!",
                     "firearm_deletion_error": "Nepodařilo se smazat zbraň!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Balistická analýza",
-                "no_ballistics_evidence_items": "Ve vašem inventáři nemáte žádné předměty s balistickými důkazy.",
-                "start_analyzation": "Zahájit analýzu",
-                "matching_serial": "Analýza balistických stop...",
-                "registry_match": {
-                    "header": "Shoda v registru zbraní!",
-                    "description": "Balistický důkaz patří k následující zbrani:",
-                    "open_firearms_registry": "Otevřít v registru zbraní"
-                },
-                "no_registry_match": {
-                    "header": "Žádná shoda v registru zbraní!",
-                    "casing_description": "Tato nábojnice na sobě nemá sériové číslo, které by odpovídalo zbrani v registru zbraní. Nábojnice však lze stále identifikovat podle jedinečných mikroskopických stop, které v nich zanechávají drobné nedokonalosti uvnitř zbraně. Výběrem zbraně ze svého inventáře můžete ověřit, zda tato nábojnice pochází z vybrané zbraně (nebo alespoň ze zbraně stejného typu).",
-                    "bullet_description": "Vystřelené kulky lze identifikovat podle jedinečných mikroskopických stop, které zanechávají nedokonalosti uvnitř hlavně zbraně. Výběrem zbraně ze svého inventáře můžete zkontrolovat, zda tato kulka jako důkaz pochází z vybrané zbraně (nebo alespoň ze zbraně stejného typu).",
-                    "inventory_match": {
-                        "microstamp": "Balistický důkaz pochází přesně ze zvolené zbraně, protože sériové číslo bylo na tento důkaz mikroorazítkováno.",
-                        "imperfections": "Balistický důkaz pochází přesně ze zvolené zbraně, protože sdílejí stejné jedinečné nedokonalosti.",
-                        "type": "Balistický důkaz pochází ze zbraně stejného typu, jako je vybraná zbraň.",
-                        "none": "Balistický důkaz se neshoduje s vybranou zbraní."
-                    }
-                },
-                "show_type": {
-                    "header": "Analýza úspěšná",
-                    "magazine_description": "Zásobníky lze jasně přiřadit k typu zbraně. Jejich přiřazení ke konkrétní zbrani však není možné. Tento zásobník patří ke zbrani tohoto typu:",
-                    "gunshot_residue_description": "Povýstřelové zplodiny umožňují vyvodit závěry o typu použité zbraně. Na základě jejich koncentrace je možné určit, kdy bylo ze zbraně vystřeleno. Analýza vybraných povýstřelových zplodin ukázala následující:",
-                    "fired_at": "Čas výstřelu"
                 }
             },
             "evidence_app": {
@@ -486,6 +465,42 @@
                     "observation_started": "Sledování zahájeno.",
                     "observation_ended": "Sledování ukončeno."
                 }
+            },
+            "cases_app": {
+                "name": "Cases",
+                "search": "Search case number or title…",
+                "empty": "No cases yet. Open one to tie suspects, evidence and notes together.",
+                "select": "Select a case.",
+                "new_case": "New case",
+                "case_number": "Case number",
+                "case_title": "Title",
+                "title_placeholder": "e.g. Armed robbery, Fleeca Great Ocean Hwy",
+                "create": "Open case",
+                "errors": {
+                    "create": "The case couldn't be opened.",
+                    "exists": "A case with this number already exists."
+                },
+                "case": "Case",
+                "closed": "Closed",
+                "opened_by": "Opened by %s on %s",
+                "reopen": "Reopen",
+                "close": "Close case",
+                "suspects": "Suspects",
+                "no_suspects": "No suspects linked yet.",
+                "evidence": "Evidence IDs",
+                "no_evidence": "No DNA profiles, fingerprints or gun IDs linked yet.",
+                "storage": "Storage",
+                "no_storage": "Nothing labelled %s has been put in an evidence locker.",
+                "in_locker": "In %s",
+                "taken_out": "Taken out of %s",
+                "paste_id": "Paste an ID…",
+                "add": "Add",
+                "notes": "Notes",
+                "note_placeholder": "Add a note to this case…",
+                "add_note": "Add note",
+                "add_to_case": "Add to case",
+                "added": "Added to the case.",
+                "no_open_cases": "There are no open cases."
             }
         }
     },
@@ -520,6 +535,30 @@
         "vehicle": {
             "found_on": "Found on",
             "plate": "Plate %s"
+        },
+        "report": {
+            "copy": "Copy report",
+            "title": "FORENSIC REPORT",
+            "collected": "collected",
+            "analysed": "analysed %s by %s",
+            "generated": "Report generated %s"
+        },
+        "quality": {
+            "label": "Sample condition",
+            "good": "Good",
+            "fair": "Fair",
+            "poor": "Poor"
+        },
+        "partial": {
+            "title": "Partial match",
+            "hint": "Only part of the sample could be read. It fits these citizens on file. Take their prints or DNA to confirm, or find a better sample.",
+            "none": "Only part of the sample could be read, and it fits nobody on file.",
+            "ballistics": "The marks are too damaged to identify the gun. Only the weapon type could be read.",
+            "key": "Partial %s"
+        },
+        "failed": {
+            "title": "Too degraded",
+            "hint": "The sample was too old or damaged to read. Fresh evidence collected sooner gives better results."
         }
     },
     "markers": {
@@ -579,5 +618,32 @@
         "note_title": "Title, e.g. Booked for armed robbery",
         "note_text": "Details",
         "add_note": "Add note"
+    },
+    "locker": {
+        "open": "Open %s",
+        "view_log": "View locker log",
+        "log_title": "%s: log",
+        "deposit": "In:",
+        "withdraw": "Out:",
+        "empty_log": "Nothing has gone in or out yet."
+    },
+    "lab_results": {
+        "partial_information": "partial (%s)",
+        "failed_information": "too degraded to read"
+    },
+    "scene_cleaning": {
+        "progress": "Scrubbing the area with bleach…",
+        "cancelled": {
+            "title": "Cleaning",
+            "description": "You stopped cleaning. The kit wasn't used."
+        },
+        "failed": {
+            "title": "Cleaning",
+            "description": "You couldn't finish cleaning."
+        },
+        "done": {
+            "title": "Cleaning",
+            "description": "You scrubbed the area. Hopefully you didn't miss anything."
+        }
     }
 }

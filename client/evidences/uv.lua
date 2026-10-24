@@ -133,6 +133,13 @@ function uv.isInArea(coords)
     return false
 end
 
+-- Whether the beam or a UV lamp shines on these coords right now
+---@param coords vector3
+---@return boolean
+function uv.isLit(coords)
+    return uv.isInBeam(coords) or uv.isInArea(coords)
+end
+
 -- Whether the beam has shown this evidence recently, without checking the beam again
 ---@param key any
 ---@return boolean
@@ -151,7 +158,7 @@ function uv.reveals(key, coords)
         return true
     end
 
-    if uv.isInBeam(coords) or uv.isInArea(coords) then
+    if uv.isLit(coords) then
         revealedUntil[key] = GetGameTimer() + config.uvLight.memory
         return true
     end

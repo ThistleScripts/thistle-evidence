@@ -67,3 +67,40 @@ AddEventHandler("ox_inventory:usedItem", function(name, slotId)
         end
     end
 end)
+
+-- Prints on whatever a player touches in other scripts (ATM keypads, tills, safes, lockpicked doors):
+--   exports["thistle-evidence"]:leaveFingerprint(coords?, surface?)                      -- client, the player touching it
+--   exports["thistle-evidence"]:leaveFingerprint(playerId, coords?, surface?)            -- server
+-- coords defaults to just in front of the player's hands; surface is a short label shown as "Found on" (e.g. "ATM keypad").
+-- Nothing is left when they wear gloves, or when they left a print within half a metre of it in the last 15 minutes.
+local recentPrints = {} -- { coords, at }
+
+local function leaveFingerprint(coords, surface)
+    if config.isPedWearingGloves() or config.isPedDead(cache.ped) then
+        return false
+    end
+
+    coords = coords and vector3(coords.x, coords.y, coords.z) or GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 0.55, 0.15)
+    if #(GetEntityCoords(cache.ped) - coords) > 5.0 then
+        return false
+    end
+
+    local now <const> = GetGameTimer()
+    for i = #recentPrints, 1, -1 do
+        local recent <const> = recentPrints[i]
+        if now - recent.at > 15 * 60000 then
+            table.remove(recentPrints, i)
+        elseif #(recent.coords - coords) < 0.5 then
+            return false
+        end
+    end
+    recentPrints[#recentPrints + 1] = { coords = coords, at = now }
+
+    TriggerServerEvent("evidences:syncEvidence", "fingerprint", cache.serverId, "atCoords", coords, {
+        surface = type(surface) == "string" and surface or nil
+    })
+    return true
+end
+
+exports("leaveFingerprint", leaveFingerprint)
+RegisterNetEvent("evidences:leaveFingerprint", leaveFingerprint) -- from the server export

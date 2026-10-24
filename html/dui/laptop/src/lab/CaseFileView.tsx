@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Copy, Link2, ShieldAlert, ShieldCheck, UserCheck, UserSearch } from "lucide-react";
+import { AlertTriangle, Check, ClipboardList, Copy, Link2, ShieldAlert, ShieldCheck, UserCheck, Users, UserSearch } from "lucide-react";
 import { useTranslation } from "@/components/TranslationContext";
 import { getStatusById, Status } from "@/types/firearm.type";
 import { cn } from "@/utils/cn";
@@ -14,6 +14,17 @@ interface CaseFileViewProps {
 }
 
 export default function CaseFileView({ caseFile, evidence, onChanged }: CaseFileViewProps) {
+    // Old samples can give a partial result or nothing (config.evidenceAging)
+    if (caseFile.result === "failed") {
+        return <DegradedResult />;
+    }
+
+    if (caseFile.result === "partial" && evidence) {
+        return caseFile.kind === "ballistics"
+            ? <WeaponTypeResult evidence={evidence} note="lab.partial.ballistics" />
+            : <PartialResult caseFile={caseFile} evidence={evidence} />;
+    }
+
     // Magazines and gunshot residue only tell the weapon type
     if (!caseFile.key && evidence) {
         return <WeaponTypeResult evidence={evidence} />;
@@ -30,16 +41,51 @@ export default function CaseFileView({ caseFile, evidence, onChanged }: CaseFile
     );
 }
 
+// The case file as plain text, to paste into an MDT, a report or Discord
+function useReport() {
+    const { t } = useTranslation();
+    const typeLabel = useTypeLabel();
+    const locales = t("laptop.desktop_screen.common.date_locales");
+
+    return (caseFile: CaseFile) => {
+        const lines = [
+            t("lab.report.title"),
+            `${t(`lab.result.key.${caseFile.kind}`)}: ${caseFile.key}`
+        ];
+
+        if (caseFile.kind === "ballistics") {
+            lines.push(caseFile.firearm
+                ? `${t("lab.result.registered")}: ${caseFile.firearm.label} · ${t("lab.result.registered_to")} ${caseFile.citizen?.fullName ?? t("laptop.desktop_screen.common.statuses.unknown")}`
+                : t("lab.result.unregistered"));
+        } else {
+            lines.push(caseFile.citizen
+                ? `${t("lab.result.citizen_match")}: ${caseFile.citizen.fullName} (${String(caseFile.citizen.birthdate)})`
+                : t("lab.result.no_citizen"));
+        }
+
+        const matches = caseFile.matches ?? [];
+        lines.push("", `${t("lab.links.title")} (${matches.length}):`);
+        for (const match of matches) {
+            const place = [match.crimeScene, vehiclePlace(match)].filter(Boolean).join(" · ");
+            lines.push(`- ${typeLabel(match.evidenceType)}${match.weaponType ? ` (${match.weaponType})` : ""} · ${place || "-"} · ${t("lab.report.collected")} ${match.collectionTime || "-"} · ${t("lab.report.analysed", formatDateTime(match.analysedAt, locales), match.analysedBy)}`);
+        }
+
+        lines.push("", t("lab.report.generated", formatDateTime(Date.now(), locales)));
+        return lines.join("\n");
+    };
+}
+
 function KeyRow({ caseFile }: { caseFile: CaseFile }) {
     const { t } = useTranslation();
-    const [copied, setCopied] = useState(false);
+    const [copied, setCopied] = useState<"key" | "report" | null>(null);
+    const report = useReport();
     const style = kindStyles[caseFile.kind];
     const Icon = style.icon;
 
-    const copy = () => {
-        copyText(caseFile.key!);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
+    const copy = (what: "key" | "report") => {
+        copyText(what === "key" ? caseFile.key! : report(caseFile));
+        setCopied(what);
+        setTimeout(() => setCopied(null), 1500);
     };
 
     return (
@@ -51,8 +97,12 @@ function KeyRow({ caseFile }: { caseFile: CaseFile }) {
                 <Label>{t(`lab.result.key.${caseFile.kind}`)}</Label>
                 <p className="truncate font-mono text-lg tracking-wider">{caseFile.key}</p>
             </div>
-            <button type="button" onClick={copy} className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent">
-                {copied ? <Check size={13} /> : <Copy size={13} />}
+            <button type="button" onClick={() => copy("report")} className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent">
+                {copied === "report" ? <Check size={13} /> : <ClipboardList size={13} />}
+                {t("lab.report.copy")}
+            </button>
+            <button type="button" onClick={() => copy("key")} className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent">
+                {copied === "key" ? <Check size={13} /> : <Copy size={13} />}
                 {t("lab.result.copy")}
             </button>
         </Card>
@@ -188,7 +238,63 @@ function LinkedEvidence({ caseFile }: { caseFile: CaseFile }) {
     );
 }
 
-function WeaponTypeResult({ evidence }: { evidence: LabEvidence }) {
+function DegradedResult() {
+    const { t } = useTranslation();
+
+    return (
+        <Card className="animate-th-rise flex gap-4 border-bad/40 bg-bad/5 px-5 py-4">
+            <AlertTriangle size={22} className="mt-0.5 shrink-0 text-bad" />
+            <div className="space-y-1">
+                <p className="font-display font-bold text-bad">{t("lab.failed.title")}</p>
+                <p className="text-sm text-muted">{t("lab.failed.hint")}</p>
+            </div>
+        </Card>
+    );
+}
+
+// A partial print or DNA profile: the readable part, and the citizens on file it could belong to
+function PartialResult({ caseFile, evidence }: { caseFile: CaseFile; evidence: LabEvidence }) {
+    const { t } = useTranslation();
+    const candidates = caseFile.candidates ?? [];
+    const style = kindStyles[caseFile.kind];
+    const Icon = style.icon;
+
+    return (
+        <div className="animate-th-rise space-y-5">
+            <Card className="flex items-center gap-4 px-5 py-4">
+                <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", style.bg, style.text)}>
+                    <Icon size={20} />
+                </div>
+                <div className="min-w-0 flex-1">
+                    <Label>{t("lab.partial.key", t(`lab.result.key.${caseFile.kind}`))}</Label>
+                    <p className="truncate font-mono text-lg tracking-wider">{evidence.partialKey ?? "-"}</p>
+                </div>
+            </Card>
+
+            <Card className="space-y-3 border-warn/40 bg-warn/5 px-5 py-4">
+                <div className="flex gap-4">
+                    <Users size={22} className="mt-0.5 shrink-0 text-warn" />
+                    <div className="space-y-1">
+                        <p className="font-display font-bold text-warn">{t("lab.partial.title")}</p>
+                        <p className="text-sm text-muted">{candidates.length > 0 ? t("lab.partial.hint") : t("lab.partial.none")}</p>
+                    </div>
+                </div>
+                {candidates.length > 0 && (
+                    <ul className="overflow-hidden rounded-lg border border-line pl-0">
+                        {candidates.map(citizen => (
+                            <li key={citizen.identifier} className="flex items-center justify-between gap-3 border-t border-line/60 px-4 py-2.5 first:border-t-0">
+                                <p className="font-medium">{citizen.fullName}</p>
+                                <p className="text-sm text-muted">{String(citizen.birthdate)}</p>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </Card>
+        </div>
+    );
+}
+
+function WeaponTypeResult({ evidence, note }: { evidence: LabEvidence; note?: string }) {
     const { t } = useTranslation();
     const locales = t("laptop.desktop_screen.common.date_locales");
 
@@ -196,7 +302,7 @@ function WeaponTypeResult({ evidence }: { evidence: LabEvidence }) {
         <Card className="animate-th-rise flex items-center gap-6 px-6 py-5">
             {evidence.weaponImage && <img src={evidence.weaponImage} className="h-20 w-28 shrink-0 object-contain" />}
             <div className="space-y-2">
-                <p className="text-sm text-muted">{t(`lab.result.type_only.${evidence.evidenceType}`)}</p>
+                <p className="text-sm text-muted">{t(note ?? `lab.result.type_only.${evidence.evidenceType}`)}</p>
                 <div>
                     <Label>{t("lab.result.weapon_type")}</Label>
                     <p className="font-display text-xl font-bold">{evidence.weaponType ?? t("laptop.desktop_screen.common.statuses.unknown")}</p>

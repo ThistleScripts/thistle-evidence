@@ -7,7 +7,10 @@ export interface LabEvidence {
     kind: Kind;
     evidenceType: string; // blood, saliva, fingerprint, bullet, casing, magazine, gunshot_residue, or an item name
     analysed: boolean;
-    key?: string; // only once analysed
+    result?: "full" | "partial" | "failed"; // how much the first analysis could read (config.evidenceAging)
+    quality?: number; // the sample's condition, 0-100
+    key?: string; // only once analysed, and only for a full result
+    partialKey?: string; // a partial print or DNA profile, partly masked
     createdAt?: number;
     weaponType?: string;
     weaponImage?: string;
@@ -48,6 +51,8 @@ export interface ForensicMatch {
 
 export interface CaseFile {
     kind: Kind;
+    result?: "full" | "partial" | "failed";
+    candidates?: Citizen[]; // possible matches for a partial print or DNA profile
     key?: string;
     firearm?: RegisteredFirearm;
     citizen?: Citizen;

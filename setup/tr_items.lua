@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Ayak izi kalıbı',
+    description = 'Olay yerinden alınmış bir ayak izinin alçı kalıbı',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Lastik izi fotoğrafı',
+    description = 'Olay yerinden ölçekli bir lastik izi fotoğrafı',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Çelik eğe',
     weight = 150,
@@ -153,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Olay yeri temizlik kiti',
+    description = 'Bir yeri temizlemek için çamaşır suyu, fırça ve torbalar. Bir şey gözden kaçabilir.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Delil işaretçisi seti',
     description = 'Olay yerleri için tekrar kullanılabilir işaretçi seti',
@@ -164,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV projektör',
+    label = 'Delil Spot Lambası',
     description = 'Tüm olay yerini UV ışığıyla aydınlatıp çevresindeki tüm delilleri gösteren çalışma lambası',
     weight = 3000,
     stack = false,
@@ -174,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV spot lambası',
-    description = 'Olay yerinin uzun bir koni alanını aydınlatıp içindeki delilleri gösteren yönlü UV lamba',
+    label = '360 Delil Lambası',
+    description = 'Çevresini her yönden aydınlatıp olay yerindeki delilleri gösteren UV lamba',
     weight = 3000,
     stack = false,
     close = true,

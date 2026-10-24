@@ -67,7 +67,8 @@
                 "weapon_type": "Silah türü",
                 "serial": "Seri numarası",
                 "vehicle_location": "Found on",
-                "plate": "Licence plate"
+                "plate": "Licence plate",
+                "trace": "Shows"
             },
             "seats": {
                 "-1": "ön sürücü koltuğu",
@@ -131,6 +132,33 @@
                 "title": "Kanıtlar",
                 "description": "Delil henüz analiz edilmedi"
             }
+        },
+        "seal": {
+            "metadata": "Seal",
+            "intact": "Intact, sealed by %s on %s",
+            "broken": "BROKEN, opened by %s on %s"
+        },
+        "footprint": {
+            "collecting_label": "Cast footprint",
+            "destroying_label": "Scuff out footprint",
+            "mens": "Men's",
+            "womens": "Women's",
+            "description": "%s shoe, UK size %s, tread pattern %s, heading %s"
+        },
+        "tyre_mark": {
+            "collecting_label": "Photograph tyre mark",
+            "destroying_label": "Scuff out tyre mark",
+            "description": "Tread matches a %s, heading %s"
+        },
+        "directions": {
+            "north": "north",
+            "north_east": "north-east",
+            "east": "east",
+            "south_east": "south-east",
+            "south": "south",
+            "south_west": "south-west",
+            "west": "west",
+            "north_west": "north-west"
         }
     },
     "fingerprint_scanner": {
@@ -299,27 +327,6 @@
                     "non_binary": "Non-binary"
                 }
             },
-            "fingerprint_app": {
-                "name": "Parmak İzi Analizi",
-                "no_items_with_fingerprints": "Envanterinizde parmak izi içeren öğe yok."
-            },
-            "dna_app": {
-                "name": "DNA Analizi",
-                "no_items_with_dna": "Envanterinizde DNA içeren öğe yok."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Analizi başlat",
-                "matching_biometric_data": "%s veritabanı ile eşleştiriliyor...",
-                "database_match": {
-                    "header": "Veritabanı eşleşmesi!",
-                    "description": "Kanıt üzerindeki %s izi aşağıdaki kişiye aittir:",
-                    "open_citizens_app": "Vatandaş Uygulamasında Aç"
-                },
-                "no_database_match": {
-                    "header": "Veritabanı eşleşmesi yok!",
-                    "description": "Bu kanıt parçasındaki %s izi henüz bilinmeyen bir kişiye aittir. Söz konusu kişiyi tanıyorsanız, bu kanıt parçasındaki %s izini vatandaş uygulamasında ona atayabilirsiniz."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Silah Kayıt Sistemi",
                 "firearm_information": "Bilgiler",
@@ -357,34 +364,6 @@
                     "firearm_update_error": "Silah kaydedilemedi!",
                     "firearm_deletion_success": "Silah silindi!",
                     "firearm_deletion_error": "Silah silinemedi!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Balistik Analizi",
-                "no_ballistics_evidence_items": "Envanterinizde balistik kanıt içeren herhangi bir eşya yok.",
-                "start_analyzation": "Analizi Başlat",
-                "matching_serial": "Balistik kanıtlar analiz ediliyor...",
-                "registry_match": {
-                    "header": "Ateşli silah kaydında eşleşme bulundu!",
-                    "description": "Balistik kanıt aşağıdaki ateşli silaha ait:",
-                    "open_firearms_registry": "Ateşli Silah Kaydında Aç"
-                },
-                "no_registry_match": {
-                    "header": "Ateşli silah kaydında eşleşme bulunamadı!",
-                    "casing_description": "Bu kovan, ateşli silahlar sicilindeki bir silahla eşleşen bir seri numarası taşımıyor. Ancak kovanlar, bir silahın içindeki kusurların bıraktığı benzersiz mikroskobik alet izleri sayesinde yine de tanımlanabilir. Envanterinizden bir silah seçerek, kovan kanıtının seçilen silahtan (veya en azından aynı türden bir silahtan) gelip gelmediğini kontrol edebilirsiniz.",
-                    "bullet_description": "Ateşlenmiş mermiler, bir ateşli silahın namlusunun içindeki kusurların bıraktığı benzersiz mikroskobik izler sayesinde tanımlanabilir. Envanterinizden bir silah seçerek, mermi kanıtının seçilen silahtan (veya en azından aynı türden bir silahtan) gelip gelmediğini kontrol edebilirsiniz.",
-                    "inventory_match": {
-                        "microstamp": "Seri numarası delil parçası üzerine mikro baskı ile işlendiği için, balistik delil kesin olarak seçilen silahtan kaynaklanmaktadır.",
-                        "imperfections": "Balistik kanıt tam olarak seçilen silahtan kaynaklanmaktadır, çünkü aynı benzersiz kusurları paylaşmaktadırlar.",
-                        "type": "Balistik delil, seçilen silahla aynı tipte bir silaha ait.",
-                        "none": "Balistik delil, seçilen silahla uyuşmuyor."
-                    }
-                },
-                "show_type": {
-                    "header": "Analiz başarılı",
-                    "magazine_description": "Şarjörler net bir şekilde bir silah türüyle ilişkilendirilebilir. Ancak bunları belirli bir kişisel silaha atamak mümkün değildir. Bu şarjör şu türde bir silaha aittir:",
-                    "gunshot_residue_description": "Barut artığı, ateşlenen silahın türü hakkında çıkarımlar yapılmasını sağlar. Yoğunluğuna bağlı olarak silahın ne zaman ateşlendiğini hesaplamak mümkündür. Seçilen barut artığı analizi şu sonuçları vermiştir:",
-                    "fired_at": "Ateşlenme zamanı"
                 }
             },
             "evidence_app": {
@@ -486,6 +465,42 @@
                     "observation_started": "Gözlem başladı.",
                     "observation_ended": "Gözlem sona erdi."
                 }
+            },
+            "cases_app": {
+                "name": "Cases",
+                "search": "Search case number or title…",
+                "empty": "No cases yet. Open one to tie suspects, evidence and notes together.",
+                "select": "Select a case.",
+                "new_case": "New case",
+                "case_number": "Case number",
+                "case_title": "Title",
+                "title_placeholder": "e.g. Armed robbery, Fleeca Great Ocean Hwy",
+                "create": "Open case",
+                "errors": {
+                    "create": "The case couldn't be opened.",
+                    "exists": "A case with this number already exists."
+                },
+                "case": "Case",
+                "closed": "Closed",
+                "opened_by": "Opened by %s on %s",
+                "reopen": "Reopen",
+                "close": "Close case",
+                "suspects": "Suspects",
+                "no_suspects": "No suspects linked yet.",
+                "evidence": "Evidence IDs",
+                "no_evidence": "No DNA profiles, fingerprints or gun IDs linked yet.",
+                "storage": "Storage",
+                "no_storage": "Nothing labelled %s has been put in an evidence locker.",
+                "in_locker": "In %s",
+                "taken_out": "Taken out of %s",
+                "paste_id": "Paste an ID…",
+                "add": "Add",
+                "notes": "Notes",
+                "note_placeholder": "Add a note to this case…",
+                "add_note": "Add note",
+                "add_to_case": "Add to case",
+                "added": "Added to the case.",
+                "no_open_cases": "There are no open cases."
             }
         }
     },
@@ -520,6 +535,30 @@
         "vehicle": {
             "found_on": "Found on",
             "plate": "Plate %s"
+        },
+        "report": {
+            "copy": "Copy report",
+            "title": "FORENSIC REPORT",
+            "collected": "collected",
+            "analysed": "analysed %s by %s",
+            "generated": "Report generated %s"
+        },
+        "quality": {
+            "label": "Sample condition",
+            "good": "Good",
+            "fair": "Fair",
+            "poor": "Poor"
+        },
+        "partial": {
+            "title": "Partial match",
+            "hint": "Only part of the sample could be read. It fits these citizens on file. Take their prints or DNA to confirm, or find a better sample.",
+            "none": "Only part of the sample could be read, and it fits nobody on file.",
+            "ballistics": "The marks are too damaged to identify the gun. Only the weapon type could be read.",
+            "key": "Partial %s"
+        },
+        "failed": {
+            "title": "Too degraded",
+            "hint": "The sample was too old or damaged to read. Fresh evidence collected sooner gives better results."
         }
     },
     "markers": {
@@ -579,5 +618,32 @@
         "note_title": "Title, e.g. Booked for armed robbery",
         "note_text": "Details",
         "add_note": "Add note"
+    },
+    "locker": {
+        "open": "Open %s",
+        "view_log": "View locker log",
+        "log_title": "%s: log",
+        "deposit": "In:",
+        "withdraw": "Out:",
+        "empty_log": "Nothing has gone in or out yet."
+    },
+    "lab_results": {
+        "partial_information": "partial (%s)",
+        "failed_information": "too degraded to read"
+    },
+    "scene_cleaning": {
+        "progress": "Scrubbing the area with bleach…",
+        "cancelled": {
+            "title": "Cleaning",
+            "description": "You stopped cleaning. The kit wasn't used."
+        },
+        "failed": {
+            "title": "Cleaning",
+            "description": "You couldn't finish cleaning."
+        },
+        "done": {
+            "title": "Cleaning",
+            "description": "You scrubbed the area. Hopefully you didn't miss anything."
+        }
     }
 }

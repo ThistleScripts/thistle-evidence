@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Fußabdruck-Abguss',
+    description = 'Gipsabguss eines Fußabdrucks von einem Tatort',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Reifenspur-Foto',
+    description = 'Maßstabsgetreues Foto einer Reifenspur von einem Tatort',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Feile',
     weight = 150,
@@ -153,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Tatort-Reinigungsset',
+    description = 'Bleiche, Bürsten und Beutel, um einen Tatort zu säubern. Etwas könnte übersehen werden.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Beweismarker-Set',
     description = 'Wiederverwendbares Set Beweismarker für Tatorte',
@@ -164,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV-Flutlicht',
+    label = 'Spurenstrahler',
     description = 'Arbeitsleuchte, die einen ganzen Tatort in UV-Licht taucht und alle Spuren darum sichtbar macht',
     weight = 3000,
     stack = false,
@@ -174,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV-Strahler',
-    description = 'Gerichtete UV-Lampe, die einen langen Bereich eines Tatorts ausleuchtet und die Spuren darin sichtbar macht',
+    label = '360°-Spurenleuchte',
+    description = 'UV-Lampe, die rundum leuchtet und die Spuren an einem Tatort sichtbar macht',
     weight = 3000,
     stack = false,
     close = true,

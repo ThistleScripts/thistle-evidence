@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = '足跡の石膏型',
+    description = '事件現場の足跡を石膏で型取りしたもの',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'タイヤ痕の写真',
+    description = '事件現場のタイヤ痕をスケール付きで撮影した写真',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = '鉄工用ヤスリ',
     weight = 150,
@@ -153,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = '現場清掃キット',
+    description = '現場を掃除するための漂白剤、ブラシ、袋。何かを見落とすかもしれない。',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = '証拠マーカーキット',
     description = '事件現場用の繰り返し使える証拠マーカーセット',
@@ -164,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV投光器',
+    label = '証拠スポットライト',
     description = '事件現場全体をUVで照らし、周囲の証拠をすべて浮かび上がらせる作業灯',
     weight = 3000,
     stack = false,
@@ -174,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UVスポットライト',
-    description = '事件現場を長い円錐状に照らし、その中の証拠を浮かび上がらせる指向性UVランプ',
+    label = '360度証拠ライト',
+    description = '周囲360度を照らし、事件現場の証拠を浮かび上がらせるUVランプ',
     weight = 3000,
     stack = false,
     close = true,

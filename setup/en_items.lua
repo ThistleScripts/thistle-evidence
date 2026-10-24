@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Footprint Cast',
+    description = 'A plaster cast of a footprint from a crime scene',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Tyre Mark Photo',
+    description = 'A scaled photo of a tyre mark from a crime scene',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Steel File',
     weight = 150,
@@ -153,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Scene Cleaning Kit',
+    description = 'Bleach, brushes and bags to scrub a scene clean. Something might get missed.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Evidence Marker Kit',
     description = 'Reusable set of evidence markers for crime scenes',
@@ -164,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV Floodlight',
+    label = 'Evidence Spotlight',
     description = 'UV lamp that lights all round it, showing all evidence nearby',
     weight = 3000,
     stack = false,
@@ -174,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV Spotlight',
-    description = 'Directional UV lamp that lights a long cone of a crime scene, showing the evidence in it',
+    label = '360 Evidence Light',
+    description = 'UV lamp that lights all round it, showing the evidence at a crime scene',
     weight = 3000,
     stack = false,
     close = true,

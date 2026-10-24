@@ -67,7 +67,8 @@
                 "weapon_type": "Waffentyp",
                 "serial": "Seriennummer",
                 "vehicle_location": "Found on",
-                "plate": "Licence plate"
+                "plate": "Licence plate",
+                "trace": "Shows"
             },
             "seats": {
                 "-1": "vorderem Fahrersitz",
@@ -131,6 +132,33 @@
                 "title": "Evidences",
                 "description": "Das Beweisstück wurde noch nicht analysiert"
             }
+        },
+        "seal": {
+            "metadata": "Seal",
+            "intact": "Intact, sealed by %s on %s",
+            "broken": "BROKEN, opened by %s on %s"
+        },
+        "footprint": {
+            "collecting_label": "Cast footprint",
+            "destroying_label": "Scuff out footprint",
+            "mens": "Men's",
+            "womens": "Women's",
+            "description": "%s shoe, UK size %s, tread pattern %s, heading %s"
+        },
+        "tyre_mark": {
+            "collecting_label": "Photograph tyre mark",
+            "destroying_label": "Scuff out tyre mark",
+            "description": "Tread matches a %s, heading %s"
+        },
+        "directions": {
+            "north": "north",
+            "north_east": "north-east",
+            "east": "east",
+            "south_east": "south-east",
+            "south": "south",
+            "south_west": "south-west",
+            "west": "west",
+            "north_west": "north-west"
         }
     },
     "fingerprint_scanner": {
@@ -299,27 +327,6 @@
                     "non_binary": "divers"
                 }
             },
-            "fingerprint_app": {
-                "name": "Fingerabdruck Analyse",
-                "no_items_with_fingerprints": "Es befinden sich keine Items mit Fingerabdrücken in deinem Inventar."
-            },
-            "dna_app": {
-                "name": "DNS Analyse",
-                "no_items_with_dna": "Es befinden sich keine Items mit DNA in deinem Inventar."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Analyse starten",
-                "matching_biometric_data": "Gleiche %s mit Datenbank ab...",
-                "database_match": {
-                    "header": "Treffer in der Datenbank!",
-                    "description": "Die %s-Spur auf dem Beweismittel gehört zu der folgenden Person:",
-                    "open_citizens_app": "In Bürger-App öffnen"
-                },
-                "no_database_match": {
-                    "header": "Kein Treffer in der Datenbank!",
-                    "description": "Die %s-Spur auf dem Beweismittel gehört zu einer noch unbekannten Person. Wenn du die zugehörige Person kennst, kannst du ihr die %s-Spur von diesem Beweismittel in der Bürger-App zuweisen."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Waffenregister",
                 "firearm_information": "Informationen",
@@ -357,34 +364,6 @@
                     "firearm_update_error": "Waffe konnte nicht gespeichert werden!",
                     "firearm_deletion_success": "Waffe gelöscht!",
                     "firearm_deletion_error": "Waffe konnte nicht gelöscht werden!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Ballistische Analyse",
-                "no_ballistics_evidence_items": "Keine Gegenstände mit ballistischen Beweismitteln in deinem Inventar.",
-                "start_analyzation": "Analyse starten",
-                "matching_serial": "Ballistisches Beweismittel wird analysiert...",
-                "registry_match": {
-                    "header": "Treffer im Waffenregister!",
-                    "description": "Das ballistische Beweismittel gehört zu folgender Schusswaffe:",
-                    "open_firearms_registry": "Im Waffenregister öffnen"
-                },
-                "no_registry_match": {
-                    "header": "Kein Treffer im Waffenregister!",
-                    "casing_description": "Diese Patronenhülse trägt keine Seriennummer, die mit einer Waffe im Waffenregister übereinstimmt. Patronenhülsen können jedoch anhand der einzigartigen mikroskopischen Spuren identifiziert werden, die durch Unebenheiten im Inneren einer Waffe hinterlassen werden. Wenn du eine Waffe aus deinem Inventar auswählst, kannst du überprüfen, ob die Patronenhülse von der ausgewählten Waffe (oder zumindest von einer Waffe desselben Typs) stammt.",
-                    "bullet_description": "Abgefeuerte Projektile können anhand der einzigartigen mikroskopischen Spuren identifiziert werden, die durch Unvollkommenheiten im Lauf einer Schusswaffe hinterlassen werden. Indem du eine Waffe aus deinem Inventar auswählst, kannst du überprüfen, ob dieses Projektil als Beweismittel von der ausgewählten Waffe stammt (oder zumindest von einer Waffe desselben Typs).",
-                    "inventory_match": {
-                        "microstamp": "Der ballistische Beweis stammt exakt von der ausgewählten Waffe, da die Seriennummer als Mikrostempel auf dem Beweisstück hinterlassen wurde.",
-                        "imperfections": "Der ballistische Beweis stammt exakt von der ausgewählten Waffe, da sie die gleichen einzigartigen Prägungen teilen.",
-                        "type": "Der ballistische Beweis stammt von einer Waffe desselben Typs wie die ausgewählte Waffe.",
-                        "none": "Der ballistische Beweis stammt nicht mit der ausgewählten Waffe überein."
-                    }
-                },
-                "show_type": {
-                    "header": "Analyse erfolgreich",
-                    "magazine_description": "Magazine können eindeutig einem Waffentyp zugeordnet werden. Eine darüberhinausgehende Zuordnung zu einer konkreten Waffe ist hingegen nicht möglich. Dieses Magazin gehört zu einer Waffe dieses Typs:",
-                    "gunshot_residue_description": "Schmauchspuren lassen einen Rückschluss auf den Typ der abgefeuerten Waffe zu. Anhand ihrer Konzentration kann berechnet werden, wann die Waffe abgefeuert wurde. Die Analyse hat für die ausgewählt Schmauchspur folgendes ergeben:",
-                    "fired_at": "Gefeuert am"
                 }
             },
             "evidence_app": {
@@ -486,6 +465,42 @@
                     "observation_started": "Überwachung gestartet.",
                     "observation_ended": "Überwachung beendet."
                 }
+            },
+            "cases_app": {
+                "name": "Cases",
+                "search": "Search case number or title…",
+                "empty": "No cases yet. Open one to tie suspects, evidence and notes together.",
+                "select": "Select a case.",
+                "new_case": "New case",
+                "case_number": "Case number",
+                "case_title": "Title",
+                "title_placeholder": "e.g. Armed robbery, Fleeca Great Ocean Hwy",
+                "create": "Open case",
+                "errors": {
+                    "create": "The case couldn't be opened.",
+                    "exists": "A case with this number already exists."
+                },
+                "case": "Case",
+                "closed": "Closed",
+                "opened_by": "Opened by %s on %s",
+                "reopen": "Reopen",
+                "close": "Close case",
+                "suspects": "Suspects",
+                "no_suspects": "No suspects linked yet.",
+                "evidence": "Evidence IDs",
+                "no_evidence": "No DNA profiles, fingerprints or gun IDs linked yet.",
+                "storage": "Storage",
+                "no_storage": "Nothing labelled %s has been put in an evidence locker.",
+                "in_locker": "In %s",
+                "taken_out": "Taken out of %s",
+                "paste_id": "Paste an ID…",
+                "add": "Add",
+                "notes": "Notes",
+                "note_placeholder": "Add a note to this case…",
+                "add_note": "Add note",
+                "add_to_case": "Add to case",
+                "added": "Added to the case.",
+                "no_open_cases": "There are no open cases."
             }
         }
     },
@@ -520,6 +535,30 @@
         "vehicle": {
             "found_on": "Found on",
             "plate": "Plate %s"
+        },
+        "report": {
+            "copy": "Copy report",
+            "title": "FORENSIC REPORT",
+            "collected": "collected",
+            "analysed": "analysed %s by %s",
+            "generated": "Report generated %s"
+        },
+        "quality": {
+            "label": "Sample condition",
+            "good": "Good",
+            "fair": "Fair",
+            "poor": "Poor"
+        },
+        "partial": {
+            "title": "Partial match",
+            "hint": "Only part of the sample could be read. It fits these citizens on file. Take their prints or DNA to confirm, or find a better sample.",
+            "none": "Only part of the sample could be read, and it fits nobody on file.",
+            "ballistics": "The marks are too damaged to identify the gun. Only the weapon type could be read.",
+            "key": "Partial %s"
+        },
+        "failed": {
+            "title": "Too degraded",
+            "hint": "The sample was too old or damaged to read. Fresh evidence collected sooner gives better results."
         }
     },
     "markers": {
@@ -579,5 +618,32 @@
         "note_title": "Title, e.g. Booked for armed robbery",
         "note_text": "Details",
         "add_note": "Add note"
+    },
+    "locker": {
+        "open": "Open %s",
+        "view_log": "View locker log",
+        "log_title": "%s: log",
+        "deposit": "In:",
+        "withdraw": "Out:",
+        "empty_log": "Nothing has gone in or out yet."
+    },
+    "lab_results": {
+        "partial_information": "partial (%s)",
+        "failed_information": "too degraded to read"
+    },
+    "scene_cleaning": {
+        "progress": "Scrubbing the area with bleach…",
+        "cancelled": {
+            "title": "Cleaning",
+            "description": "You stopped cleaning. The kit wasn't used."
+        },
+        "failed": {
+            "title": "Cleaning",
+            "description": "You couldn't finish cleaning."
+        },
+        "done": {
+            "title": "Cleaning",
+            "description": "You scrubbed the area. Hopefully you didn't miss anything."
+        }
     }
 }

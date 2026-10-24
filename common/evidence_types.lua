@@ -2,12 +2,13 @@ local config <const> = require "config"
 local utils <const> = require "client.evidences.utils"
 
 local bulletPath <const> = require "client.evidences.bullet_path"
+local footprintMarks -- required on first use, like the UV light below (this file also loads on the server)
 
 -- Required on first use: this file is also loaded on the server, where the UV flashlight doesn't exist
 local uv
-local function isInUvBeam(coords)
+local function isUvLit(coords)
     uv = uv or require "client.evidences.uv"
-    return uv.isInBeam(coords)
+    return uv.isLit(coords)
 end
 
 local function createMetadata(evidenceType, data, coords, holder)
@@ -220,12 +221,12 @@ return {
             }
         },
         visualize = {
-            -- The path back to the shooter only shows while a UV light points at the bullet
+            -- The path back to the shooter only shows while a UV light (the flashlight or a UV lamp) shines on the bullet
             show = function(point, data, no_thread)
                 if no_thread then
                     -- called every frame by the entity evidence display thread
                     local shooterCoords <const> = bulletPath.getShooterCoords(point, data)
-                    if shooterCoords and isInUvBeam(point.coords) then
+                    if shooterCoords and isUvLit(point.coords) then
                         bulletPath.draw(point.coords, shooterCoords)
                     end
 
@@ -241,7 +242,7 @@ return {
 
                 CreateThread(function()
                     while point.isThreadRunning do
-                        if isInUvBeam(point.coords) then
+                        if isUvLit(point.coords) then
                             bulletPath.draw(point.coords, shooterCoords)
                             Wait(0)
                         else
@@ -271,5 +272,51 @@ return {
             }
         },
         visualize = {}
+    },
+    -- trace evidence: what was left behind, not who (see client/evidences/registry/footprint.lua and tyre_mark.lua)
+    footprint = {
+        trace = true, -- only ever on the ground, never on a player or vehicle
+        target = {
+            collect = {
+                label = locale("evidences.footprint.collecting_label"),
+                icon = "fa-solid fa-shoe-prints",
+                requiredItem = "forensic_kit",
+                collectedItem = "collected_footprint",
+                createMetadata = createMetadata
+            },
+            destroy = {
+                label = locale("evidences.footprint.destroying_label"),
+                icon = "fa-solid fa-shoe-prints",
+                requiredItem = config.destroyItems.footprint
+            }
+        },
+        visualize = {
+            show = function(point, data)
+                footprintMarks = footprintMarks or require "client.evidences.footprint_marks"
+                footprintMarks.add(point, data)
+            end,
+            hide = function(point)
+                footprintMarks = footprintMarks or require "client.evidences.footprint_marks"
+                footprintMarks.remove(point)
+            end
+        }
+    },
+    tyre_mark = {
+        trace = true,
+        target = {
+            collect = {
+                label = locale("evidences.tyre_mark.collecting_label"),
+                icon = "fa-solid fa-camera",
+                requiredItem = "forensic_kit",
+                collectedItem = "collected_tyre_mark",
+                createMetadata = createMetadata
+            },
+            destroy = {
+                label = locale("evidences.tyre_mark.destroying_label"),
+                icon = "fa-solid fa-car-burst",
+                requiredItem = config.destroyItems.tyre_mark
+            }
+        },
+        visualize = {} -- the game draws skid marks itself; under UV the mark gets the revealed-evidence dot
     }
 }

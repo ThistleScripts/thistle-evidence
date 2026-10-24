@@ -3,7 +3,8 @@ local config <const> = require "config"
 -- Shown under a labelled evidence box in the inventory, so boxes in a stash can be matched to cases
 exports.ox_inventory:displayMetadata({
     caseNumber = locale("evidences.evidence_box_label_dialog.case_metadata"),
-    labelledBy = locale("evidences.evidence_box_label_dialog.labelled_by_metadata")
+    labelledBy = locale("evidences.evidence_box_label_dialog.labelled_by_metadata"),
+    seal = locale("evidences.seal.metadata")
 })
 
 exports("evidence_box", function(slot)

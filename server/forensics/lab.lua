@@ -65,16 +65,81 @@ local function isTypeOnly(item, kind)
     return kind == "ballistics" and not identifyingBallistics[getEvidenceType(item, kind)]
 end
 
+-- How well a sample survived, 0-100: fresh traces are perfect, then they degrade with how long they lay at the scene
+-- before being collected (config.evidenceAging). Samples taken straight from a person, and anything collected before
+-- this was added, have no collection time and count as perfect.
+local function getQuality(item)
+    local settings <const> = config.evidenceAging
+    local created <const>, collected <const> = tonumber(item.metadata.createdAt), tonumber(item.metadata.collectedAt)
+    if not settings or not settings.enabled or not created or not collected then
+        return 100
+    end
+
+    local ageMinutes <const> = math.max(0, collected - created) / 60
+    if ageMinutes <= settings.freshMinutes then
+        return 100
+    end
+
+    local decay <const> = math.min(1, (ageMinutes - settings.freshMinutes) / math.max(1, settings.worstMinutes - settings.freshMinutes))
+    return math.floor(100 - (100 - settings.minimumQuality) * decay + 0.5)
+end
+
+-- The first analysis of a sample decides its result: full below its quality, otherwise a partial result or, worse,
+-- nothing usable. Partial prints and DNA list a few possible citizens; a partial bullet or casing only gives the weapon.
+local function rollResult(quality)
+    local roll <const> = math.random(100)
+    if roll <= quality then
+        return "full"
+    end
+
+    return roll <= quality + (100 - quality) * 0.6 and "partial" or "failed"
+end
+
+-- Possible matches for a partial print or DNA profile: whoever it really belongs to (when they're on file) among
+-- a couple of others on file, in random order. Stored on the item, so looking again shows the same list.
+local function pickCandidates(kind, key)
+    local candidates = {}
+
+    local owner <const> = database.selectFirstColumn(("SELECT identifier FROM linked_%s WHERE %s = ?"):format(kind, kind), key)
+    if owner.success and owner.response then
+        candidates[1] = owner.response
+    end
+
+    local others <const> = database.query(
+        ("SELECT identifier FROM linked_%s WHERE %s <> ? ORDER BY RAND() LIMIT ?"):format(kind, kind),
+        key, (config.evidenceAging.partialCandidates or 3) - #candidates
+    )
+    for _, row in ipairs(others.success and others.response or {}) do
+        candidates[#candidates + 1] = row.identifier
+    end
+
+    for i = #candidates, 2, -1 do
+        local j <const> = math.random(i)
+        candidates[i], candidates[j] = candidates[j], candidates[i]
+    end
+
+    return candidates
+end
+
+local function maskKey(key)
+    return #key > 6 and (key:sub(1, 3) .. ("•"):rep(#key - 5) .. key:sub(-2)) or ("•"):rep(#key)
+end
+
 -- What the lab shows for one kind of evidence on an item. The key is only sent once the evidence has been analysed.
 local function describe(item, kind)
     local data <const> = item.metadata[kind]
     local information <const> = item.metadata.information or {}
 
+    local result <const> = data.result or (data.analysed and "full" or nil) -- analysed before results existed: full
+
     return {
         kind = kind,
         evidenceType = getEvidenceType(item, kind),
         analysed = data.analysed or false,
-        key = data.analysed and not isTypeOnly(item, kind) and data.owner or nil,
+        result = result,
+        quality = data.quality or getQuality(item),
+        key = result == "full" and not isTypeOnly(item, kind) and data.owner or nil,
+        partialKey = result == "partial" and kind ~= "ballistics" and maskKey(data.owner) or nil,
         createdAt = item.metadata.createdAt or data.createdAt, -- when the trace was left (a shot, for gunshot residue)
         weaponType = data.weaponType,
         weaponImage = data.weaponImage,
@@ -158,24 +223,53 @@ Thistle.Callback.Register("evidences:lab:analyse", function(source, arguments)
 
     local key <const> = data.owner
     local typeOnly <const> = isTypeOnly(item, kind)
-    local caseFile <const> = not typeOnly and getCaseFile(kind, key) or { kind = kind }
 
-    if not data.analysed then
+    -- the first analysis settles how much the sample gives up
+    local firstAnalysis <const> = not data.analysed
+    if firstAnalysis then
+        data.quality = typeOnly and 100 or getQuality(item)
+        data.result = typeOnly and "full" or rollResult(data.quality)
+
+        if data.result == "partial" and kind ~= "ballistics" then
+            data.candidates = pickCandidates(kind, key)
+        end
+    end
+
+    local result <const> = data.result or "full"
+    local caseFile = { kind = kind }
+    if result == "full" and not typeOnly then
+        caseFile = getCaseFile(kind, key)
+    elseif result == "partial" and kind ~= "ballistics" then
+        caseFile.candidates = {}
+        for _, identifier in ipairs(data.candidates or {}) do
+            local citizen <const> = citizens.getCitizen(identifier)
+            if citizen and citizen.success and citizen.response then
+                caseFile.candidates[#caseFile.candidates + 1] = citizen.response
+            end
+        end
+    end
+    caseFile.result = result
+
+    if firstAnalysis then
         data.analysed = true
 
         local information <const> = item.metadata.information or {}
         if kind == "ballistics" then
             information.weaponType = (caseFile.firearm and caseFile.firearm.label) or data.weaponType
-            information.serial = not typeOnly and key or nil
-        else
+            information.serial = result == "full" and not typeOnly and key or nil
+        elseif result == "full" then
             information[kind] = key
+        elseif result == "partial" then
+            information[kind] = locale("lab_results.partial_information", maskKey(key))
+        else
+            information[kind] = locale("lab_results.failed_information")
         end
 
         item.metadata.information = information
         item.metadata.description = createInformation(information)
         exports.ox_inventory:SetMetadata(arguments.inventory, arguments.slot, item.metadata)
 
-        if not typeOnly then
+        if result == "full" and not typeOnly then
             database.insert(
                 [[
                     INSERT INTO forensic_matches (kind, matchKey, evidenceType, weaponType, crimeScene, vehicleLocation, plate, collectionTime, collectedAt, analysedAt, analysedBy)
@@ -189,7 +283,21 @@ Thistle.Callback.Register("evidences:lab:analyse", function(source, arguments)
             caseFile.matches = getCaseFile(kind, key).matches
         end
 
-        logger.log(source, "Evidence analysed", { evidenceType = getEvidenceType(item, kind), key = key })
+        logger.log(source, "Evidence analysed", { evidenceType = getEvidenceType(item, kind), key = key, result = result, quality = data.quality })
+
+        -- A match against a citizen or a registered gun gets its own log, so it can go to a channel detectives watch
+        local identified <const> = result == "full" and (caseFile.citizen or caseFile.firearm)
+        if identified then
+            logger.log(source, "Forensic match", {
+                evidence = getEvidenceType(item, kind),
+                [kind == "ballistics" and "gunId" or kind] = key,
+                identified = caseFile.citizen and caseFile.citizen.fullName or nil,
+                firearm = caseFile.firearm and caseFile.firearm.label or nil,
+                crimeScene = information.crimeScene,
+                foundOn = information.vehicleLocation and ("%s %s"):format(information.vehicleLocation, information.plate or "") or nil,
+                linkedEvidence = #(caseFile.matches or {})
+            })
+        end
         TriggerEvent("evidences:evidenceItemAnalysed", source, item)
     end
 

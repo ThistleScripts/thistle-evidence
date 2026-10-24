@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Odlitek stopy',
+    description = 'Sádrový odlitek stopy z místa činu',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Fotografie stopy pneumatiky',
+    description = 'Fotografie stopy pneumatiky z místa činu s měřítkem',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Ocelový pilník',
     weight = 150,
@@ -153,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Sada na úklid místa činu',
+    description = 'Bělidlo, kartáče a pytle na vyčištění místa. Něco se může přehlédnout.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Sada označovačů důkazů',
     description = 'Opakovaně použitelná sada označovačů pro místa činu',
@@ -164,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV reflektor',
+    label = 'Reflektor na stopy',
     description = 'Pracovní světlo, které osvítí celé místo činu UV světlem a ukáže všechny stopy kolem',
     weight = 3000,
     stack = false,
@@ -174,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV reflektor (směrový)',
-    description = 'Směrová UV lampa, která osvítí dlouhý kužel místa činu a ukáže v něm stopy',
+    label = '360° světlo na stopy',
+    description = 'UV lampa, která svítí všude kolem sebe a ukáže stopy na místě činu',
     weight = 3000,
     stack = false,
     close = true,

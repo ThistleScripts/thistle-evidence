@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Molde de huella',
+    description = 'Molde de yeso de una huella de un escenario del crimen',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Foto de huella de neumático',
+    description = 'Foto a escala de una huella de neumático de un escenario del crimen',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Lima de acero',
     weight = 150,
@@ -153,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Kit de limpieza de escena',
+    description = 'Lejía, cepillos y bolsas para limpiar una escena. Algo podría pasarse por alto.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Kit de marcadores de pruebas',
     description = 'Juego reutilizable de marcadores para escenas del crimen',
@@ -164,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'Foco UV',
+    label = 'Foco de pruebas',
     description = 'Foco de trabajo que ilumina toda la escena del crimen con luz UV y muestra todas las pruebas a su alrededor',
     weight = 3000,
     stack = false,
@@ -174,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'Proyector UV',
-    description = 'Lámpara UV direccional que ilumina un cono largo de la escena del crimen y muestra las pruebas en él',
+    label = 'Luz de pruebas 360',
+    description = 'Lámpara UV que ilumina todo a su alrededor y muestra las pruebas de la escena del crimen',
     weight = 3000,
     stack = false,
     close = true,

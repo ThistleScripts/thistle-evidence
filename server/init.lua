@@ -55,5 +55,9 @@ require "server.forensics.microscopes"
 
 require "server.evidences.markers"
 require "server.evidences.floodlights"
+require "server.evidences.locker"
+require "server.evidences.aging"
+require "server.evidences.scene_cleaning"
+require "server.cases.cases"
 
 GlobalState[readyKey] = true

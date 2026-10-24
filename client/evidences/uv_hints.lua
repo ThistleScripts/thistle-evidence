@@ -1,8 +1,8 @@
 -- While the UV light is on, evidence nearby that isn't in the beam yet glows faintly (config.uvLight.hints), so
 -- officers know where to point it. Switching the light off or putting the flashlight away removes the hints.
--- Evidence the beam has shown that has nothing else to see (a bullet in a wall, saliva, traces on a vehicle)
--- glows brightly for as long as it stays revealed, so officers can find it to target it.
--- Bullets in vehicles and props also show their path back to the shooter while the beam is on them.
+-- Evidence the beam or a UV lamp has shown glows brightly for as long as it stays revealed, so officers can find it
+-- to target it (a small casing or magazine on the ground is easy to miss otherwise).
+-- Bullets in vehicles and props also show their path back to the shooter while a UV light shines on them.
 local config <const> = require "config"
 local evidenceTypes <const> = require "common.evidence_types"
 local bulletPath <const> = require "client.evidences.bullet_path"
@@ -84,13 +84,8 @@ local function drawRevealed(coords, colour)
     DrawMarker(28, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, revealedSize, revealedSize, revealedSize, colour.r, colour.g, colour.b, 230, false, false, 2, false, nil, nil, false)
 end
 
--- Ground evidence the game shows nothing for once revealed (blood leaves a decal, casings and magazines a prop)
-local function hasNoVisual(evidence)
-    return evidence.evidenceType == "bullet" or not (evidence.options.visualize and evidence.options.visualize.show)
-end
-
 local groundHints = {} -- vector3s of ground evidence not showing yet
-local groundRevealed = {} -- vector3s of revealed ground evidence with nothing else to see
+local groundRevealed = {} -- vector3s of revealed ground evidence
 local entityPoints = {}
 
 -- Finding the evidence is too slow for every frame, so it's done a few times a second
@@ -102,7 +97,7 @@ local function scan()
         if #(pedCoords - evidence.coords) <= range then
             if not evidence.visible then
                 ground[#ground + 1] = evidence.coords
-            elseif hasNoVisual(evidence) then
+            else
                 revealed[#revealed + 1] = evidence.coords
             end
         end
@@ -148,15 +143,15 @@ CreateThread(function()
                     local coords <const> = getPointCoords(point)
 
                     if coords then
-                        local inBeam <const> = uv.isInBeam(coords)
+                        local isLit <const> = uv.isLit(coords)
 
-                        if inBeam or (config.uvLight.required and (uv.isRevealed(point.entity) or uv.isInArea(coords))) then
+                        if isLit or (config.uvLight.required and uv.isRevealed(point.entity)) then
                             drawRevealed(coords, colour)
                         elseif isOn and settings.enabled ~= false then
                             drawHint(coords, colour)
                         end
 
-                        if inBeam and point.bullet then
+                        if isLit and point.bullet then
                             local shooterCoords <const> = bulletPath.getShooterCoords({ coords = coords, entity = point.entity }, point.bullet)
                             if shooterCoords then
                                 bulletPath.draw(coords, shooterCoords)

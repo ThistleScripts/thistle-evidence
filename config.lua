@@ -148,6 +148,60 @@ config.bookingTerminals = {
     radius = 0.6 -- how big the target is round each spot (metres)
 }
 
+-- Evidence lockers: shared stashes at the station where evidence is kept, with a log of who put in and took out what,
+-- and when (target the locker and choose View log). Opening one needs its groups (config.permissions.access by default).
+config.evidenceLockers = {
+    -- {
+    --     id = "mrpd_evidence", -- unique; the stash's id in ox_inventory
+    --     label = "Mission Row Evidence",
+    --     coords = vec3(474.3, -990.3, 26.3),
+    --     radius = 0.8,
+    --     slots = 200,
+    --     weight = 1000000
+    -- }
+}
+
+-- Labelling an evidence box with a case number seals it. Opening a sealed box breaks the seal and records who opened it
+-- and when, shown on the box, so tampering is visible. Relabelling it reseals it.
+config.evidenceBoxSeals = true
+
+-- Evidence ages: traces left lying at a scene give worse samples the longer they're there before being collected.
+-- On a sample's first analysis, its quality (0-100) is the chance of a full result. Otherwise it's partial (prints and
+-- DNA list a few possible citizens, bullets and casings only give the weapon) or nothing usable. Samples taken straight
+-- from a person are always perfect.
+config.evidenceAging = {
+    enabled = true,
+    freshMinutes = 30, -- collected within this, a sample is perfect
+    worstMinutes = 720, -- collected this long after (12 hours) or later, it's at minimumQuality
+    minimumQuality = 20,
+    partialCandidates = 3, -- how many possible citizens a partial print or DNA profile lists
+    removeAfterMinutes = 2880 -- ground evidence older than this (2 days) disappears; 0 keeps it until a restart
+}
+
+-- Footprints: walking on soft ground (mud, sand, snow, marsh, soil, dirt tracks) leaves prints. A cast of one shows
+-- men's or women's shoes, the size (fixed per character), the tread and which way they were going.
+config.footprints = {
+    enabled = true,
+    spacing = 3.0 -- metres between prints; lower leaves more (and syncs more)
+}
+
+-- Tyre marks: braking hard or spinning the wheels leaves a mark that shows the vehicle's model and its direction
+config.tyreMarks = {
+    enabled = true,
+    minimumSpeed = 10.0, -- m/s (about 22 mph) before braking leaves a mark
+    brakingDrop = 1.6, -- speed lost in 0.15 s (m/s) that counts as braking hard
+    wheelspin = 6.0, -- how much faster the driven wheels turn than the car moves (m/s)
+    cooldown = 4000 -- ms between marks from one driver
+}
+
+-- The scene_cleaning_kit item: anyone can scrub a scene with bleach. Ground evidence within the radius is wiped, but each
+-- piece has a chance of being missed, and the player isn't told how much. Evidence on vehicles and players isn't touched.
+config.sceneCleaning = {
+    duration = 30000, -- how long the scrubbing takes (ms); the kit is used up when it finishes
+    radius = 4.0, -- metres around the player
+    missChance = 0.15 -- the chance each piece is missed
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.
@@ -183,6 +237,7 @@ config.destroyItems = {
     casing = "cleaning_kit",
     bullet = "cleaning_kit",
     magazine = "cleaning_kit"
+    -- footprints and tyre marks can be scuffed out by anyone; add footprint = "..." or tyre_mark = "..." to need an item
 }
 
 -- The UV flashlight is an addon weapon, WEAPON_UVFLASHLIGHT, held and swung like the game's flashlight but with a blue
@@ -215,21 +270,23 @@ config.uvLight = {
 -- flashlight. Only matters while config.uvLight.required is on. Each style is its own item, named by its key.
 config.uvFloodlight = {
     styles = {
-        -- Lights all round it
+        -- "Evidence Spotlight": lights all round it
         uv_floodlight = {
             model = `bzzz_dream_of_lights_purple`,
             lamp = vec3(0.0, 0.0, 2.1), -- where the light comes from, from the lamp's base (metres)
             radius = 12.0 -- how far round it evidence shows up (metres)
         },
 
-        -- Lights a cone in front of it, further. It's turned to shine away from the officer placing it.
+        -- "360 Evidence Light": lights all round it, further
         uv_spotlight = {
             model = `bzzz_world_of_lamps_purple`,
             lamp = vec3(0.0, -0.3, 1.45),
-            direction = vec3(0.0, -1.0, -0.35), -- which way the lamp head points on the model
-            angle = 35.0, -- how wide the beam is (degrees from the centre)
-            radius = 25.0 -- how far the beam reaches (metres)
+            radius = 25.0
         }
+
+        -- A style can light only a cone in front of it instead, turned to shine away from the officer placing it:
+        -- direction = vec3(0.0, -1.0, -0.35), -- which way the lamp head points on the model
+        -- angle = 35.0, -- how wide the beam is (degrees from the centre)
     },
 
     intensity = 6.0, -- how bright the blue light is
@@ -354,6 +411,15 @@ config.logging = {
         ["Evidence destroyed"] = true,
         ["Evidence collected"] = true,
         ["Evidence analysed"] = true,
+        ["Forensic match"] = true, -- an analysis identified a citizen or a registered gun
+        ["Evidence box sealed"] = true,
+        ["Evidence box seal broken"] = true,
+        ["Evidence locker deposit"] = true,
+        ["Evidence locker withdrawal"] = true,
+        ["Scene cleaned"] = true,
+        ["Case opened"] = true,
+        ["Case closed"] = true,
+        ["Case reopened"] = true,
         ["Fingerprint scanned"] = true,
         ["Observation started"] = true,
         ["Observation ended"] = true,
@@ -371,7 +437,7 @@ config.logging = {
     -- Each category falls back to `default` when left empty; leave everything empty to send nothing.
     webhooks = {
         default = "",
-        evidences = "", -- collecting, destroying and clearing evidence, taking biometrics, fingerprint scans
+        evidences = "", -- collecting, destroying and clearing evidence, taking biometrics, fingerprint scans, forensic matches
         citizens = "", -- citizens, notes and linked biometric data
         wiretap = "", -- observations and spy microphones
         firearms = "" -- firearms registry
