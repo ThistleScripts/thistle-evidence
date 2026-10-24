@@ -44,6 +44,7 @@ local function createPlayerTarget(evidenceType, options, action)
         icon = options.target[action].icon or "fa-solid fa-magnifying-glass",
         groups = config.permissions.collect or false,
         items = options.target[action].requiredItem or nil,
+        anyItem = true, -- a list of kits means any one of them
         menuName = "evidences",
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
@@ -100,6 +101,7 @@ local function createVehicleDoorTarget(evidenceType, options, action)
         icon = options.target[action].icon or "fa-solid fa-magnifying-glass",
         groups = config.permissions.collect or false,
         items = options.target[action].requiredItem or nil,
+        anyItem = true, -- a list of kits means any one of them
         distance = 2.5,
         -- no ox_target bones: those only match within a metre of the door's hinge, not at the handle or window.
         -- utils.getTargetedVehicleDoorId works out the door from anywhere along it.
@@ -174,6 +176,7 @@ local function createVehicleSeatTarget(evidenceType, options, action)
         icon = options.target[action].icon or "fa-solid fa-magnifying-glass",
         groups = config.permissions.collect or false,
         items = options.target[action].requiredItem or nil,
+        anyItem = true, -- a list of kits means any one of them
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
                 return false
@@ -232,6 +235,7 @@ local function createEntityTarget(evidenceType, options, action)
         icon = options.target[action].icon or "fa-solid fa-magnifying-glass",
         groups = config.permissions.collect or false,
         items = options.target[action].requiredItem or nil,
+        anyItem = true, -- a list of kits means any one of them
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
                 return false
@@ -319,6 +323,7 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
         icon = options.target[action].icon or "fa-solid fa-magnifying-glass",
         groups = config.permissions.collect or false,
         items = options.target[action].requiredItem or nil,
+        anyItem = true, -- a list of kits means any one of them
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
                 return false

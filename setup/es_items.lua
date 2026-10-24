@@ -33,6 +33,14 @@
     stack = false,
     decay = true
 },
+['swab_kit'] = {
+    label = 'Kit de hisopos',
+    description = 'Hisopos y tubos estériles para frotis bucales y pruebas de residuos de disparo. Se puede usar diez veces.',
+    weight = 300,
+    close = false,
+    stack = false,
+    decay = true
+},
 ['hydrogen_peroxide'] = {
     label = 'Peróxido de Hidrógeno',
     weight = 500,

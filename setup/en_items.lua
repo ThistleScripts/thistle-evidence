@@ -33,6 +33,14 @@
     stack = false,
     decay = true
 },
+['swab_kit'] = {
+    label = 'Swab Kit',
+    description = 'Sterile swabs and tubes for mouth swabs and gunshot residue tests. Can be used ten times.',
+    weight = 300,
+    close = false,
+    stack = false,
+    decay = true
+},
 ['hydrogen_peroxide'] = {
     label = 'Hydrogen peroxide',
     weight = 500,

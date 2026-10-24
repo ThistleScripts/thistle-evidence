@@ -44,6 +44,17 @@ TriggerServerEvent("evidences:playerLoaded", cache.serverId)
 
 local evidenceTypes <const> = require "common.evidence_types"
 
+-- An item, or any of a list of items (kits that can each do the job)
+local function hasAnyItem(items)
+    for _, item in ipairs(type(items) == "table" and items or { items }) do
+        if exports.ox_inventory:Search("count", item) > 0 then
+            return true
+        end
+    end
+
+    return false
+end
+
 exports.ox_target:addGlobalPlayer({
     label = "Evidence",
     icon = "fa-solid fa-magnifying-glass",
@@ -71,8 +82,8 @@ exports.ox_target:addGlobalPlayer({
             if not options.trace then
                 -- `a and b or true` is always true, so spell out "no item needed, or the player has it"
                 local collectItem <const>, destroyItem <const> = options.target.collect.requiredItem, options.target.destroy.requiredItem
-                local hasRequiredItemToCollect <const> = not collectItem or exports.ox_inventory:Search("count", collectItem) > 0
-                local hasRequiredItemToDestroy <const> = not destroyItem or exports.ox_inventory:Search("count", destroyItem) > 0
+                local hasRequiredItemToCollect <const> = not collectItem or hasAnyItem(collectItem)
+                local hasRequiredItemToDestroy <const> = not destroyItem or hasAnyItem(destroyItem)
 
                 requiredItemPresent = hasRequiredItemToCollect or hasRequiredItemToDestroy
                 if requiredItemPresent then
@@ -81,6 +92,6 @@ exports.ox_target:addGlobalPlayer({
             end
         end
 
-        return (exports.ox_inventory:Search("count", "forensic_kit") > 0) or (evidencePresent and requiredItemPresent)
+        return hasAnyItem({ "forensic_kit", "swab_kit" }) or (evidencePresent and requiredItemPresent)
     end
 })

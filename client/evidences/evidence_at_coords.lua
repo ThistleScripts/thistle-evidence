@@ -91,6 +91,7 @@ local function refreshPileZone(pile)
                 distance = pile.options.target.distance or 2,
                 groups = config.permissions.collect or false,
                 items = pile.options.target.collect.requiredItem or nil,
+                anyItem = true, -- a list of kits means any one of them
                 canInteract = function()
                     return not config.isPedDead(cache.ped)
                 end,
@@ -114,6 +115,7 @@ local function refreshPileZone(pile)
                 icon = pile.options.target.destroy.icon or "fa-solid fa-hand-back-fist",
                 distance = pile.options.target.distance or 2,
                 items = pile.options.target.destroy.requiredItem or nil,
+                anyItem = true, -- a list of kits means any one of them
                 canInteract = function()
                     return not config.isPedDead(cache.ped)
                 end,

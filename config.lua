@@ -266,6 +266,13 @@ config.uvLight = {
     }
 }
 
+-- Evidence survives server restarts: ground evidence, evidence on vehicles (by plate, put back when a vehicle with that
+-- plate spawns again) and on players (by character). Collected evidence is kept by ox_inventory anyway.
+config.persistence = {
+    enabled = true,
+    maxAgeDays = 7 -- saved evidence nobody has touched for this long is dropped at start (ground evidence also expires with config.evidenceAging)
+}
+
 -- UV lamps officers stand at a crime scene. Evidence they light shows up (and can be collected) as if under the UV
 -- flashlight. Only matters while config.uvLight.required is on. Each style is its own item, named by its key.
 config.uvFloodlight = {

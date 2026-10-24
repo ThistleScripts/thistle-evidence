@@ -222,7 +222,16 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
         return fail("cannot_carry")
     end
 
-    local slots <const> = exports.ox_inventory:GetSlotsWithItem(source, "forensic_kit")
+    -- the first kit in the list the player has (saliva and gunshot residue take a swab kit or a forensic kit)
+    local kits <const> = options.target.collect.requiredItem or "forensic_kit"
+    local slots
+    for _, kit in ipairs(type(kits) == "table" and kits or { kits }) do
+        slots = exports.ox_inventory:GetSlotsWithItem(source, kit)
+        if slots and #slots > 0 then
+            break
+        end
+    end
+
     if not slots or #slots < 1 then
         return fail("no_kit")
     end

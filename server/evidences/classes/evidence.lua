@@ -1,4 +1,5 @@
 local eventHandler <const> = require "common.events.handler"
+local persistence <const> = require "server.evidences.persistence"
 
 ---@class evidence : OxClass
 ---@field owner string The identifier for the evidence (e.g. the fingerprint, dna or serial number of a weapon)
@@ -46,6 +47,7 @@ local function atEntityInternal(object, entity, currentEvidencesOfThisType, meta
 
     currentEvidencesOfThisType[object.owner] = metadata
     Entity(entity).state[string.format("evidences:%s", object.__name)] = currentEvidencesOfThisType
+    persistence.entityChanged(entity)
 end
 
 
@@ -71,6 +73,7 @@ function evidence:removeFromEntity(entity)
     local currentEvidencesOfThisType = Entity(entity).state[string.format("evidences:%s", self.__name)] or {}
     currentEvidencesOfThisType[self.owner] = nil
     Entity(entity).state[string.format("evidences:%s", self.__name)] = currentEvidencesOfThisType
+    persistence.entityChanged(entity)
 end
 
 
@@ -113,6 +116,8 @@ function evidence:removeFromRelativeEntityCoords(entity, coords)
     currentEvidencesOfThisType[self.owner].coords = evidenceCoords
 
     Entity(entity).state[string.format("evidences:%s", self.__name)] = currentEvidencesOfThisType
+
+    persistence.entityChanged(entity)
 end
 
 
@@ -172,6 +177,8 @@ function evidence:removeFromVehicleSeats(vehicle, seatIds)
     currentEvidencesOfThisType[self.owner].seatIds = evidenceSeatIds
 
     Entity(vehicle).state[string.format("evidences:%s", self.__name)] = currentEvidencesOfThisType
+
+    persistence.entityChanged(vehicle)
 end
 
 
@@ -213,6 +220,8 @@ function evidence:removeFromVehicleDoors(vehicle, doorIds)
     currentEvidencesOfThisType[self.owner].doorIds = evidenceDoorIds
 
     Entity(vehicle).state[string.format("evidences:%s", self.__name)] = currentEvidencesOfThisType
+
+    persistence.entityChanged(vehicle)
 end
 
 
@@ -239,6 +248,8 @@ function evidence:atPlayer(playerId, metadata)
     currentEvidencesOfThisType[self.owner] = metadata
 
     Player(playerId).state[string.format("evidences:%s", self.__name)] = currentEvidencesOfThisType
+
+    persistence.playerChanged(playerId)
 end
 
 -- Removes the evidence from the player it is bound to.
@@ -248,6 +259,8 @@ function evidence:removeFromPlayer(playerId)
     currentEvidencesOfThisType[self.owner] = nil
 
     Player(playerId).state[string.format("evidences:%s", self.__name)] = currentEvidencesOfThisType
+
+    persistence.playerChanged(playerId)
 end
 
 
@@ -284,6 +297,7 @@ function evidence:atCoords(coords, metadata)
     end)
 
     EvidencesAtCoords[coords] = self
+    persistence.groundAdded(self.__name, self.owner, coords, metadata)
 end
 
 -- Removes the evidence from the given coords.
@@ -302,6 +316,7 @@ function evidence:removeFromCoords(coords)
     end
 
     EvidencesAtCoords[coords] = nil
+    persistence.groundRemoved(coords)
 end
 
 

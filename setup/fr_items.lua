@@ -33,6 +33,14 @@
     stack = false,
     decay = true
 },
+['swab_kit'] = {
+    label = 'Kit d’écouvillons',
+    description = 'Écouvillons et tubes stériles pour les prélèvements buccaux et les tests de résidus de tir. Utilisable dix fois.',
+    weight = 300,
+    close = false,
+    stack = false,
+    decay = true
+},
 ['hydrogen_peroxide'] = {
     label = 'Peroxyde d\'hydrogène',
     weight = 500,

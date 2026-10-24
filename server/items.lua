@@ -30,6 +30,10 @@ if not exports.ox_inventory:Items("evidence_marker") then
     lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")
 end
 
+if not exports.ox_inventory:Items("swab_kit") then
+    lib.print.warn("The swab_kit item doesn't exist, so saliva and gunshot residue need a forensic_kit.")
+end
+
 if not exports.ox_inventory:Items("scene_cleaning_kit") then
     lib.print.warn("The scene_cleaning_kit item doesn't exist, so scenes can't be cleaned.")
 end
@@ -157,7 +161,7 @@ if config.evidenceBoxSeals then
 end
 
 
--- Set durability = 100 for newly created forensic_kit and steel_file items
+-- Set durability = 100 for newly created forensic_kit, swab_kit and steel_file items
 exports.ox_inventory:registerHook("createItem", function(payload)
     local metadata <const> = payload.metadata
     metadata.durability = 100
@@ -165,6 +169,7 @@ exports.ox_inventory:registerHook("createItem", function(payload)
 end, {
     itemFilter = {
         forensic_kit = true,
+        swab_kit = true,
         steel_file = true
     }
 })

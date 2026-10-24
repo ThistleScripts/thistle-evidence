@@ -2,6 +2,9 @@ local config <const> = require "config"
 local utils <const> = require "client.evidences.utils"
 
 local bulletPath <const> = require "client.evidences.bullet_path"
+-- Saliva and gunshot residue only need a swab: a swab kit (which any officer can carry) or a full forensic kit
+local swabKits <const> = { "swab_kit", "forensic_kit" }
+
 local footprintMarks -- required on first use, like the UV light below (this file also loads on the server)
 
 -- Required on first use: this file is also loaded on the server, where the UV flashlight doesn't exist
@@ -110,7 +113,7 @@ return {
             collect = {
                 label = locale("evidences.saliva.collecting_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = "forensic_kit",
+                requiredItem = swabKits,
                 collectedItem = "collected_saliva",
                 createMetadata = createMetadata
             },
@@ -262,7 +265,7 @@ return {
             collect = {
                 label = locale("evidences.gunshot_residue.collecting_label"),
                 icon = "fa-solid fa-gun",
-                requiredItem = "forensic_kit",
+                requiredItem = swabKits,
                 collectedItem = "collected_gunshot_residue",
                 createMetadata = createMetadata
             },
