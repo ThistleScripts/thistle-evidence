@@ -5,7 +5,12 @@ local ObservableRadioFreq <const> = require "server.wiretap.classes.observable_r
 local knownRadioFrequencies = {}
 
 RegisterNetEvent("pma-voice:setTalkingOnRadio", function(talking)
-    local playerId <const> = source
+    -- only from a player's client; anything triggering it on the server has no player behind it
+    local playerId <const> = tonumber(source)
+    if not playerId or playerId <= 0 then
+        return
+    end
+
     local radioChannel = Player(playerId).state.radioChannel
 
     if radioChannel and radioChannel ~= 0 then

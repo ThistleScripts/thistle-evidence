@@ -1,5 +1,26 @@
 math.randomseed(os.time()) -- Seed the PRNG
 
+-- DoesPlayerExist(nil) is a native error ("Argument at index 0 was null") rather than false. Inside this resource
+-- (our code, ox_lib and the included thistle-lib) a missing player now just doesn't exist, and the first time each
+-- caller does it, the console shows where from so it can be fixed properly.
+do
+    local doesPlayerExist <const> = DoesPlayerExist
+    local reported = {}
+
+    DoesPlayerExist = function(playerId)
+        if playerId == nil then
+            local trace <const> = debug.traceback("", 2)
+            if not reported[trace] then
+                reported[trace] = true
+                lib.print.warn(("DoesPlayerExist was called without a player id. Please report this:%s"):format(trace))
+            end
+            return false
+        end
+
+        return doesPlayerExist(playerId)
+    end
+end
+
 lib.locale()
 
 -- Clients read these to tell players why nothing works when the server stopped during setup
