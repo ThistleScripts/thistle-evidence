@@ -1,5 +1,6 @@
 local api <const> = require "server.evidences.api"
 local logger <const> = require "server.logger"
+local persistence <const> = require "server.evidences.persistence"
 
 local function clearEvidences(state, evidenceTypes)
     local count = 0
@@ -42,10 +43,12 @@ lib.addCommand("clearEvidences", {
     for _, player in ipairs(lib.getNearbyPlayers(playerCoords, radius)) do
         evidenceCounter += clearEvidences(Entity(player.ped).state, api.evidenceTypes)
         evidenceCounter += clearEvidences(Player(player.id).state, api.evidenceTypes)
+        persistence.playerChanged(player.id)
     end
 
     for _, vehicle in ipairs(lib.getNearbyVehicles(playerCoords, radius)) do
         evidenceCounter += clearEvidences(Entity(vehicle.vehicle).state, api.evidenceTypes)
+        persistence.entityChanged(vehicle.vehicle)
     end
 
     -- clear ground evidences
