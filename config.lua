@@ -248,8 +248,8 @@ config.uvLight = {
     -- false: they're always visible, as before. Gunshot residue on players and taking DNA or fingerprints never need it.
     required = true,
 
-    -- Right click with the flashlight in hand points it where the player looks (the right arm points, so they can
-    -- still walk and strafe). "hold": while right click is held. "toggle": right click on, right click again off.
+    -- Right click with the flashlight in hand shines it where the player looks (they can still walk and strafe).
+    -- "hold": while right click is held. "toggle": right click on, right click again off.
     mode = "hold",
 
     range = 12.0, -- how far the beam reaches (metres)

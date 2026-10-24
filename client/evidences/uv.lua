@@ -1,7 +1,6 @@
 -- The UV flashlight: the WEAPON_UVFLASHLIGHT addon weapon (data/weapons), held and swung like the game's flashlight.
--- Right click points it and switches the blue beam on (held, or toggled with config.uvLight.mode): the right arm, which
--- holds the flashlight, points where the camera looks using GTA Online's pointing gesture, and the player can still walk
--- and strafe. Evidence caught in the beam shows up, and client/evidences/uv_hints.lua draws faint hints of the evidence
+-- Right click switches the blue beam on (held, or toggled with config.uvLight.mode). The beam shines from the
+-- flashlight where the camera looks, and the player can still walk and strafe. Evidence caught in the beam shows up, and client/evidences/uv_hints.lua draws faint hints of the evidence
 -- around while it's on.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
@@ -17,10 +16,6 @@ local areas = {} -- lit areas (UV floodlights, client/evidences/floodlights.lua)
 
 local minDot <const> = math.cos(math.rad(config.uvLight.angle))
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
-local isPointing = false
-
--- How far up and down the arm can point (degrees), as the pointing gesture allows
-local minPitch <const>, maxPitch <const> = -70.0, 42.0
 
 AddTextEntry("WT_UVFLASHLIGHT", "UV Flashlight") -- the weapon's name on the weapon wheel and HUD
 
@@ -38,10 +33,10 @@ local function getBeamOrigin()
     return weapon and GetEntityCoords(weapon) or GetEntityCoords(cache.ped)
 end
 
--- The arm points where the camera looks, so the beam does too
+-- The beam shines where the camera looks
 local function getBeamDirection()
     local rotation <const> = GetGameplayCamRot(2)
-    local pitch <const> = math.rad(math.max(minPitch, math.min(maxPitch, rotation.x)))
+    local pitch <const> = math.rad(rotation.x)
     local yaw <const> = math.rad(rotation.z)
     local horizontal <const> = math.cos(pitch)
 
@@ -175,54 +170,6 @@ local function cleanUpRevealed()
     end
 end
 
--- Pointing: GTA Online's pointing gesture (the task_mp_pointing move network) on the right arm, which holds the
--- flashlight. It only moves the arm, so the player can walk, run and strafe while shining it.
-local function point()
-    if cache.vehicle then
-        return
-    end
-
-    local ped <const> = cache.ped
-
-    if not isPointing or not IsTaskMoveNetworkActive(ped) then
-        lib.requestAnimDict("anim@mp_point")
-        SetPedConfigFlag(ped, 36, true)
-        TaskMoveNetworkByName(ped, "task_mp_pointing", 0.5, false, "anim@mp_point", 24)
-        RemoveAnimDict("anim@mp_point")
-        isPointing = true
-    end
-
-    -- Standing still and looking behind: turn round, as the arm can't point backwards
-    local relativeHeading = GetGameplayCamRelativeHeading()
-    if math.abs(relativeHeading) > 100.0 and GetEntitySpeed(ped) < 0.5 then
-        SetEntityHeading(ped, GetGameplayCamRot(2).z)
-        relativeHeading = 0.0
-    end
-
-    local pitch <const> = (math.max(minPitch, math.min(maxPitch, GetGameplayCamRelativePitch())) - minPitch) / (maxPitch - minPitch)
-    local heading <const> = (math.max(-180.0, math.min(180.0, relativeHeading)) + 180.0) / 360.0
-
-    SetTaskMoveNetworkSignalFloat(ped, "Pitch", pitch)
-    SetTaskMoveNetworkSignalFloat(ped, "Heading", heading * -1.0 + 1.0)
-    SetTaskMoveNetworkSignalBool(ped, "isBlocked", false)
-    SetTaskMoveNetworkSignalBool(ped, "isFirstPerson", GetCamViewModeForContext(GetCamActiveViewModeContext()) == 4)
-end
-
-local function stopPointing()
-    if not isPointing then
-        return
-    end
-
-    isPointing = false
-    local ped <const> = cache.ped
-
-    RequestTaskMoveNetworkStateTransition(ped, "Stop")
-    if not IsPedInjured(ped) then
-        ClearPedSecondaryTask(ped)
-    end
-    SetPedConfigFlag(ped, 36, false)
-end
-
 local function setLight(on)
     if isOn == on then
         return
@@ -231,10 +178,6 @@ local function setLight(on)
     isOn = on
     lastOnAt = GetGameTimer()
     PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
-
-    if not on then
-        stopPointing()
-    end
 end
 
 local function unequip()
@@ -272,7 +215,6 @@ local function equip()
 
             if isOn then
                 lastOnAt = GetGameTimer()
-                point()
 
                 local origin <const> = getBeamOrigin()
                 local direction <const> = getBeamDirection()
