@@ -191,6 +191,11 @@
         "scan_error": {
             "title": "Skenování selhalo",
             "description": "Otisk prstu se nepodařilo naskenovat"
+        },
+        "scan_player": "Scan fingerprint",
+        "scan_target_gloves": {
+            "title": "Scan failed",
+            "description": "They're wearing gloves"
         }
     },
     "steel_file": {
