@@ -257,6 +257,8 @@ function evidence:atCoords(coords, metadata)
 
     -- what it was left on comes from the client, so keep it a short label
     metadata.surface = type(metadata.surface) == "string" and metadata.surface:sub(1, 40) or nil
+    metadata.model = type(metadata.model) == "string" and metadata.model:sub(1, 40) or nil -- a tyre mark's vehicle
+    metadata.heading = tonumber(metadata.heading)
 
     TriggerClientEvent("evidences:sync:atCoords", -1, self.__name, self.owner, coords, metadata)
 

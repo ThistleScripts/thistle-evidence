@@ -67,7 +67,8 @@
                 "weapon_type": "Waffentyp",
                 "serial": "Seriennummer",
                 "vehicle_location": "Found on",
-                "plate": "Licence plate"
+                "plate": "Licence plate",
+                "trace": "Shows"
             },
             "seats": {
                 "-1": "vorderem Fahrersitz",
@@ -136,6 +137,28 @@
             "metadata": "Seal",
             "intact": "Intact, sealed by %s on %s",
             "broken": "BROKEN, opened by %s on %s"
+        },
+        "footprint": {
+            "collecting_label": "Cast footprint",
+            "destroying_label": "Scuff out footprint",
+            "mens": "Men's",
+            "womens": "Women's",
+            "description": "%s shoe, UK size %s, tread pattern %s, heading %s"
+        },
+        "tyre_mark": {
+            "collecting_label": "Photograph tyre mark",
+            "destroying_label": "Scuff out tyre mark",
+            "description": "Tread matches a %s, heading %s"
+        },
+        "directions": {
+            "north": "north",
+            "north_east": "north-east",
+            "east": "east",
+            "south_east": "south-east",
+            "south": "south",
+            "south_west": "south-west",
+            "west": "west",
+            "north_west": "north-west"
         }
     },
     "fingerprint_scanner": {

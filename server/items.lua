@@ -30,6 +30,12 @@ if not exports.ox_inventory:Items("evidence_marker") then
     lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")
 end
 
+for _, traceItem in ipairs({ "collected_footprint", "collected_tyre_mark" }) do
+    if not exports.ox_inventory:Items(traceItem) then
+        lib.print.warn(("The %s item doesn't exist, so footprints and tyre marks can't be collected."):format(traceItem))
+    end
+end
+
 for style in pairs(config.uvFloodlight.styles) do
     if not exports.ox_inventory:Items(style) then
         lib.print.warn(("The %s item doesn't exist, so that UV lamp can't be placed."):format(style))

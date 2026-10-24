@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = '足跡の石膏型',
+    description = '事件現場の足跡を石膏で型取りしたもの',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'タイヤ痕の写真',
+    description = '事件現場のタイヤ痕をスケール付きで撮影した写真',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = '鉄工用ヤスリ',
     weight = 150,

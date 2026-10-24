@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Ayak izi kalıbı',
+    description = 'Olay yerinden alınmış bir ayak izinin alçı kalıbı',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Lastik izi fotoğrafı',
+    description = 'Olay yerinden ölçekli bir lastik izi fotoğrafı',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Çelik eğe',
     weight = 150,

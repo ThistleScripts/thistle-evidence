@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Footprint Cast',
+    description = 'A plaster cast of a footprint from a crime scene',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Tyre Mark Photo',
+    description = 'A scaled photo of a tyre mark from a crime scene',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Steel File',
     weight = 150,

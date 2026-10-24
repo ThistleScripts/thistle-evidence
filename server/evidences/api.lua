@@ -1,6 +1,7 @@
 --local main = require "server.init"
 
 local api = {}
+local framework <const> = require "server.framework"
 
 local biometricsProvider <const> = require "server.biometrics.biometrics_provider"
 
@@ -11,7 +12,9 @@ api.evidenceTypes = {
     magazine = require "server.evidences.classes.ballistics.magazine",
     casing = require "server.evidences.classes.ballistics.casing",
     bullet = require "server.evidences.classes.ballistics.bullet",
-    gunshot_residue = require "server.evidences.classes.ballistics.gunshot_residue"
+    gunshot_residue = require "server.evidences.classes.ballistics.gunshot_residue",
+    footprint = require "server.evidences.classes.trace.footprint",
+    tyre_mark = require "server.evidences.classes.trace.tyre_mark"
 }
 
 local cache = {}
@@ -130,6 +133,31 @@ local clientMethods <const> = {
 
 local biometricTypes <const> = { fingerprint = true, blood = true, saliva = true }
 
+-- A footprint's owner is the shoes: men's or women's, the shoe model, and a shoe size that belongs to the character
+-- (from their identifier), so prints from one person in one pair of shoes match. The client only says which shoes.
+local function footprintOwner(source, shoes)
+    if type(shoes) ~= "string" then
+        return nil
+    end
+
+    local sex <const>, model <const> = shoes:match("^([MF])%-(%d+)$")
+    if not sex then
+        return nil
+    end
+
+    local identifier <const> = framework.getIdentifier(source) or tostring(source)
+    local seed <const> = GetHashKey(identifier) & 0x7FFFFFFF
+    local size <const> = sex == "M" and 6 + seed % 7 or 3 + seed % 6 -- UK 6-12 for men's shoes, 3-8 for women's
+
+    return ("%s-%d-%d"):format(sex, size, tonumber(model))
+end
+
+-- A tyre mark's owner is the model of the vehicle the player is driving
+local function isDrivingModel(source, owner)
+    local vehicle <const> = GetVehiclePedIsIn(GetPlayerPed(source), false)
+    return vehicle ~= 0 and owner == ("model:%d"):format(GetEntityModel(vehicle) & 0xFFFFFFFF)
+end
+
 local function isOwnerAllowed(source, className, owner, fun)
     -- wiping someone's traces off a weapon in your own inventory (hydrogen peroxide)
     if fun == "removeFromItem" then
@@ -138,6 +166,14 @@ local function isOwnerAllowed(source, className, owner, fun)
 
     if biometricTypes[className] then
         return owner == source
+    end
+
+    if className == "footprint" then
+        return type(owner) == "string" -- built by footprintOwner
+    end
+
+    if className == "tyre_mark" then
+        return isDrivingModel(source, owner)
     end
 
     local serial <const> = currentWeaponSerial(source)
@@ -157,6 +193,10 @@ RegisterNetEvent("evidences:syncEvidence", function(className, owner, fun, ...)
 
     if type(className) ~= "string" or not api.evidenceTypes[className] then
         return
+    end
+
+    if className == "footprint" then
+        owner = footprintOwner(source, owner)
     end
 
     local isAllowed <const> = type(fun) == "string" and clientMethods[fun]

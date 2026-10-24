@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Molde de huella',
+    description = 'Molde de yeso de una huella de un escenario del crimen',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Foto de huella de neumático',
+    description = 'Foto a escala de una huella de neumático de un escenario del crimen',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Lima de acero',
     weight = 150,

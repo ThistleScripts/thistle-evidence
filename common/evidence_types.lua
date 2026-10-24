@@ -2,6 +2,7 @@ local config <const> = require "config"
 local utils <const> = require "client.evidences.utils"
 
 local bulletPath <const> = require "client.evidences.bullet_path"
+local footprintMarks -- required on first use, like the UV light below (this file also loads on the server)
 
 -- Required on first use: this file is also loaded on the server, where the UV flashlight doesn't exist
 local uv
@@ -271,5 +272,49 @@ return {
             }
         },
         visualize = {}
+    },
+    -- trace evidence: what was left behind, not who (see client/evidences/registry/footprint.lua and tyre_mark.lua)
+    footprint = {
+        target = {
+            collect = {
+                label = locale("evidences.footprint.collecting_label"),
+                icon = "fa-solid fa-shoe-prints",
+                requiredItem = "forensic_kit",
+                collectedItem = "collected_footprint",
+                createMetadata = createMetadata
+            },
+            destroy = {
+                label = locale("evidences.footprint.destroying_label"),
+                icon = "fa-solid fa-shoe-prints",
+                requiredItem = config.destroyItems.footprint
+            }
+        },
+        visualize = {
+            show = function(point, data)
+                footprintMarks = footprintMarks or require "client.evidences.footprint_marks"
+                footprintMarks.add(point, data)
+            end,
+            hide = function(point)
+                footprintMarks = footprintMarks or require "client.evidences.footprint_marks"
+                footprintMarks.remove(point)
+            end
+        }
+    },
+    tyre_mark = {
+        target = {
+            collect = {
+                label = locale("evidences.tyre_mark.collecting_label"),
+                icon = "fa-solid fa-camera",
+                requiredItem = "forensic_kit",
+                collectedItem = "collected_tyre_mark",
+                createMetadata = createMetadata
+            },
+            destroy = {
+                label = locale("evidences.tyre_mark.destroying_label"),
+                icon = "fa-solid fa-car-burst",
+                requiredItem = config.destroyItems.tyre_mark
+            }
+        },
+        visualize = {} -- the game draws skid marks itself; under UV the mark gets the revealed-evidence dot
     }
 }

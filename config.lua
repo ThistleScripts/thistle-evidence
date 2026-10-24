@@ -178,6 +178,22 @@ config.evidenceAging = {
     removeAfterMinutes = 2880 -- ground evidence older than this (2 days) disappears; 0 keeps it until a restart
 }
 
+-- Footprints: walking on soft ground (mud, sand, snow, marsh, soil, dirt tracks) leaves prints. A cast of one shows
+-- men's or women's shoes, the size (fixed per character), the tread and which way they were going.
+config.footprints = {
+    enabled = true,
+    spacing = 3.0 -- metres between prints; lower leaves more (and syncs more)
+}
+
+-- Tyre marks: braking hard or spinning the wheels leaves a mark that shows the vehicle's model and its direction
+config.tyreMarks = {
+    enabled = true,
+    minimumSpeed = 10.0, -- m/s (about 22 mph) before braking leaves a mark
+    brakingDrop = 1.6, -- speed lost in 0.15 s (m/s) that counts as braking hard
+    wheelspin = 6.0, -- how much faster the driven wheels turn than the car moves (m/s)
+    cooldown = 4000 -- ms between marks from one driver
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.
@@ -213,6 +229,7 @@ config.destroyItems = {
     casing = "cleaning_kit",
     bullet = "cleaning_kit",
     magazine = "cleaning_kit"
+    -- footprints and tyre marks can be scuffed out by anyone; add footprint = "..." or tyre_mark = "..." to need an item
 }
 
 -- The UV flashlight is an addon weapon, WEAPON_UVFLASHLIGHT, held and swung like the game's flashlight but with a blue

@@ -146,6 +146,27 @@ local function getVehicleLocation(evidenceType, remove)
     return capitalise(location), plate ~= "" and plate or nil
 end
 
+-- Which way a heading points, as a compass direction (GTA headings turn anticlockwise from north)
+local function compass(heading)
+    local directions <const> = { "north", "north_east", "east", "south_east", "south", "south_west", "west", "north_west" }
+    local index <const> = math.floor(((360.0 - (tonumber(heading) or 0.0)) % 360.0 + 22.5) / 45.0) % 8
+    return locale(("evidences.directions.%s"):format(directions[index + 1]))
+end
+
+-- What a footprint or tyre mark tells: the shoes and which way they went, or the vehicle model
+local function describeTrace(evidenceType, owner, coordsMetadata)
+    if evidenceType == "footprint" then
+        local sex <const>, size <const>, tread <const> = tostring(owner):match("^([MF])%-(%d+)%-(%d+)$")
+        if sex then
+            return locale("evidences.footprint.description", locale(sex == "M" and "evidences.footprint.mens" or "evidences.footprint.womens"),
+                size, tread, compass(coordsMetadata.heading))
+        end
+    elseif evidenceType == "tyre_mark" then
+        return locale("evidences.tyre_mark.description", coordsMetadata.model or locale("laptop.desktop_screen.common.statuses.unknown"),
+            compass(coordsMetadata.heading))
+    end
+end
+
 ---@param source number The collecting player
 ---@param evidenceType string
 ---@param owner number|string The evidence owner, or a player's server id when taking their biometrics directly
@@ -191,10 +212,12 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     -- before the evidence is removed, while the vehicle's state still holds it
     local vehicleLocation, plate = getVehicleLocation(evidenceType, remove)
 
-    -- ground evidence that was left on something in particular (exports.leaveFingerprint)
+    -- ground evidence: what it was left on (exports.leaveFingerprint), and what a footprint or tyre mark shows
+    local trace
     if not vehicleLocation and type(remove) == "table" and remove.fun == "removeFromCoords" then
-        local metadata <const> = object.coordsMetadata and object.coordsMetadata[remove.arguments[1]]
-        vehicleLocation = metadata and metadata.surface or nil
+        local coordsMetadata <const> = object.coordsMetadata and object.coordsMetadata[remove.arguments[1]] or {}
+        vehicleLocation = coordsMetadata.surface
+        trace = describeTrace(evidenceType, object.owner, coordsMetadata)
     end
 
     if remove then
@@ -204,6 +227,7 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     metadata = sanitizeMetadata(metadata)
     metadata.collectedAt = os.time() -- with createdAt, how old the trace was when it was bagged (config.evidenceAging)
     metadata.information.vehicleLocation = vehicleLocation
+    metadata.information.trace = trace
     metadata.information.plate = plate
     metadata.description = require "server.evidences.evidence_information"(metadata.information)
 

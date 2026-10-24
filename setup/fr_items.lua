@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Moulage d’empreinte',
+    description = 'Moulage en plâtre d’une empreinte de pas d’une scène de crime',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Photo de trace de pneu',
+    description = 'Photo à l’échelle d’une trace de pneu d’une scène de crime',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Lime en acier',
     weight = 150,

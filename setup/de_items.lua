@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Fußabdruck-Abguss',
+    description = 'Gipsabguss eines Fußabdrucks von einem Tatort',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Reifenspur-Foto',
+    description = 'Maßstabsgetreues Foto einer Reifenspur von einem Tatort',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Feile',
     weight = 150,

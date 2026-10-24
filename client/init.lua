@@ -8,6 +8,8 @@ require "client.evidences.registry.magazine"
 require "client.evidences.registry.casing"
 require "client.evidences.registry.bullet"
 require "client.evidences.registry.gunshot_residue"
+require "client.evidences.registry.footprint"
+require "client.evidences.registry.tyre_mark"
 
 require "client.dui.handler"
 

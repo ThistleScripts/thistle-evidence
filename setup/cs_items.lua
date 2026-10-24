@@ -117,6 +117,18 @@
     weight = 5,
     stack = false
 },
+['collected_footprint'] = {
+    label = 'Odlitek stopy',
+    description = 'Sádrový odlitek stopy z místa činu',
+    weight = 300,
+    stack = false
+},
+['collected_tyre_mark'] = {
+    label = 'Fotografie stopy pneumatiky',
+    description = 'Fotografie stopy pneumatiky z místa činu s měřítkem',
+    weight = 20,
+    stack = false
+},
 ['steel_file'] = {
     label = 'Ocelový pilník',
     weight = 150,
