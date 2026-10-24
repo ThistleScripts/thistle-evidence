@@ -283,7 +283,27 @@ local isThreadRunning = false
 local targettedRelativeEvidenceCoords = nil
 local startDisplayThread
 
+-- The bullet hole or mark on the entity closest to where the player aims, if any is near enough
+local function getAimedRelativeCoords(entity, evidences, coords)
+    local closest, closestDistance = nil, 0.3
+
+    for _, data in pairs(evidences) do
+        for localEvidenceCoords in pairs(data.coords or {}) do
+            local globalEvidenceCoords <const> = GetOffsetFromEntityInWorldCoords(entity, localEvidenceCoords.x, localEvidenceCoords.y, localEvidenceCoords.z)
+            local distance <const> = #(coords - globalEvidenceCoords)
+
+            if distance < closestDistance then
+                closest, closestDistance = localEvidenceCoords, distance
+            end
+        end
+    end
+
+    return closest
+end
+
 local function createRelativeEntityCoordsTarget(evidenceType, options, action)
+    local aimedCoords = nil -- this option's own pick, so other evidence types on the entity can't change it
+
     return {
         name = string.format("%s:relative_entity:%s", evidenceType, action),
         label = options.target[action].label,
@@ -313,28 +333,25 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
             end
 
             local evidences <const> = Entity(entity).state[string.format("evidences:%s", evidenceType)] or {}
+            aimedCoords = getAimedRelativeCoords(entity, evidences, coords)
 
-            local test = #getTargetedEvidences(evidences, function(data)
-                for localEvidenceCoords, _ in pairs(data.coords or {}) do
-                    local globalEvidenceCoords <const> = GetOffsetFromEntityInWorldCoords(entity, localEvidenceCoords.x, localEvidenceCoords.y, localEvidenceCoords.z)
-                    local evidenceTargetted <const> = #(coords - globalEvidenceCoords) < 0.1
-                    targettedRelativeEvidenceCoords = evidenceTargetted and localEvidenceCoords or nil
-                    
-                    if evidenceTargetted then
-                        return evidenceTargetted
-                    end
-                end
-                
-                return false
-            end) > 0
-            
-            return test
+            if aimedCoords then
+                targettedRelativeEvidenceCoords = aimedCoords -- highlights it in the display thread
+                return true
+            end
+
+            return false
         end,
         onSelect = function(data)
-            -- get all evidences of evidenceType on the entity
+            local targetCoords <const> = aimedCoords
+            if not targetCoords then
+                return
+            end
+
+            -- get all evidences of evidenceType at the aimed spot on the entity
             local evidences <const> = Entity(data.entity).state[string.format("evidences:%s", evidenceType)] or {}
             local targetedEvidences <const> = getTargetedEvidences(evidences, function(evidenceData)
-                return evidenceData.coords and evidenceData.coords[targettedRelativeEvidenceCoords]
+                return evidenceData.coords and evidenceData.coords[targetCoords]
             end)
 
             for _, evidence in pairs(targetedEvidences) do
@@ -342,7 +359,7 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
 
                 local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
                     fun = "removeFromRelativeEntityCoords",
-                    arguments = { NetworkGetNetworkIdFromEntity(data.entity), targettedRelativeEvidenceCoords }
+                    arguments = { NetworkGetNetworkIdFromEntity(data.entity), targetCoords }
                 }, metadata)
 
                 if not success then
@@ -394,6 +411,7 @@ function startDisplayThread(entity)
         end
 
         SetStreamedTextureDictAsNoLongerNeeded(dict)
+        targettedRelativeEvidenceCoords = nil
         isThreadRunning = false
     end)
 end
