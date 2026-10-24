@@ -57,5 +57,6 @@ require "server.evidences.markers"
 require "server.evidences.floodlights"
 require "server.evidences.locker"
 require "server.evidences.aging"
+require "server.evidences.scene_cleaning"
 
 GlobalState[readyKey] = true

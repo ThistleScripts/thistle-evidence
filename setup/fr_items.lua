@@ -165,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Kit de nettoyage de scène',
+    description = 'Javel, brosses et sacs pour nettoyer une scène. Quelque chose pourrait être oublié.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Kit de marqueurs de preuve',
     description = 'Jeu réutilisable de marqueurs pour les scènes de crime',

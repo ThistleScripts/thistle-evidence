@@ -594,5 +594,20 @@
     "lab_results": {
         "partial_information": "partial (%s)",
         "failed_information": "too degraded to read"
+    },
+    "scene_cleaning": {
+        "progress": "Scrubbing the area with bleach…",
+        "cancelled": {
+            "title": "Cleaning",
+            "description": "You stopped cleaning. The kit wasn't used."
+        },
+        "failed": {
+            "title": "Cleaning",
+            "description": "You couldn't finish cleaning."
+        },
+        "done": {
+            "title": "Cleaning",
+            "description": "You scrubbed the area. Hopefully you didn't miss anything."
+        }
     }
 }

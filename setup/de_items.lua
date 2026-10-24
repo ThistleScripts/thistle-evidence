@@ -165,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Tatort-Reinigungsset',
+    description = 'Bleiche, Bürsten und Beutel, um einen Tatort zu säubern. Etwas könnte übersehen werden.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Beweismarker-Set',
     description = 'Wiederverwendbares Set Beweismarker für Tatorte',

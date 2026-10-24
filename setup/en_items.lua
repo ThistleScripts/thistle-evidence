@@ -165,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Scene Cleaning Kit',
+    description = 'Bleach, brushes and bags to scrub a scene clean. Something might get missed.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Evidence Marker Kit',
     description = 'Reusable set of evidence markers for crime scenes',

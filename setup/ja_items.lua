@@ -165,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = '現場清掃キット',
+    description = '現場を掃除するための漂白剤、ブラシ、袋。何かを見落とすかもしれない。',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = '証拠マーカーキット',
     description = '事件現場用の繰り返し使える証拠マーカーセット',

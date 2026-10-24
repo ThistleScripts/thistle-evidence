@@ -194,6 +194,14 @@ config.tyreMarks = {
     cooldown = 4000 -- ms between marks from one driver
 }
 
+-- The scene_cleaning_kit item: anyone can scrub a scene with bleach. Ground evidence within the radius is wiped, but each
+-- piece has a chance of being missed, and the player isn't told how much. Evidence on vehicles and players isn't touched.
+config.sceneCleaning = {
+    duration = 30000, -- how long the scrubbing takes (ms); the kit is used up when it finishes
+    radius = 4.0, -- metres around the player
+    missChance = 0.15 -- the chance each piece is missed
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.
@@ -406,6 +414,7 @@ config.logging = {
         ["Evidence box seal broken"] = true,
         ["Evidence locker deposit"] = true,
         ["Evidence locker withdrawal"] = true,
+        ["Scene cleaned"] = true,
         ["Fingerprint scanned"] = true,
         ["Observation started"] = true,
         ["Observation ended"] = true,

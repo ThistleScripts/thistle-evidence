@@ -30,6 +30,10 @@ if not exports.ox_inventory:Items("evidence_marker") then
     lib.print.warn("The evidence_marker item doesn't exist, so evidence markers can't be placed.")
 end
 
+if not exports.ox_inventory:Items("scene_cleaning_kit") then
+    lib.print.warn("The scene_cleaning_kit item doesn't exist, so scenes can't be cleaned.")
+end
+
 for _, traceItem in ipairs({ "collected_footprint", "collected_tyre_mark" }) do
     if not exports.ox_inventory:Items(traceItem) then
         lib.print.warn(("The %s item doesn't exist, so footprints and tyre marks can't be collected."):format(traceItem))

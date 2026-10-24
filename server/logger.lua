@@ -15,6 +15,7 @@ local categories <const> = {
     ["Evidence box seal broken"] = "evidences",
     ["Evidence locker deposit"] = "evidences",
     ["Evidence locker withdrawal"] = "evidences",
+    ["Scene cleaned"] = "evidences",
     ["Biometric data linked to citizen"] = "citizens",
     ["Citizen created"] = "citizens",
     ["Citizen updated"] = "citizens",

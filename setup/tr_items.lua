@@ -165,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Olay yeri temizlik kiti',
+    description = 'Bir yeri temizlemek için çamaşır suyu, fırça ve torbalar. Bir şey gözden kaçabilir.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Delil işaretçisi seti',
     description = 'Olay yerleri için tekrar kullanılabilir işaretçi seti',

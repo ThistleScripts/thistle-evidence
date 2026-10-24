@@ -165,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Kit de limpieza de escena',
+    description = 'Lejía, cepillos y bolsas para limpiar una escena. Algo podría pasarse por alto.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Kit de marcadores de pruebas',
     description = 'Juego reutilizable de marcadores para escenas del crimen',

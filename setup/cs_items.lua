@@ -165,6 +165,16 @@
     weight = 500,
     stack = true
 },
+['scene_cleaning_kit'] = {
+    label = 'Sada na úklid místa činu',
+    description = 'Bělidlo, kartáče a pytle na vyčištění místa. Něco se může přehlédnout.',
+    weight = 1500,
+    stack = true,
+    close = true,
+    client = {
+        export = 'thistle-evidence.scene_cleaning_kit'
+    }
+},
 ['evidence_marker'] = {
     label = 'Sada označovačů důkazů',
     description = 'Opakovaně použitelná sada označovačů pro místa činu',

@@ -27,6 +27,7 @@ require "client.evidences.uv_hints"
 require "client.evidences.markers"
 require "client.evidences.floodlights"
 require "client.evidences.locker"
+require "client.evidences.scene_cleaning"
 
 local config <const> = require "config"
 
