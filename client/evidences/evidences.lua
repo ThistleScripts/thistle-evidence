@@ -85,7 +85,14 @@ local function createPlayerTarget(evidenceType, options, action)
 end
 
 -- atVehicleDoor
--- may only be targeted when the player targets the vehicle door from outside
+-- may only be targeted when the player targets the vehicle door from outside. The door also reaches the seat next to
+-- it, so the driver's print on the steering wheel can be collected through the driver's door.
+local seatByDoor <const> = { [0] = -1, [1] = 0, [2] = 1, [3] = 2 }
+
+local function isAtDoor(data, doorId)
+    return (data.doorIds and data.doorIds[doorId]) or (data.seatIds and data.seatIds[seatByDoor[doorId]]) or false
+end
+
 local function createVehicleDoorTarget(evidenceType, options, action)
     return {
         name = string.format("%s:vehicle_door:%s", evidenceType, action),
@@ -93,10 +100,15 @@ local function createVehicleDoorTarget(evidenceType, options, action)
         icon = options.target[action].icon or "fa-solid fa-magnifying-glass",
         groups = config.permissions.collect or false,
         items = options.target[action].requiredItem or nil,
-        distance = 2,
-        bones = { "door_dside_f", "door_pside_f", "door_dside_r", "door_pside_r" },
+        distance = 2.5,
+        -- no ox_target bones: those only match within a metre of the door's hinge, not at the handle or window.
+        -- utils.getTargetedVehicleDoorId works out the door from anywhere along it.
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            if cache.vehicle then
                 return false
             end
 
@@ -105,19 +117,15 @@ local function createVehicleDoorTarget(evidenceType, options, action)
                 return false
             end
 
-            if cache.vehicle then
-                return false
-            end
-
             local targetedDoorId <const> = utils.getTargetedVehicleDoorId(entity, coords)
             if not targetedDoorId then
                 return false
             end
-            
-            -- get all evidences of evidenceType at the targeted vehicle door
+
+            -- get all evidences of evidenceType at the targeted vehicle door or the seat next to it
             local evidences <const> = Entity(entity).state[string.format("evidences:%s", evidenceType)] or {}
             return #getTargetedEvidences(evidences, function(data)
-                return data.doorIds and data.doorIds[targetedDoorId]
+                return isAtDoor(data, targetedDoorId)
             end) > 0
         end,
         onSelect = function(data)
@@ -125,19 +133,20 @@ local function createVehicleDoorTarget(evidenceType, options, action)
             if not targetedDoorId then
                 return
             end
-            
-            -- get all evidences of evidenceType at the targeted vehicle door
+
+            -- get all evidences of evidenceType at the targeted vehicle door or the seat next to it
             local evidences <const> = Entity(data.entity).state[string.format("evidences:%s", evidenceType)] or {}
             local targetedEvidences <const> = getTargetedEvidences(evidences, function(evidenceData)
-                return evidenceData.doorIds and evidenceData.doorIds[targetedDoorId]
+                return isAtDoor(evidenceData, targetedDoorId)
             end)
 
+            -- one item per person, whether they left it on the door, the seat or both
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords, { door = targetedDoorId }) or nil
 
                 local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
-                    fun = "removeFromVehicleDoors",
-                    arguments = { VehToNet(data.entity), targetedDoorId }
+                    fun = "removeFromVehicleDoorAndSeat",
+                    arguments = { VehToNet(data.entity), targetedDoorId, seatByDoor[targetedDoorId] }
                 }, metadata)
 
                 if not success then
@@ -283,7 +292,27 @@ local isThreadRunning = false
 local targettedRelativeEvidenceCoords = nil
 local startDisplayThread
 
+-- The bullet hole or mark on the entity closest to where the player aims, if any is near enough
+local function getAimedRelativeCoords(entity, evidences, coords)
+    local closest, closestDistance = nil, 0.3
+
+    for _, data in pairs(evidences) do
+        for localEvidenceCoords in pairs(data.coords or {}) do
+            local globalEvidenceCoords <const> = GetOffsetFromEntityInWorldCoords(entity, localEvidenceCoords.x, localEvidenceCoords.y, localEvidenceCoords.z)
+            local distance <const> = #(coords - globalEvidenceCoords)
+
+            if distance < closestDistance then
+                closest, closestDistance = localEvidenceCoords, distance
+            end
+        end
+    end
+
+    return closest
+end
+
 local function createRelativeEntityCoordsTarget(evidenceType, options, action)
+    local aimedCoords = nil -- this option's own pick, so other evidence types on the entity can't change it
+
     return {
         name = string.format("%s:relative_entity:%s", evidenceType, action),
         label = options.target[action].label,
@@ -313,28 +342,25 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
             end
 
             local evidences <const> = Entity(entity).state[string.format("evidences:%s", evidenceType)] or {}
+            aimedCoords = getAimedRelativeCoords(entity, evidences, coords)
 
-            local test = #getTargetedEvidences(evidences, function(data)
-                for localEvidenceCoords, _ in pairs(data.coords or {}) do
-                    local globalEvidenceCoords <const> = GetOffsetFromEntityInWorldCoords(entity, localEvidenceCoords.x, localEvidenceCoords.y, localEvidenceCoords.z)
-                    local evidenceTargetted <const> = #(coords - globalEvidenceCoords) < 0.1
-                    targettedRelativeEvidenceCoords = evidenceTargetted and localEvidenceCoords or nil
-                    
-                    if evidenceTargetted then
-                        return evidenceTargetted
-                    end
-                end
-                
-                return false
-            end) > 0
-            
-            return test
+            if aimedCoords then
+                targettedRelativeEvidenceCoords = aimedCoords -- highlights it in the display thread
+                return true
+            end
+
+            return false
         end,
         onSelect = function(data)
-            -- get all evidences of evidenceType on the entity
+            local targetCoords <const> = aimedCoords
+            if not targetCoords then
+                return
+            end
+
+            -- get all evidences of evidenceType at the aimed spot on the entity
             local evidences <const> = Entity(data.entity).state[string.format("evidences:%s", evidenceType)] or {}
             local targetedEvidences <const> = getTargetedEvidences(evidences, function(evidenceData)
-                return evidenceData.coords and evidenceData.coords[targettedRelativeEvidenceCoords]
+                return evidenceData.coords and evidenceData.coords[targetCoords]
             end)
 
             for _, evidence in pairs(targetedEvidences) do
@@ -342,7 +368,7 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
 
                 local success <const> = Thistle.Callback.Await(string.format("evidences:%s", action), evidenceType, evidence.owner, {
                     fun = "removeFromRelativeEntityCoords",
-                    arguments = { NetworkGetNetworkIdFromEntity(data.entity), targettedRelativeEvidenceCoords }
+                    arguments = { NetworkGetNetworkIdFromEntity(data.entity), targetCoords }
                 }, metadata)
 
                 if not success then
@@ -394,6 +420,7 @@ function startDisplayThread(entity)
         end
 
         SetStreamedTextureDictAsNoLongerNeeded(dict)
+        targettedRelativeEvidenceCoords = nil
         isThreadRunning = false
     end)
 end

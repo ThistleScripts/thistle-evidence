@@ -13,6 +13,7 @@ local removalMethods <const> = {
     removeFromRelativeEntityCoords = true,
     removeFromVehicleSeats = true,
     removeFromVehicleDoors = true,
+    removeFromVehicleDoorAndSeat = true,
     removeFromCoords = true
 }
 
@@ -101,6 +102,7 @@ end)
 local vehicleMethods <const> = {
     removeFromVehicleSeats = true,
     removeFromVehicleDoors = true,
+    removeFromVehicleDoorAndSeat = true,
     removeFromEntity = true,
     removeFromRelativeEntityCoords = true
 }
@@ -112,7 +114,25 @@ end
 -- Where in a vehicle evidence was collected (the steering wheel, a seat, a door or the bodywork) and the vehicle's
 -- plate, worked out from where it's being removed, so the lab can tell the driver's prints from a passenger's.
 ---@return string? location, string? plate
-local function getVehicleLocation(evidenceType, remove)
+local function getSeatLabel(evidenceType, seatId)
+    local key <const> = ("evidences.information.seats.%d"):format(seatId)
+    local seat = locale(key)
+    if not seat or seat == key then
+        seat = locale("evidences.information.seat_number", seatId + 2)
+    end
+
+    -- the driver's prints are on the wheel
+    return (seatId == -1 and evidenceType == "fingerprint") and locale("evidences.information.steering_wheel", seat) or seat
+end
+
+local function getDoorLabel(doorId)
+    local key <const> = ("evidences.information.doors.%d"):format(doorId)
+    local door <const> = locale(key)
+    return (door and door ~= key) and door or locale("evidences.information.door_number", doorId + 1)
+end
+
+---@param owner string Whose evidence it is, to tell which of a door and its seat they left it on
+local function getVehicleLocation(evidenceType, remove, owner)
     if type(remove) ~= "table" or type(remove.arguments) ~= "table" or not vehicleMethods[remove.fun] then
         return nil
     end
@@ -127,18 +147,24 @@ local function getVehicleLocation(evidenceType, remove)
     local location
 
     if remove.fun == "removeFromVehicleSeats" and place then
-        local key <const> = ("evidences.information.seats.%d"):format(place)
-        local seat = locale(key)
-        if not seat or seat == key then
-            seat = locale("evidences.information.seat_number", place + 2)
+        location = getSeatLabel(evidenceType, place)
+    elseif remove.fun == "removeFromVehicleDoors" and place then
+        location = getDoorLabel(place)
+    elseif remove.fun == "removeFromVehicleDoorAndSeat" and place then
+        -- collected from outside: the door, the seat next to it, or both
+        local seatId <const> = tonumber(remove.arguments[3])
+        local evidences <const> = Entity(entity).state[("evidences:%s"):format(evidenceType)] or {}
+        local record <const> = evidences[owner] or {}
+        local places = {}
+
+        if record.doorIds and record.doorIds[place] then
+            places[#places + 1] = getDoorLabel(place)
+        end
+        if seatId and record.seatIds and record.seatIds[seatId] then
+            places[#places + 1] = getSeatLabel(evidenceType, seatId)
         end
 
-        -- the driver's prints are on the wheel
-        location = (place == -1 and evidenceType == "fingerprint") and locale("evidences.information.steering_wheel", seat) or seat
-    elseif remove.fun == "removeFromVehicleDoors" and place then
-        local key <const> = ("evidences.information.doors.%d"):format(place)
-        local door = locale(key)
-        location = (door and door ~= key) and door or locale("evidences.information.door_number", place + 1)
+        location = #places > 0 and table.concat(places, ", ") or getDoorLabel(place)
     else
         location = locale("evidences.information.vehicle_body")
     end
@@ -181,13 +207,24 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     local options <const> = evidenceTypes[evidenceType]
     local collectedItem <const> = options.target.collect.collectedItem
 
-    if not exports.ox_inventory:CanCarryItem(source, collectedItem, 1, nil) then
+    -- why collecting failed, rather than only the generic error
+    local function fail(key, ...)
+        TriggerClientEvent("evidences:notify", source, { key = ("evidences.notifications.common.errors.%s"):format(key), arguments = { ... } }, "error")
         return false
+    end
+
+    if not exports.ox_inventory:Items(collectedItem) then
+        lib.print.error(("Setup step missing: the %s item isn't in ox_inventory/data/items.lua (see setup/), so %s evidence can't be collected"):format(collectedItem, evidenceType))
+        return fail("missing_item", collectedItem)
+    end
+
+    if not exports.ox_inventory:CanCarryItem(source, collectedItem, 1, nil) then
+        return fail("cannot_carry")
     end
 
     local slots <const> = exports.ox_inventory:GetSlotsWithItem(source, "forensic_kit")
     if not slots or #slots < 1 then
-        return false
+        return fail("no_kit")
     end
 
     local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
@@ -210,7 +247,7 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     end
 
     -- before the evidence is removed, while the vehicle's state still holds it
-    local vehicleLocation, plate = getVehicleLocation(evidenceType, remove)
+    local vehicleLocation, plate = getVehicleLocation(evidenceType, remove, object.owner)
 
     -- ground evidence: what it was left on (exports.leaveFingerprint), and what a footprint or tyre mark shows
     local trace
