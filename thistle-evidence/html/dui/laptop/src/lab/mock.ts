@@ -111,6 +111,23 @@ export async function mockCallback<T>(name: string, args: any): Promise<ServerRe
                 ],
                 online: [{ identifier: "ZXC44556", name: "Ofc. Priya Nair", serverId: 14 }, { identifier: "ABC12345", name: "Det. Sarah Shaw", serverId: 3 }]
             } as T };
+        case "evidences:admin:getGroundEvidence":
+            return { success: true, response: {
+                types: ["blood", "bullet", "casing", "fingerprint", "footprint", "gunshot_residue", "magazine", "saliva", "tyre_mark"],
+                counts: { blood: 212, bullet: 64, casing: 301, fingerprint: 88, footprint: 57, tyre_mark: 49, magazine: 4 }
+            } as T };
+        case "evidences:admin:clearGroundEvidence":
+            return { success: true, response: (args.evidenceType ? 64 : 775) as T };
+        case "evidences:firearmTerminal:getRegistered":
+            return { success: true, response: [{ serial: "482913KQZ771204", label: "Pistol", imagePath: image("Pistol"), status: "registered", reason: "Personal protection", registeredBy: "Ofc. Grant", registeredAt: Date.now() - 864e6 }] as T };
+        case "evidences:firearmTerminal:getCarried":
+            return { success: true, response: [
+                { serial: "771204QKZ482913", label: "Combat Pistol", imagePath: image("Combat") },
+                { serial: "482913KQZ771204", label: "Pistol", imagePath: image("Pistol"), registeredTo: "ABC123", status: "registered" },
+                { serial: "903114HTR550812", label: "Pump Shotgun", imagePath: image("Shotgun"), registeredTo: "XYZ789", status: "registered" }
+            ] as T };
+        case "evidences:firearmTerminal:register":
+            return { success: true, response: {} as T };
         default:
             return { success: true };
     }

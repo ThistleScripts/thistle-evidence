@@ -14,6 +14,7 @@ local persistence = { restoring = false }
 if not settings.enabled then
     function persistence.groundAdded() end
     function persistence.groundRemoved() end
+    function persistence.groundCleared() end
     function persistence.entityChanged() end
     function persistence.playerChanged() end
     return persistence
@@ -125,6 +126,16 @@ end
 
 function persistence.groundRemoved(coords)
     MySQL.update("DELETE FROM evidence_ground WHERE coordsKey = ?", { coordsKey(coords) })
+end
+
+-- All saved ground evidence of one type, or of every type (nil), in one go
+---@param evidenceType string?
+function persistence.groundCleared(evidenceType)
+    if evidenceType then
+        MySQL.update("DELETE FROM evidence_ground WHERE evidenceType = ?", { evidenceType })
+    else
+        MySQL.update("DELETE FROM evidence_ground")
+    end
 end
 
 -- Vehicles and players: everything they hold is saved together, a moment after it last changed

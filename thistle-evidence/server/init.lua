@@ -1,14 +1,15 @@
 math.randomseed(os.time()) -- Seed the PRNG
 
--- DoesPlayerExist(nil) is a native error ("Argument at index 0 was null") rather than false. Inside this resource
--- (our code, ox_lib and the included thistle-lib) a missing player now just doesn't exist, and the first time each
--- caller does it, the console shows where from so it can be fixed properly.
+-- DoesPlayerExist(nil) is a native error ("Argument at index 0 was null") rather than false, and so is
+-- DoesPlayerExist(0): FiveM turns 0 into null for text arguments. Inside this resource (our code, ox_lib and the
+-- included thistle-lib) a missing player now just doesn't exist, and the first time each caller does it, the console
+-- shows where from so it can be fixed properly.
 do
     local doesPlayerExist <const> = DoesPlayerExist
     local reported = {}
 
     DoesPlayerExist = function(playerId)
-        if playerId == nil then
+        if not playerId or playerId == 0 or playerId == "0" then
             local trace <const> = debug.traceback("", 2)
             if not reported[trace] then
                 reported[trace] = true
@@ -69,6 +70,7 @@ require "server.citizens.citizens"
 require "server.citizens.notes"
 
 require "server.firearms.firearms"
+require "server.firearms.terminal"
 
 require "server.biometrics.linked_biometrics"
 require "server.biometrics.biometrics_taking"

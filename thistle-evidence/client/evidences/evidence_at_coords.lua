@@ -211,6 +211,11 @@ end
 
 -- Shows or hides the piece on the ground (blood decal, casing, magazine, bullet path)
 function EvidenceAtCoords:setVisible(visible)
+    -- cleared by an admin while the display loop below was part-way through (it waits for prop models to load)
+    if self.cleared then
+        visible = false
+    end
+
     if self.visible == visible then
         return
     end
@@ -234,6 +239,39 @@ eventHandler.onNet("evidences:remove:atCoords", function(event)
         local evidence <const> = EvidencesAtCoords[i]
         if evidence.evidenceType == evidenceType and evidence.coords == coords then
             evidence:destroy()
+        end
+    end
+end)
+
+-- An admin cleared every piece of one type (or of every type: false) from the map (server/evidences/clearing.lua).
+-- Done in one pass: piles hold one type, so each cleared pile's target goes once rather than being rebuilt per piece.
+eventHandler.onNet("evidences:clearGround", function(event)
+    local evidenceType <const> = event.arguments[1]
+    local kept, clearedPiles = {}, {}
+
+    for _, evidence in ipairs(EvidencesAtCoords) do
+        if not evidenceType or evidence.evidenceType == evidenceType then
+            evidence.cleared = true
+            pcall(evidence.setVisible, evidence, false)
+            if evidence.pile then
+                clearedPiles[evidence.pile] = true
+                evidence.pile = nil
+            end
+        else
+            kept[#kept + 1] = evidence
+        end
+    end
+
+    EvidencesAtCoords = kept
+
+    for index = #piles, 1, -1 do
+        local pile <const> = piles[index]
+        if clearedPiles[pile] then
+            if pile.zone then
+                exports.ox_target:removeZone(pile.zone)
+                pile.zone = nil
+            end
+            table.remove(piles, index)
         end
     end
 end)

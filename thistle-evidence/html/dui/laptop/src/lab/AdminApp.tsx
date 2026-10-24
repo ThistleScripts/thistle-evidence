@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Check, Laptop, Microscope, Search, ShieldCheck, ShieldOff, Trash2, UserPlus, UserRound, Users, Wrench, X } from "lucide-react";
+import { Check, Eraser, Laptop, Microscope, RefreshCw, Search, ShieldCheck, ShieldOff, Trash2, UserPlus, UserRound, Users, Wrench, X } from "lucide-react";
 import { useTranslation } from "@/components/TranslationContext";
 import { cn } from "@/utils/cn";
 import { post } from "./bridge";
@@ -37,6 +37,7 @@ interface AdminData {
 }
 
 const EVERYONE = "*";
+const GROUND = "#ground"; // the world evidence page, not an officer
 
 const groupIcons = { laptop: Laptop, lab: Microscope, field: Search, equipment: Wrench };
 
@@ -125,7 +126,9 @@ export default function AdminApp() {
                         ? <>
                             <OfficerList data={data} selected={selected} onSelect={identifier => { setSelected(identifier); setAdding(null); }}
                                 onAdd={online => { setAdding(online); setSelected(online.identifier); }} adding={adding} />
-                            {subject
+                            {selected === GROUND
+                                ? <GroundEvidence />
+                                : subject
                                 ? <CapabilityEditor key={subject.identifier} data={data} subject={subject} isNew={!officer && subject.identifier !== EVERYONE}
                                     onSaved={identifier => { setAdding(null); load().then(() => setSelected(identifier)); }}
                                     onRemoved={() => { setSelected(EVERYONE); load(); }} />
@@ -167,6 +170,8 @@ function OfficerList({ data, selected, adding, onSelect, onAdd }: {
                 <div className="space-y-1">
                     <ListRow active={selected === EVERYONE} onClick={() => onSelect(EVERYONE)} icon={<Users size={16} />}
                         title={t("admin.everyone")} subtitle={t("admin.everyone_hint")} />
+                    <ListRow active={selected === GROUND} onClick={() => onSelect(GROUND)} icon={<Eraser size={16} />}
+                        title={t("admin.ground.title")} subtitle={t("admin.ground.hint")} />
                 </div>
 
                 <div className="space-y-1">
@@ -367,5 +372,97 @@ function Segmented({ value, options, onChange, defaultLabel }: { value: Choice; 
                 </button>
             ))}
         </div>
+    );
+}
+
+interface GroundData {
+    types: string[];
+    counts: Record<string, number>;
+}
+
+// Ground evidence on the whole map, by type, and clearing it: one type, or everything. Each clear asks to confirm.
+// Evidence on vehicles, props and players, and evidence already collected into items, isn't touched.
+function GroundEvidence() {
+    const { t } = useTranslation();
+    const [data, setData] = useState<GroundData | null>(null);
+    const [confirming, setConfirming] = useState<string | null>(null); // a type, or "*" for everything
+    const [busy, setBusy] = useState(false);
+    const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+
+    const load = () => callServer<GroundData>("evidences:admin:getGroundEvidence").then(result => {
+        if (result.success && result.response) setData(result.response);
+    });
+
+    useEffect(() => { load(); }, []);
+
+    const label = (type: string) => {
+        const text = t(`lab.types.${type}`);
+        return text.startsWith("lab.types.") ? type : text;
+    };
+
+    const clear = (type: string) => {
+        setBusy(true);
+        setMessage(null);
+        callServer<number>("evidences:admin:clearGroundEvidence", type === EVERYONE ? {} : { evidenceType: type }).then(result => {
+            setBusy(false);
+            setConfirming(null);
+            setMessage(result.success
+                ? { ok: true, text: t("admin.ground.cleared", String(result.response ?? 0), type === EVERYONE ? t("admin.ground.all_types") : label(type)) }
+                : { ok: false, text: t("admin.ground.error") });
+            load();
+        });
+    };
+
+    const total = data ? Object.values(data.counts).reduce((sum, count) => sum + count, 0) : 0;
+
+    const ClearButton = ({ type, count }: { type: string; count: number }) => confirming === type
+        ? <div className="flex shrink-0 items-center gap-2">
+            <Button variant="ghost" onClick={() => setConfirming(null)} disabled={busy}>{t("admin.ground.cancel")}</Button>
+            <Button className="bg-bad hover:bg-bad/80" onClick={() => clear(type)} disabled={busy}>
+                <Trash2 size={14} />
+                {t("admin.ground.confirm", String(count))}
+            </Button>
+        </div>
+        : <Button variant="outline" onClick={() => setConfirming(type)} disabled={busy || count === 0}>
+            <Trash2 size={14} />
+            {t(type === EVERYONE ? "admin.ground.clear_all" : "admin.ground.clear")}
+        </Button>;
+
+    return (
+        <section className="flex min-w-0 flex-1 flex-col">
+            <div className="flex items-start gap-4 border-b border-line px-7 py-5">
+                <div className="min-w-0">
+                    <h2 className="font-display truncate text-2xl font-black">{t("admin.ground.title")}</h2>
+                    <p className="mt-1 text-xs text-muted">{t("admin.ground.description")}</p>
+                </div>
+                <div className="ml-auto flex shrink-0 items-center gap-2">
+                    <Button variant="ghost" onClick={() => { setMessage(null); load(); }} title={t("admin.ground.refresh")}>
+                        <RefreshCw size={14} />
+                    </Button>
+                    {data && <ClearButton type={EVERYONE} count={total} />}
+                </div>
+            </div>
+
+            {message && <p className={cn("border-b px-7 py-2 text-sm", message.ok ? "border-ok/30 bg-ok/10 text-ok" : "border-bad/30 bg-bad/10 text-bad")}>{message.text}</p>}
+
+            <div className="th-scroll min-h-0 flex-1 overflow-y-auto px-7 py-6">
+                {!data
+                    ? <p className="text-sm text-muted">{t("admin.loading")}</p>
+                    : <div className="divide-y divide-line rounded-lg border border-line bg-surface">
+                        {data.types.map(type => {
+                            const count = data.counts[type] ?? 0;
+                            return (
+                                <div key={type} className="flex items-center gap-4 px-4 py-3">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm font-semibold">{label(type)}</p>
+                                        <p className="text-xs text-muted">{t("admin.ground.on_map", String(count))}</p>
+                                    </div>
+                                    <ClearButton type={type} count={count} />
+                                </div>
+                            );
+                        })}
+                    </div>}
+            </div>
+        </section>
     );
 }

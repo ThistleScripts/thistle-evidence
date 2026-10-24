@@ -11,7 +11,7 @@ end
 Thistle.Callback.Register("evidences:scanFingerprint", function(scanningPlayerId, playerHoldingScanner)
     -- The result goes to the player holding the scanner, so they must be right there and actually have one
     playerHoldingScanner = tonumber(playerHoldingScanner)
-    if not playerHoldingScanner or playerHoldingScanner == scanningPlayerId or not DoesPlayerExist(playerHoldingScanner)
+    if not playerHoldingScanner or playerHoldingScanner <= 0 or playerHoldingScanner == scanningPlayerId or not DoesPlayerExist(playerHoldingScanner)
         or not isPlayerNear(scanningPlayerId, playerHoldingScanner, 3.0)
         or (exports.ox_inventory:Search(playerHoldingScanner, "count", "forensic_fingerprint_scanner") or 0) < 1
         or not officerPermissions.has(playerHoldingScanner, "fingerprints") then

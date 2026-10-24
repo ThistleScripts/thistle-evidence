@@ -30,11 +30,14 @@ AddEventHandler("gameEventTriggered", function(name, args)
             
             if damageAmount > 5 then
                 -- item blood
-                if (args[12] or 0) == 1 then
+                -- only when another player did it: anyone else (a local, an animal) has no weapon to bloody
+                if (args[12] or 0) == 1 and DoesEntityExist(args[2]) and IsPedAPlayer(args[2]) then
                     local victim <const> = cache.serverId
                     local attacker <const> = GetPlayerServerId(NetworkGetPlayerIndexFromPed(args[2]))
-                    TriggerServerEvent("evidences:syncEvidence", "blood",
-                        victim, "atWeaponOf", attacker)
+                    if attacker > 0 and attacker ~= victim then
+                        TriggerServerEvent("evidences:syncEvidence", "blood",
+                            victim, "atWeaponOf", attacker)
+                    end
                 end
                 
                 -- vehicle blood

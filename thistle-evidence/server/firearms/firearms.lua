@@ -5,7 +5,7 @@ local logger <const> = require "server.logger"
 local officerPermissions <const> = require "server.permissions"
 
 if not config.firearmsRegistry.enabled then
-    return
+    return {}
 end
 
 MySQL.update.await(
@@ -148,3 +148,6 @@ Thistle.Callback.Register("evidences:getRegisteredFirearms", function(source, ar
         pattern, arguments.offset
     )
 end)
+
+-- For the firearm registration terminals (server/firearms/terminal.lua)
+return { register = registerFirearm }
