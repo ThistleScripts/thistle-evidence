@@ -1,6 +1,6 @@
 import { resourceName } from "@/hooks/useLuaCallback";
 
-const post = (name: string, body: object) => fetch(`https://${resourceName()}/${name}`, {
+export const post = (name: string, body: object) => fetch(`https://${resourceName()}/${name}`, {
     method: "POST",
     headers: { "Content-Type": "application/json; charset=UTF-8" },
     body: JSON.stringify(body)

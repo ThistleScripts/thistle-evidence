@@ -77,6 +77,14 @@ export async function mockCallback<T>(name: string, args: any): Promise<ServerRe
             return { success: true, response: (caseFiles[args.kind] ?? { kind: args.kind, key: args.key, matches: [] }) as T };
         case "evidences:getCitizens":
             return { success: true, response: [{ identifier: "ABC123", fullName: "Jamie Doyle", birthdate: "1994-03-11", gender: "male" }] as T };
+        case "evidences:getBiometricDataLinkedToIdentifier":
+            return { success: true, response: { fingerprint: "FP7Q2W9E4R1T6Y3U" } as T };
+        case "evidences:getPlayersItemsWithEvidence":
+            return { success: true, response: [{ inventory: 1, label: "Pockets", items: args.type === "dna"
+                ? [{ slot: 7, label: "Collected Saliva", imagePath: image("Swab"), details: { identifier: "GATTACAGCTAGCTAA" } }]
+                : [{ slot: 8, label: "Collected Fingerprint", imagePath: image("Print"), details: { identifier: "FP7Q2W9E4R1T6Y3U" } }] }] as T };
+        case "evidences:getNotes":
+            return { success: true, response: [{ id: 1, identifier: "ABC123", modifiedAt: Date.now() - 3600e3, modifiedBy: "Ofc. Grant", title: "Booked for armed robbery", text: "Arrested at Davis Ave. Fingerprints and swab taken on booking." }] as T };
         default:
             return { success: true };
     }
