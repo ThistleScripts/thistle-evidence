@@ -299,27 +299,6 @@
                     "non_binary": "No binario"
                 }
             },
-            "fingerprint_app": {
-                "name": "Análisis de Huellas",
-                "no_items_with_fingerprints": "No hay objetos con huellas digitales en su inventario."
-            },
-            "dna_app": {
-                "name": "Análisis de ADN",
-                "no_items_with_dna": "No hay objetos con ADN en su inventario."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Iniciar análisis",
-                "matching_biometric_data": "Comparando %s con la base de datos...",
-                "database_match": {
-                    "header": "¡Coincidencia en la base de datos!",
-                    "description": "El rastro de %s en la prueba pertenece a la siguiente persona:",
-                    "open_citizens_app": "Abrir en aplicación de Ciudadanos"
-                },
-                "no_database_match": {
-                    "header": "¡Sin coincidencia!",
-                    "description": "El rastro de %s en la prueba pertenece a una persona desconocida. Si conoce a la persona, puede asignarle el rastro de esta prueba en la aplicación de ciudadanos."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Registro de armas",
                 "firearm_information": "Información",
@@ -357,34 +336,6 @@
                     "firearm_update_error": "¡No se pudo guardar el arma!",
                     "firearm_deletion_success": "¡Arma eliminada!",
                     "firearm_deletion_error": "¡No se pudo eliminar el arma!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Análisis balístico",
-                "no_ballistics_evidence_items": "No tienes objetos con pruebas balísticas en tu inventario.",
-                "start_analyzation": "Iniciar análisis",
-                "matching_serial": "Analizando pruebas balísticas...",
-                "registry_match": {
-                    "header": "¡Coincidencia en el registro de armas de fuego!",
-                    "description": "La prueba balística pertenece a la siguiente arma de fuego:",
-                    "open_firearms_registry": "Abrir en el registro de armas de fuego"
-                },
-                "no_registry_match": {
-                    "header": "¡Sin coincidencias en el registro de armas de fuego!",
-                    "casing_description": "Este casquillo no tiene un número de serie que coincida con ningún arma del registro de armas de fuego. Sin embargo, los casquillos aún pueden identificarse por las marcas de herramientas microscópicas únicas que dejan las imperfecciones dentro de un arma. Al seleccionar un arma de tu inventario, puedes comprobar si la evidencia del casquillo proviene del arma seleccionada (o, al menos, de un arma del mismo tipo).",
-                    "bullet_description": "Balas disparadas pueden ser identificadas por las marcas microscópicas únicas que dejan las imperfecciones dentro del cañón de un arma de fuego. Al seleccionar un arma de tu inventario, puedes comprobar si la evidencia de la bala proviene del arma seleccionada (o, al menos, de un arma del mismo tipo).",
-                    "inventory_match": {
-                        "microstamp": "La prueba balística proviene exactamente del arma seleccionada, ya que el número de serie quedó micrograbado en la pieza de evidencia.",
-                        "imperfections": "La evidencia balística proviene exactamente de la herramienta seleccionada, ya que comparten las mismas imperfecciones únicas.",
-                        "type": "La evidencia balística proviene de un arma del mismo tipo que la seleccionada.",
-                        "none": "La evidencia balística no coincide con el arma seleccionada."
-                    }
-                },
-                "show_type": {
-                    "header": "Análisis exitoso",
-                    "magazine_description": "Cargadores pueden ser claramente asociados con un tipo de arma. Sin embargo, no es posible asignarlos a un arma específica. Este cargador pertenece a un arma de este tipo:",
-                    "gunshot_residue_description": "Los residuos de disparo permiten extraer conclusiones sobre el tipo de arma utilizada. Según su concentración, es posible calcular cuándo fue disparada el arma. El análisis de los residuos de disparo seleccionados ha arrojado lo siguiente:",
-                    "fired_at": "Disparado a las"
                 }
             },
             "evidence_app": {

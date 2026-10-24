@@ -299,27 +299,6 @@
                     "non_binary": "divers"
                 }
             },
-            "fingerprint_app": {
-                "name": "Fingerabdruck Analyse",
-                "no_items_with_fingerprints": "Es befinden sich keine Items mit Fingerabdrücken in deinem Inventar."
-            },
-            "dna_app": {
-                "name": "DNS Analyse",
-                "no_items_with_dna": "Es befinden sich keine Items mit DNA in deinem Inventar."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Analyse starten",
-                "matching_biometric_data": "Gleiche %s mit Datenbank ab...",
-                "database_match": {
-                    "header": "Treffer in der Datenbank!",
-                    "description": "Die %s-Spur auf dem Beweismittel gehört zu der folgenden Person:",
-                    "open_citizens_app": "In Bürger-App öffnen"
-                },
-                "no_database_match": {
-                    "header": "Kein Treffer in der Datenbank!",
-                    "description": "Die %s-Spur auf dem Beweismittel gehört zu einer noch unbekannten Person. Wenn du die zugehörige Person kennst, kannst du ihr die %s-Spur von diesem Beweismittel in der Bürger-App zuweisen."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Waffenregister",
                 "firearm_information": "Informationen",
@@ -357,34 +336,6 @@
                     "firearm_update_error": "Waffe konnte nicht gespeichert werden!",
                     "firearm_deletion_success": "Waffe gelöscht!",
                     "firearm_deletion_error": "Waffe konnte nicht gelöscht werden!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Ballistische Analyse",
-                "no_ballistics_evidence_items": "Keine Gegenstände mit ballistischen Beweismitteln in deinem Inventar.",
-                "start_analyzation": "Analyse starten",
-                "matching_serial": "Ballistisches Beweismittel wird analysiert...",
-                "registry_match": {
-                    "header": "Treffer im Waffenregister!",
-                    "description": "Das ballistische Beweismittel gehört zu folgender Schusswaffe:",
-                    "open_firearms_registry": "Im Waffenregister öffnen"
-                },
-                "no_registry_match": {
-                    "header": "Kein Treffer im Waffenregister!",
-                    "casing_description": "Diese Patronenhülse trägt keine Seriennummer, die mit einer Waffe im Waffenregister übereinstimmt. Patronenhülsen können jedoch anhand der einzigartigen mikroskopischen Spuren identifiziert werden, die durch Unebenheiten im Inneren einer Waffe hinterlassen werden. Wenn du eine Waffe aus deinem Inventar auswählst, kannst du überprüfen, ob die Patronenhülse von der ausgewählten Waffe (oder zumindest von einer Waffe desselben Typs) stammt.",
-                    "bullet_description": "Abgefeuerte Projektile können anhand der einzigartigen mikroskopischen Spuren identifiziert werden, die durch Unvollkommenheiten im Lauf einer Schusswaffe hinterlassen werden. Indem du eine Waffe aus deinem Inventar auswählst, kannst du überprüfen, ob dieses Projektil als Beweismittel von der ausgewählten Waffe stammt (oder zumindest von einer Waffe desselben Typs).",
-                    "inventory_match": {
-                        "microstamp": "Der ballistische Beweis stammt exakt von der ausgewählten Waffe, da die Seriennummer als Mikrostempel auf dem Beweisstück hinterlassen wurde.",
-                        "imperfections": "Der ballistische Beweis stammt exakt von der ausgewählten Waffe, da sie die gleichen einzigartigen Prägungen teilen.",
-                        "type": "Der ballistische Beweis stammt von einer Waffe desselben Typs wie die ausgewählte Waffe.",
-                        "none": "Der ballistische Beweis stammt nicht mit der ausgewählten Waffe überein."
-                    }
-                },
-                "show_type": {
-                    "header": "Analyse erfolgreich",
-                    "magazine_description": "Magazine können eindeutig einem Waffentyp zugeordnet werden. Eine darüberhinausgehende Zuordnung zu einer konkreten Waffe ist hingegen nicht möglich. Dieses Magazin gehört zu einer Waffe dieses Typs:",
-                    "gunshot_residue_description": "Schmauchspuren lassen einen Rückschluss auf den Typ der abgefeuerten Waffe zu. Anhand ihrer Konzentration kann berechnet werden, wann die Waffe abgefeuert wurde. Die Analyse hat für die ausgewählt Schmauchspur folgendes ergeben:",
-                    "fired_at": "Gefeuert am"
                 }
             },
             "evidence_app": {

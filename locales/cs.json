@@ -299,27 +299,6 @@
                     "non_binary": "Nebinární"
                 }
             },
-            "fingerprint_app": {
-                "name": "Analýza otisků prstů",
-                "no_items_with_fingerprints": "Ve vašem inventáři nejsou žádné předměty s otisky prstů."
-            },
-            "dna_app": {
-                "name": "Analýza DNA",
-                "no_items_with_dna": "Ve vašem inventáři nejsou žádné předměty s DNA."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Spustit analýzu",
-                "matching_biometric_data": "Porovnávání %s s databází...",
-                "database_match": {
-                    "header": "Shoda v databázi!",
-                    "description": "Stopa %s na důkazu patří následující osobě:",
-                    "open_citizens_app": "Otevřít v aplikaci Občané"
-                },
-                "no_database_match": {
-                    "header": "Žádná shoda v databázi!",
-                    "description": "Stopa %s na důkazu patří osobě, která je zatím neznámá. Pokud dotyčnou osobu znáte, můžete k ní stopu %s z tohoto důkazu přiřadit v aplikaci občané."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Registr zbraní",
                 "firearm_information": "Informace",
@@ -357,34 +336,6 @@
                     "firearm_update_error": "Nepodařilo se uložit zbraň!",
                     "firearm_deletion_success": "Zbraň smazána!",
                     "firearm_deletion_error": "Nepodařilo se smazat zbraň!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Balistická analýza",
-                "no_ballistics_evidence_items": "Ve vašem inventáři nemáte žádné předměty s balistickými důkazy.",
-                "start_analyzation": "Zahájit analýzu",
-                "matching_serial": "Analýza balistických stop...",
-                "registry_match": {
-                    "header": "Shoda v registru zbraní!",
-                    "description": "Balistický důkaz patří k následující zbrani:",
-                    "open_firearms_registry": "Otevřít v registru zbraní"
-                },
-                "no_registry_match": {
-                    "header": "Žádná shoda v registru zbraní!",
-                    "casing_description": "Tato nábojnice na sobě nemá sériové číslo, které by odpovídalo zbrani v registru zbraní. Nábojnice však lze stále identifikovat podle jedinečných mikroskopických stop, které v nich zanechávají drobné nedokonalosti uvnitř zbraně. Výběrem zbraně ze svého inventáře můžete ověřit, zda tato nábojnice pochází z vybrané zbraně (nebo alespoň ze zbraně stejného typu).",
-                    "bullet_description": "Vystřelené kulky lze identifikovat podle jedinečných mikroskopických stop, které zanechávají nedokonalosti uvnitř hlavně zbraně. Výběrem zbraně ze svého inventáře můžete zkontrolovat, zda tato kulka jako důkaz pochází z vybrané zbraně (nebo alespoň ze zbraně stejného typu).",
-                    "inventory_match": {
-                        "microstamp": "Balistický důkaz pochází přesně ze zvolené zbraně, protože sériové číslo bylo na tento důkaz mikroorazítkováno.",
-                        "imperfections": "Balistický důkaz pochází přesně ze zvolené zbraně, protože sdílejí stejné jedinečné nedokonalosti.",
-                        "type": "Balistický důkaz pochází ze zbraně stejného typu, jako je vybraná zbraň.",
-                        "none": "Balistický důkaz se neshoduje s vybranou zbraní."
-                    }
-                },
-                "show_type": {
-                    "header": "Analýza úspěšná",
-                    "magazine_description": "Zásobníky lze jasně přiřadit k typu zbraně. Jejich přiřazení ke konkrétní zbrani však není možné. Tento zásobník patří ke zbrani tohoto typu:",
-                    "gunshot_residue_description": "Povýstřelové zplodiny umožňují vyvodit závěry o typu použité zbraně. Na základě jejich koncentrace je možné určit, kdy bylo ze zbraně vystřeleno. Analýza vybraných povýstřelových zplodin ukázala následující:",
-                    "fired_at": "Čas výstřelu"
                 }
             },
             "evidence_app": {

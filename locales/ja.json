@@ -299,27 +299,6 @@
                     "non_binary": "ノンバイナリー"
                 }
             },
-            "fingerprint_app": {
-                "name": "指紋分析",
-                "no_items_with_fingerprints": "インベントリ内に指紋が付着したアイテムはありません。"
-            },
-            "dna_app": {
-                "name": "DNA分析",
-                "no_items_with_dna": "インベントリ内にDNAが付着したアイテムはありません。"
-            },
-            "evidence_analysis": {
-                "start_analyzation": "解析を開始",
-                "matching_biometric_data": "%s をデータベースと照合中...",
-                "database_match": {
-                    "header": "データベース一致！",
-                    "description": "証拠品に付着していた %s は以下の人物のものです:",
-                    "open_citizens_app": "市民アプリで開く"
-                },
-                "no_database_match": {
-                    "header": "一致するデータなし！",
-                    "description": "この証拠品に付着していた %s の主は依然として不明です。対象の人物を知っている場合は、市民アプリからこの証拠品の %s をその人物に割り当てることができます。"
-                }
-            },
             "firearms_registry_app": {
                 "name": "銃器登録システム",
                 "firearm_information": "情報",
@@ -357,34 +336,6 @@
                     "firearm_update_error": "武器情報を保存できませんでした！",
                     "firearm_deletion_success": "武器を削除しました！",
                     "firearm_deletion_error": "武器を削除できませんでした！"
-                }
-            },
-            "ballistics_app": {
-                "name": "弾道解析",
-                "no_ballistics_evidence_items": "インベントリに弾道証拠となるアイテムがありません。",
-                "start_analyzation": "解析を開始",
-                "matching_serial": "弾道証拠を分析中...",
-                "registry_match": {
-                    "header": "銃器登録に一致！",
-                    "description": "この弾道証拠は以下の銃器に該当します：",
-                    "open_firearms_registry": "銃器登録を開く"
-                },
-                "no_registry_match": {
-                    "header": "銃器登録に一致なし！",
-                    "casing_description": "この薬莢には、銃器登録簿にある武器と一致するシリアル番号はありません。しかし、薬莢は銃の内部に生じる欠陥によって残される、固有の微細なツールマーク（痕跡）によって識別することが可能です。インベントリから武器を選択することで、その薬莢の証拠が選択した武器（あるいは、少なくとも同タイプの武器）から排出されたものかどうかを確認できます。",
-                    "bullet_description": "発射された弾丸は、銃身内部の欠陥によって残される固有の微細な痕跡から識別することができます。インベントリから武器を選択することで、その弾丸の証拠が選択した武器（あるいは、少なくとも同タイプの武器）から発射されたものかどうかを確認できます。",
-                    "inventory_match": {
-                        "microstamp": "証拠物件にシリアル番号がマイクロスタンプ（微細刻印）されていたため、その弾道証拠は間違いなく選択された銃器から発砲されたものです。",
-                        "imperfections": "それらの弾道証拠は、全く同じ固有の傷（痕跡）を共有していることから、まさにその選ばれた銃器から生じたものであることが分かります。",
-                        "type": "弾道証拠は、選択された武器と同じタイプの武器のものです。",
-                        "none": "弾道証拠は、選択された武器とは一致しません。"
-                    }
-                },
-                "show_type": {
-                    "header": "分析成功",
-                    "magazine_description": "弾倉（マガジン）は武器のタイプと明確に関連付けることができますが、特定の個別の武器に割り当てることはできません。この弾倉は、以下のタイプの武器に属しています：",
-                    "gunshot_residue_description": "射撃残渣（発射ガスや火薬の残りカス）から、使用された武器のタイプを推測することができます。また、その濃度に基づいて、武器がいつ発射されたかを算出することが可能です。選択された射撃残渣の分析結果は以下の通りです：",
-                    "fired_at": "発射日時"
                 }
             },
             "evidence_app": {

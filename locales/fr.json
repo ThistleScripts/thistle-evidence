@@ -299,27 +299,6 @@
                     "non_binary": "Non-binaire"
                 }
             },
-            "fingerprint_app": {
-                "name": "Analyse d'empreintes",
-                "no_items_with_fingerprints": "Aucun objet avec empreintes dans votre inventaire."
-            },
-            "dna_app": {
-                "name": "Analyse ADN",
-                "no_items_with_dna": "Aucun objet avec ADN dans votre inventaire."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Lancer l'analyse",
-                "matching_biometric_data": "Comparaison de %s avec la base de données...",
-                "database_match": {
-                    "header": "Correspondance trouvée !",
-                    "description": "La trace de %s sur la preuve appartient à la personne suivante :",
-                    "open_citizens_app": "Ouvrir dans l'application Citoyens"
-                },
-                "no_database_match": {
-                    "header": "Aucune correspondance !",
-                    "description": "La trace de %s sur la preuve appartient à une personne encore inconnue. Si vous connaissez cette personne, vous pouvez lui assigner cette trace de %s dans l'application Citoyens."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Registre des armes à feu",
                 "firearm_information": "Informations",
@@ -357,34 +336,6 @@
                     "firearm_update_error": "Impossible de sauvegarder l'arme !",
                     "firearm_deletion_success": "Arme supprimée !",
                     "firearm_deletion_error": "Impossible de supprimer l'arme !"
-                }
-            },
-            "ballistics_app": {
-                "name": "Analyse balistique",
-                "no_ballistics_evidence_items": "Aucun objet contenant des preuves balistiques dans votre inventaire.",
-                "start_analyzation": "Lancer l'analyse",
-                "matching_serial": "Analyse des preuves balistiques en cours...",
-                "registry_match": {
-                    "header": "Correspondance trouvée dans le registre des armes à feu !",
-                    "description": "La preuve balistique appartient à l'arme à feu suivante :",
-                    "open_firearms_registry": "Ouvrir dans le registre des armes à feu"
-                },
-                "no_registry_match": {
-                    "header": "Aucune correspondance dans le registre des armes à feu !",
-                    "casing_description": "Cette douille ne porte aucun numéro de série correspondant à une arme du registre des armes à feu. Cependant, les douilles peuvent tout de même être identifiées grâce aux empreintes microscopiques uniques laissées par les imperfections à l'intérieur d'une arme. En sélectionnant une arme de votre inventaire, vous pouvez vérifier si cette douille provient de l'arme sélectionnée (ou du moins, d'une arme du même type).",
-                    "bullet_description": "Les balles tirées peuvent être identifiées grâce aux empreintes microscopiques uniques laissées par les imperfections à l'intérieur du canon d'une arme à feu. En sélectionnant une arme de votre inventaire, vous pouvez vérifier si cette balle provient de l'arme sélectionnée (ou du moins, d'une arme du même type).",
-                    "inventory_match": {
-                        "microstamp": "La preuve balistique provient exactement de l'arme sélectionnée car le numéro de série a été micro-empreint sur la pièce à conviction.",
-                        "imperfections": "La preuve balistique provient exactement de l'arme sélectionnée, car elles partagent les mêmes imperfections uniques.",
-                        "type": "La preuve balistique provient d'une arme du même type que l'arme sélectionnée.",
-                        "none": "La preuve balistique ne correspond pas à l'arme sélectionnée."
-                    }
-                },
-                "show_type": {
-                    "header": "Analyse réussie",
-                    "magazine_description": "Les chargeurs peuvent être clairement associés à un type d'arme. Cependant, il est impossible de les attribuer à une arme individuelle spécifique. Ce chargeur appartient à une arme de ce type :",
-                    "gunshot_residue_description": "Les résidus de tir permettent de tirer des conclusions sur le type d'arme utilisée. En fonction de leur concentration, il est possible de calculer quand l'arme a été utilisée. L'analyse des résidus de tir sélectionnés a donné les résultats suivants :",
-                    "fired_at": "Heure du tir"
                 }
             },
             "evidence_app": {

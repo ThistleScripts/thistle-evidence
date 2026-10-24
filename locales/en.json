@@ -299,27 +299,6 @@
                     "non_binary": "Non binary"
                 }
             },
-            "fingerprint_app": {
-                "name": "Fingerprint Analysis",
-                "no_items_with_fingerprints": "No items holding fingerprints in your inventory."
-            },
-            "dna_app": {
-                "name": "DNA Analysis",
-                "no_items_with_dna": "No items holding DNA in your inventory."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Start analyzation",
-                "matching_biometric_data": "Matching %s with database...",
-                "database_match": {
-                    "header": "Database match!",
-                    "description": "The %s trace on the evidence belongs to the following person:",
-                    "open_citizens_app": "Open in Citizens App"
-                },
-                "no_database_match": {
-                    "header": "No database match!",
-                    "description": "The %s trace on the piece of evidence belongs to a person who is still unknown. If you know the person in question, you can assign the %s trace from this piece of evidence to them in the citizen app."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Firearms Registry",
                 "firearm_information": "Information",
@@ -357,34 +336,6 @@
                     "firearm_update_error": "Could not save firearm!",
                     "firearm_deletion_success": "Firearm deleted!",
                     "firearm_deletion_error": "Could not delete firearm!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Ballistics Analysis",
-                "no_ballistics_evidence_items": "No items holding ballistics evidences in your inventory.",
-                "start_analyzation": "Start analyzation",
-                "matching_serial": "Analysing ballistics evidence...",
-                "registry_match": {
-                    "header": "Match in firearms registry!",
-                    "description": "The ballistics evidence belongs to the following firearm:",
-                    "open_firearms_registry": "Open in Firearms Registry"
-                },
-                "no_registry_match": {
-                    "header": "No match in firearms registry!",
-                    "casing_description": "This bullet casing doesn't hold a serial number that matches with a weapon in the firearms registry. However, bullet cases can still be identified by the unique microscopic toolmarks left by imperfections inside a firearm. By selecting a weapon from your inventory, you can check whether the bullet case evidence originates from the selected weapon (or at least from a weapon of the same type).",
-                    "bullet_description": "Fired bullets can be identified by the unique microscopic markings left by imperfections inside a firearm's barrel. By selecting a weapon from your inventory, you can check wheter the bullet evidence originates from the selected weapon (or at least from a weapon of the same type).",
-                    "inventory_match": {
-                        "microstamp": "The ballistics evidence originates exactly from the selected weapon as the serial number was microstamped onto the piece of evidence.",
-                        "imperfections": "The ballistics evidence originates exactly from the selected weapon as they share the same unique imperfections.",
-                        "type": "The ballistics evidence originates from a weapon of the same type as the selected weapon.",
-                        "none": "The ballistics evidence doesn't match with the selected weapon."
-                    }
-                },
-                "show_type": {
-                    "header": "Analysis successful",
-                    "magazine_description": "Magazines can be clearly associated with a weapon type. However, assigning them to a specific individual weapon is not possible. This magazine belongs to a weapon of this type:",
-                    "gunshot_residue_description": "Gunshot residue allows conclusions to be drawn about the type of weapon fired. Based on its concentration, it is possible to calculate when the weapon was fired. The analysis for the selected gunshot residue has yielded the following:",
-                    "fired_at": "Fired at"
                 }
             },
             "evidence_app": {

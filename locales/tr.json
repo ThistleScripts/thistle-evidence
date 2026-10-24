@@ -299,27 +299,6 @@
                     "non_binary": "Non-binary"
                 }
             },
-            "fingerprint_app": {
-                "name": "Parmak İzi Analizi",
-                "no_items_with_fingerprints": "Envanterinizde parmak izi içeren öğe yok."
-            },
-            "dna_app": {
-                "name": "DNA Analizi",
-                "no_items_with_dna": "Envanterinizde DNA içeren öğe yok."
-            },
-            "evidence_analysis": {
-                "start_analyzation": "Analizi başlat",
-                "matching_biometric_data": "%s veritabanı ile eşleştiriliyor...",
-                "database_match": {
-                    "header": "Veritabanı eşleşmesi!",
-                    "description": "Kanıt üzerindeki %s izi aşağıdaki kişiye aittir:",
-                    "open_citizens_app": "Vatandaş Uygulamasında Aç"
-                },
-                "no_database_match": {
-                    "header": "Veritabanı eşleşmesi yok!",
-                    "description": "Bu kanıt parçasındaki %s izi henüz bilinmeyen bir kişiye aittir. Söz konusu kişiyi tanıyorsanız, bu kanıt parçasındaki %s izini vatandaş uygulamasında ona atayabilirsiniz."
-                }
-            },
             "firearms_registry_app": {
                 "name": "Silah Kayıt Sistemi",
                 "firearm_information": "Bilgiler",
@@ -357,34 +336,6 @@
                     "firearm_update_error": "Silah kaydedilemedi!",
                     "firearm_deletion_success": "Silah silindi!",
                     "firearm_deletion_error": "Silah silinemedi!"
-                }
-            },
-            "ballistics_app": {
-                "name": "Balistik Analizi",
-                "no_ballistics_evidence_items": "Envanterinizde balistik kanıt içeren herhangi bir eşya yok.",
-                "start_analyzation": "Analizi Başlat",
-                "matching_serial": "Balistik kanıtlar analiz ediliyor...",
-                "registry_match": {
-                    "header": "Ateşli silah kaydında eşleşme bulundu!",
-                    "description": "Balistik kanıt aşağıdaki ateşli silaha ait:",
-                    "open_firearms_registry": "Ateşli Silah Kaydında Aç"
-                },
-                "no_registry_match": {
-                    "header": "Ateşli silah kaydında eşleşme bulunamadı!",
-                    "casing_description": "Bu kovan, ateşli silahlar sicilindeki bir silahla eşleşen bir seri numarası taşımıyor. Ancak kovanlar, bir silahın içindeki kusurların bıraktığı benzersiz mikroskobik alet izleri sayesinde yine de tanımlanabilir. Envanterinizden bir silah seçerek, kovan kanıtının seçilen silahtan (veya en azından aynı türden bir silahtan) gelip gelmediğini kontrol edebilirsiniz.",
-                    "bullet_description": "Ateşlenmiş mermiler, bir ateşli silahın namlusunun içindeki kusurların bıraktığı benzersiz mikroskobik izler sayesinde tanımlanabilir. Envanterinizden bir silah seçerek, mermi kanıtının seçilen silahtan (veya en azından aynı türden bir silahtan) gelip gelmediğini kontrol edebilirsiniz.",
-                    "inventory_match": {
-                        "microstamp": "Seri numarası delil parçası üzerine mikro baskı ile işlendiği için, balistik delil kesin olarak seçilen silahtan kaynaklanmaktadır.",
-                        "imperfections": "Balistik kanıt tam olarak seçilen silahtan kaynaklanmaktadır, çünkü aynı benzersiz kusurları paylaşmaktadırlar.",
-                        "type": "Balistik delil, seçilen silahla aynı tipte bir silaha ait.",
-                        "none": "Balistik delil, seçilen silahla uyuşmuyor."
-                    }
-                },
-                "show_type": {
-                    "header": "Analiz başarılı",
-                    "magazine_description": "Şarjörler net bir şekilde bir silah türüyle ilişkilendirilebilir. Ancak bunları belirli bir kişisel silaha atamak mümkün değildir. Bu şarjör şu türde bir silaha aittir:",
-                    "gunshot_residue_description": "Barut artığı, ateşlenen silahın türü hakkında çıkarımlar yapılmasını sağlar. Yoğunluğuna bağlı olarak silahın ne zaman ateşlendiğini hesaplamak mümkündür. Seçilen barut artığı analizi şu sonuçları vermiştir:",
-                    "fired_at": "Ateşlenme zamanı"
                 }
             },
             "evidence_app": {
