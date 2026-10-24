@@ -23,6 +23,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Chain of custody: evidence boxes labelled with a case number are sealed, and opening one breaks the seal with who and when. Evidence lockers at the station log everything put in and taken out.
 - Case board: the laptop's Cases app ties a case number to its suspects, DNA profiles, fingerprints and gun IDs, officers' notes and where its evidence boxes are kept. Add evidence to a case straight from the Evidence app.
 - Forensic reports: copy a case file from the lab as text, and forensic matches can be posted to their own webhook.
+- Evidence admin panel (`/evidenceadmin`): choose which officers can use the laptop and each of its apps, the microscopes, collecting, swabs, fingerprints, the UV flashlight and lamps, markers and lockers. Admins are listed by licence in `permissions.lua`. The booking terminal stays open to every officer.
 - Swab kit (`swab_kit`): any officer can take DNA mouth swabs and test for gunshot residue without a full forensic kit, e.g. on someone in custody.
 - Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.
@@ -52,7 +53,8 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
         maxWeight = 5000
     })
     ```
-5. Adjust `config.lua`: your city name, job permissions, microscope stations, wiretap, logging and the glove, cuff and death checks for your clothing and police scripts.
+5. Put your Rockstar licence in `admins` in `permissions.lua`, then use `/evidenceadmin` in game to choose what each officer can do. Out of the box only the laptop, the wiretap app and the microscopes are locked; everything else is open to every officer with the job.
+6. Adjust `config.lua`: your city name, job permissions, microscope stations, wiretap, logging and the glove, cuff and death checks for your clothing and police scripts.
 
 Database tables are created on first start. The language follows `setr ox:locale`; translations live in `locales/`.
 

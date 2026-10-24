@@ -5,6 +5,7 @@ local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local citizens <const> = require "server.citizens.citizens"
 local logger <const> = require "server.logger"
+local officerPermissions <const> = require "server.permissions"
 
 MySQL.update.await(
     [[
@@ -75,7 +76,7 @@ end
 -- Registers a case board callback that needs laptop access and gets its arguments as a table
 local function register(name, handler)
     Thistle.Callback.Register(name, function(source, arguments)
-        if not framework.hasPermission(config.permissions.access, source) then
+        if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_cases") then
             return deny()
         end
 

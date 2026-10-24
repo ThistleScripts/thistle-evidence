@@ -2,9 +2,12 @@ local config <const> = require "config"
 local framework <const> = require "server.framework"
 local actions <const> = require "server.evidences.actions"
 local logger <const> = require "server.logger"
+local officerPermissions <const> = require "server.permissions"
 
 Thistle.Callback.Register("evidences:takeBiometricData", function(playerId, targetId, type, enforce, metadata)
-    if not framework.hasPermission(config.permissions.collect, playerId) then
+    -- a DNA mouth swab needs the swab permission, fingerprints the fingerprints one (evidence admin panel)
+    if not framework.hasPermission(config.permissions.collect, playerId)
+        or not officerPermissions.has(playerId, type == "dna" and "swab" or "fingerprints") then
         TriggerClientEvent("evidences:notify", playerId, { key = "biometrics_taking.notifications.no_permission" }, "error")
         return false
     end

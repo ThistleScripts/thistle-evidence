@@ -8,6 +8,7 @@ local citizens <const> = require "server.citizens.citizens"
 local linkedBiometrics <const> = require "server.biometrics.linked_biometrics"
 local createInformation <const> = require "server.evidences.evidence_information"
 local logger <const> = require "server.logger"
+local officerPermissions <const> = require "server.permissions"
 
 local kinds <const> = { "dna", "fingerprint", "ballistics" }
 
@@ -182,7 +183,7 @@ end
 
 -- Every item in the player's inventory and carried evidence boxes holding evidence the lab can analyse
 Thistle.Callback.Register("evidences:lab:getEvidence", function(source)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "microscope") then
         return deny()
     end
 
@@ -205,7 +206,7 @@ Thistle.Callback.Register("evidences:lab:getEvidence", function(source)
 end)
 
 Thistle.Callback.Register("evidences:lab:analyse", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "microscope") then
         return deny()
     end
 
@@ -311,7 +312,7 @@ Thistle.Callback.Register("evidences:lab:analyse", function(source, arguments)
 end)
 
 Thistle.Callback.Register("evidences:lab:getCaseFile", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not (officerPermissions.has(source, "microscope") or officerPermissions.has(source, "app_evidence") or officerPermissions.has(source, "app_cases")) then
         return deny()
     end
 
@@ -325,7 +326,7 @@ end)
 
 -- The laptop's evidence log: every analysis, newest first, ten at a time. Analysis itself only happens at a microscope.
 Thistle.Callback.Register("evidences:getEvidenceLog", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_evidence") then
         return deny()
     end
 

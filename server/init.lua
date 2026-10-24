@@ -27,6 +27,8 @@ if not require "server.items" then
     return
 end
 
+require "server.permissions"
+
 require "server.biometrics.biometrics_provider"
 
 require "server.evidences.api"

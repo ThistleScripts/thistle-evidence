@@ -3,6 +3,7 @@ local eventHandler <const> = require "common.events.handler"
 local evidenceTypes <const> = require "common.evidence_types"
 local utils <const> = require "client.evidences.utils"
 local uv <const> = require "client.evidences.uv"
+local permissions <const> = require "client.permissions"
 
 --[[
 AddStateBagChangeHandler(nil, nil, function(bagName, key, value)
@@ -48,6 +49,11 @@ local function createPlayerTarget(evidenceType, options, action)
         menuName = "evidences",
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            -- collecting needs the evidence admin panel's permission; destroying doesn't
+            if action == "collect" and not permissions.canCollect(evidenceType) then
                 return false
             end
             
@@ -107,6 +113,11 @@ local function createVehicleDoorTarget(evidenceType, options, action)
         -- utils.getTargetedVehicleDoorId works out the door from anywhere along it.
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            -- collecting needs the evidence admin panel's permission; destroying doesn't
+            if action == "collect" and not permissions.canCollect(evidenceType) then
                 return false
             end
 
@@ -182,6 +193,11 @@ local function createVehicleSeatTarget(evidenceType, options, action)
                 return false
             end
 
+            -- collecting needs the evidence admin panel's permission; destroying doesn't
+            if action == "collect" and not permissions.canCollect(evidenceType) then
+                return false
+            end
+
             if distance > 2 then
                 return false
             end
@@ -238,6 +254,11 @@ local function createEntityTarget(evidenceType, options, action)
         anyItem = true, -- a list of kits means any one of them
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            -- collecting needs the evidence admin panel's permission; destroying doesn't
+            if action == "collect" and not permissions.canCollect(evidenceType) then
                 return false
             end
 
@@ -326,6 +347,11 @@ local function createRelativeEntityCoordsTarget(evidenceType, options, action)
         anyItem = true, -- a list of kits means any one of them
         canInteract = function(entity, distance, coords, name, bone)
             if config.isPedDead(cache.ped) then
+                return false
+            end
+
+            -- collecting needs the evidence admin panel's permission; destroying doesn't
+            if action == "collect" and not permissions.canCollect(evidenceType) then
                 return false
             end
 

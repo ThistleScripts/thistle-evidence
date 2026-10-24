@@ -4,6 +4,7 @@
 -- around while it's on.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
+local permissions <const> = require "client.permissions"
 
 local uv = {}
 
@@ -11,6 +12,7 @@ local isEquipped = false
 local equipCount = 0 -- so a quick unequip and equip doesn't leave two threads running
 local isOn = false
 local lastOnAt = 0
+local lastDeniedAt = 0
 local revealedUntil = {} -- evidence (object or entity) -> GetGameTimer() until which it stays visible
 local areas = {} -- lit areas (UV floodlights, client/evidences/floodlights.lua): id -> { coords, radius }
 
@@ -172,6 +174,15 @@ end
 
 local function setLight(on)
     if isOn == on then
+        return
+    end
+
+    -- only officers the evidence admin panel allows can switch the beam on
+    if on and not permissions.has("uv_flashlight") then
+        if GetGameTimer() - lastDeniedAt > 5000 then
+            lastDeniedAt = GetGameTimer()
+            config.notify({ key = "laptop.notifications.no_permission" }, "error")
+        end
         return
     end
 

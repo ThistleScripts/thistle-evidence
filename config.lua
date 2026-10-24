@@ -424,6 +424,7 @@ config.logging = {
         ["Evidence locker deposit"] = true,
         ["Evidence locker withdrawal"] = true,
         ["Scene cleaned"] = true,
+        ["Evidence permissions changed"] = true, -- the evidence admin panel (/evidenceadmin)
         ["Case opened"] = true,
         ["Case closed"] = true,
         ["Case reopened"] = true,

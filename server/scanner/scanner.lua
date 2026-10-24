@@ -1,6 +1,7 @@
 local logger <const> = require "server.logger"
 local biometricsProvider <const> = require "server.biometrics.biometrics_provider"
 local linkedBiometrics <const> = require "server.biometrics.linked_biometrics"
+local officerPermissions <const> = require "server.permissions"
 
 local function isPlayerNear(playerId, otherPlayerId, maxDistance)
     local ped <const>, otherPed <const> = GetPlayerPed(playerId), GetPlayerPed(otherPlayerId)
@@ -12,7 +13,8 @@ Thistle.Callback.Register("evidences:scanFingerprint", function(scanningPlayerId
     playerHoldingScanner = tonumber(playerHoldingScanner)
     if not playerHoldingScanner or playerHoldingScanner == scanningPlayerId or not DoesPlayerExist(playerHoldingScanner)
         or not isPlayerNear(scanningPlayerId, playerHoldingScanner, 3.0)
-        or (exports.ox_inventory:Search(playerHoldingScanner, "count", "forensic_fingerprint_scanner") or 0) < 1 then
+        or (exports.ox_inventory:Search(playerHoldingScanner, "count", "forensic_fingerprint_scanner") or 0) < 1
+        or not officerPermissions.has(playerHoldingScanner, "fingerprints") then
         return false
     end
 

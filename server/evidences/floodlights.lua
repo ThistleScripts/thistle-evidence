@@ -4,6 +4,7 @@
 -- is gone, so officers should pick them up when the scene is done.
 local config <const> = require "config"
 local framework <const> = require "server.framework"
+local officerPermissions <const> = require "server.permissions"
 
 local settings <const> = config.uvFloodlight
 
@@ -36,7 +37,7 @@ Thistle.Callback.Register("evidences:getUvFloodlights", function()
 end)
 
 Thistle.Callback.Register("evidences:placeUvFloodlight", function(source, coords, style)
-    if not framework.hasPermission(settings.permissions, source) then
+    if not framework.hasPermission(settings.permissions, source) or not officerPermissions.has(source, "uv_lamps") then
         TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end
@@ -75,7 +76,7 @@ Thistle.Callback.Register("evidences:placeUvFloodlight", function(source, coords
 end)
 
 Thistle.Callback.Register("evidences:pickupUvFloodlight", function(source, id)
-    if not framework.hasPermission(settings.permissions, source) then
+    if not framework.hasPermission(settings.permissions, source) or not officerPermissions.has(source, "uv_lamps") then
         return false
     end
 

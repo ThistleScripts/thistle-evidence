@@ -2,6 +2,7 @@
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local player <const> = require "client.player"
+local permissions <const> = require "client.permissions"
 
 local lab = {}
 local isOpen = false
@@ -16,7 +17,7 @@ function lab.open()
         return
     end
 
-    if not info.permissions.access then
+    if not info.permissions.access or not permissions.has("microscope") then
         config.notify({ key = "laptop.notifications.no_permission" }, "error")
         return
     end

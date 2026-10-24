@@ -3,6 +3,7 @@ local framework <const> = require "server.framework"
 local evidenceTypes <const> = require "common.evidence_types"
 local api <const> = require "server.evidences.api"
 local logger <const> = require "server.logger"
+local officerPermissions <const> = require "server.permissions"
 
 local actions = {}
 
@@ -201,6 +202,12 @@ end
 ---@param amount? number How many pieces this item holds (a pile of casings from one gun), 1 by default
 function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     if not framework.hasPermission(config.permissions.collect, source) then
+        return false
+    end
+
+    -- evidence at a scene (taking biometrics from a player checks its own permission, server/biometrics/biometrics_taking.lua)
+    if remove and not officerPermissions.canCollect(source, evidenceType) then
+        TriggerClientEvent("evidences:notify", source, { key = "laptop.notifications.no_permission" }, "error")
         return false
     end
 

@@ -2,6 +2,7 @@ local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local evidenceTypes <const> = require "common.evidence_types"
 local uv <const> = require "client.evidences.uv"
+local permissions <const> = require "client.permissions"
 
 EvidencesAtCoords = {}
 
@@ -93,7 +94,7 @@ local function refreshPileZone(pile)
                 items = pile.options.target.collect.requiredItem or nil,
                 anyItem = true, -- a list of kits means any one of them
                 canInteract = function()
-                    return not config.isPedDead(cache.ped)
+                    return not config.isPedDead(cache.ped) and permissions.canCollect(pile.evidenceType)
                 end,
                 onSelect = function(data)
                     local collected <const> = Thistle.Callback.Await("evidences:collectPile", pile.evidenceType, getPileEntries(pile, data.coords, true))

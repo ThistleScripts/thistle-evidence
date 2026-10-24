@@ -766,5 +766,98 @@
             "title": "Cleaning",
             "description": "You scrubbed the area. Hopefully you didn't miss anything."
         }
+    },
+    "admin": {
+        "title": "Evidence admin",
+        "disabled": "Permissions are switched off in permissions.lua, so every officer with the job can use everything. Changes here are saved but do nothing until it's switched on.",
+        "everyone": "Everyone",
+        "everyone_hint": "What every officer can do",
+        "everyone_description": "What every officer with the job can do, unless they're allowed or denied something below.",
+        "officers": "Officers",
+        "not_saved": "Not saved yet",
+        "no_officers": "No officers set up yet. Add one from the online officers below.",
+        "overrides": "%s set for them",
+        "follows_everyone": "Same as everyone",
+        "online": "Online officers",
+        "no_online": "No other officers online.",
+        "server_id": "ID %s",
+        "select": "Select an officer.",
+        "loading": "Loading…",
+        "search": "Search officers…",
+        "updated_by": "Changed by %s on %s",
+        "remove": "Remove",
+        "remove_hint": "They go back to what everyone can do",
+        "add": "Add officer",
+        "save": "Save",
+        "error": "The changes couldn't be saved.",
+        "allow": "Allow",
+        "deny": "Deny",
+        "default_allowed": "Default (allowed)",
+        "default_denied": "Default (denied)",
+        "needs_laptop": "Needs the evidence laptop",
+        "groups": {
+            "laptop": "Evidence laptop",
+            "lab": "Forensics lab",
+            "field": "At the scene",
+            "equipment": "Equipment"
+        },
+        "capabilities": {
+            "laptop": {
+                "label": "Evidence laptop",
+                "description": "Log in to an evidence laptop, and place or pick one up"
+            },
+            "app_citizens": {
+                "label": "Citizens app",
+                "description": "Citizen records and notes on the laptop"
+            },
+            "app_firearms": {
+                "label": "Firearms registry app",
+                "description": "Register guns and look up gun IDs"
+            },
+            "app_evidence": {
+                "label": "Evidence app",
+                "description": "The evidence log and case files"
+            },
+            "app_cases": {
+                "label": "Cases app",
+                "description": "The case board"
+            },
+            "app_wiretap": {
+                "label": "Wiretap app",
+                "description": "Phone, radio and spy microphone taps (also needs the job set in config.wiretap)"
+            },
+            "microscope": {
+                "label": "Microscopes",
+                "description": "Analyse evidence in the forensics lab, and place or pick up microscopes"
+            },
+            "collect": {
+                "label": "Collect evidence",
+                "description": "Collect evidence at a scene with a forensic kit"
+            },
+            "swab": {
+                "label": "Swabs",
+                "description": "DNA mouth swabs and gunshot residue tests"
+            },
+            "fingerprints": {
+                "label": "Fingerprints",
+                "description": "Take someone's fingerprints and use the fingerprint scanner"
+            },
+            "uv_flashlight": {
+                "label": "UV flashlight",
+                "description": "Switch the UV flashlight's beam on"
+            },
+            "uv_lamps": {
+                "label": "UV lamps",
+                "description": "Place and pick up the Evidence Spotlight and 360 Evidence Light"
+            },
+            "markers": {
+                "label": "Evidence markers",
+                "description": "Place and pick up evidence markers"
+            },
+            "lockers": {
+                "label": "Evidence lockers",
+                "description": "Open evidence lockers and their logs"
+            }
+        }
     }
 }

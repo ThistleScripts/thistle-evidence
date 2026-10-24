@@ -1,5 +1,6 @@
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
+local permissions <const> = require "client.permissions"
 
 local scannerProp
 local settings <const> = config.fingerprintScanner
@@ -109,6 +110,11 @@ end
 
 -- Using the forensic_fingerprint_scanner item (setup/<lang>_items.lua). Using it again puts it away.
 local function useScanner(data, slot)
+    if not permissions.has("fingerprints") then
+        config.notify({ key = "laptop.notifications.no_permission" }, "error")
+        return
+    end
+
     if scannerProp then
         -- Out already, or stuck from an attempt where the phone never appeared: either way, put it away
         CreateThread(cancel)

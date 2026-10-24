@@ -4,6 +4,7 @@ local config <const> = require "config"
 local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local logger <const> = require "server.logger"
+local officerPermissions <const> = require "server.permissions"
 
 local lockers <const> = config.evidenceLockers or {}
 local lockerIds = {}
@@ -82,10 +83,20 @@ if next(lockerIds) then
 
         return true
     end, { inventoryFilter = filter })
+
+    -- only officers the evidence admin panel allows at the lockers
+    exports.ox_inventory:registerHook("openInventory", function(payload)
+        if lockerIds[payload.inventoryId] and not officerPermissions.has(payload.source, "lockers") then
+            TriggerClientEvent("evidences:notify", payload.source, { key = "laptop.notifications.no_permission" }, "error")
+            return false
+        end
+
+        return true
+    end, { inventoryFilter = filter })
 end
 
 Thistle.Callback.Register("evidences:getLockerLog", function(source, lockerId)
-    if not lockerIds[lockerId] or not framework.hasPermission(config.permissions.access, source) then
+    if not lockerIds[lockerId] or not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "lockers") then
         return {}
     end
 

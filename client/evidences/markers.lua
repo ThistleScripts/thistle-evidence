@@ -4,6 +4,7 @@
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local player <const> = require "client.player"
+local permissions <const> = require "client.permissions"
 
 local settings <const> = config.evidenceMarkers
 
@@ -85,7 +86,7 @@ exports.ox_target:addModel(allModels, {
         distance = 2,
         groups = settings.permissions or false,
         canInteract = function(entity)
-            return getMarkerId(entity) ~= nil
+            return permissions.has("markers") and getMarkerId(entity) ~= nil
         end,
         onSelect = function(data)
             local id <const> = getMarkerId(data.entity)
@@ -101,7 +102,7 @@ exports.ox_target:addModel(allModels, {
         distance = 2,
         groups = settings.permissions or false,
         canInteract = function(entity)
-            return getMarkerId(entity) ~= nil
+            return permissions.has("markers") and getMarkerId(entity) ~= nil
         end,
         onSelect = function(data)
             local id <const> = getMarkerId(data.entity)
@@ -216,7 +217,7 @@ exports("evidence_marker", function()
             return
         end
 
-        if not info.permissions.placeMarkers then
+        if not info.permissions.placeMarkers or not permissions.has("markers") then
             config.notify({ key = "laptop.notifications.no_permission" }, "error")
             return
         end

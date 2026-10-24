@@ -5,6 +5,7 @@ local eventHandler <const> = require "common.events.handler"
 local placement <const> = require "client.utils.placement"
 local player <const> = require "client.player"
 local uv <const> = require "client.evidences.uv"
+local permissions <const> = require "client.permissions"
 
 local settings <const> = config.uvFloodlight
 local colour <const> = config.uvLight.colour or { r = 60, g = 90, b = 255 }
@@ -86,6 +87,9 @@ local function addLamp(data)
                 icon = "fa-solid fa-arrow-up-from-bracket",
                 distance = 2.5,
                 groups = settings.permissions or false,
+                canInteract = function()
+                    return permissions.has("uv_lamps")
+                end,
                 onSelect = function()
                     if Thistle.Callback.Await("evidences:pickupUvFloodlight", data.id) then
                         lib.playAnim(cache.ped, "random@domestic", "pickup_low")
@@ -129,7 +133,7 @@ local function placeLamp(styleName)
         return
     end
 
-    if not info.permissions.placeUvFloodlight then
+    if not info.permissions.placeUvFloodlight or not permissions.has("uv_lamps") then
         config.notify({ key = "laptop.notifications.no_permission" }, "error")
         return
     end

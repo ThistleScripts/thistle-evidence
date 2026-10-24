@@ -2,6 +2,7 @@ local config <const> = require "config"
 local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local logger <const> = require "server.logger"
+local officerPermissions <const> = require "server.permissions"
 local actionStorageDuration <const> = config.wiretap.actionStorageDuration
 
 MySQL.update.await(
@@ -24,7 +25,7 @@ if actionStorageDuration and type(actionStorageDuration) == "number" and actionS
 end
 
 Thistle.Callback.Register("evidences:storeWiretap", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_wiretap") then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"
@@ -48,7 +49,7 @@ Thistle.Callback.Register("evidences:storeWiretap", function(source, arguments)
 end)
 
 Thistle.Callback.Register("evidences:getWiretaps", function(source, arguments)
-    if not framework.hasPermission(config.permissions.access, source) then
+    if not framework.hasPermission(config.permissions.access, source) or not officerPermissions.has(source, "app_wiretap") then
         return {
             success = false,
             response = "laptop.notifications.no_permission.description"

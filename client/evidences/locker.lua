@@ -2,6 +2,7 @@
 -- put what in and took what out.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
+local permissions <const> = require "client.permissions"
 
 local zones = {}
 
@@ -42,6 +43,9 @@ for index, locker in ipairs(config.evidenceLockers or {}) do
                 icon = "fa-solid fa-box-archive",
                 distance = 2.0,
                 groups = locker.groups or config.permissions.access or false,
+                canInteract = function()
+                    return permissions.has("lockers")
+                end,
                 onSelect = function()
                     exports.ox_inventory:openInventory("stash", locker.id)
                 end
@@ -52,6 +56,9 @@ for index, locker in ipairs(config.evidenceLockers or {}) do
                 icon = "fa-solid fa-list",
                 distance = 2.0,
                 groups = config.permissions.access or false,
+                canInteract = function()
+                    return permissions.has("lockers")
+                end,
                 onSelect = function()
                     showLog(locker)
                 end
