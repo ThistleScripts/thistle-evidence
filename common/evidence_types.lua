@@ -6,9 +6,9 @@ local footprintMarks -- required on first use, like the UV light below (this fil
 
 -- Required on first use: this file is also loaded on the server, where the UV flashlight doesn't exist
 local uv
-local function isInUvBeam(coords)
+local function isUvLit(coords)
     uv = uv or require "client.evidences.uv"
-    return uv.isInBeam(coords)
+    return uv.isLit(coords)
 end
 
 local function createMetadata(evidenceType, data, coords, holder)
@@ -221,12 +221,12 @@ return {
             }
         },
         visualize = {
-            -- The path back to the shooter only shows while a UV light points at the bullet
+            -- The path back to the shooter only shows while a UV light (the flashlight or a UV lamp) shines on the bullet
             show = function(point, data, no_thread)
                 if no_thread then
                     -- called every frame by the entity evidence display thread
                     local shooterCoords <const> = bulletPath.getShooterCoords(point, data)
-                    if shooterCoords and isInUvBeam(point.coords) then
+                    if shooterCoords and isUvLit(point.coords) then
                         bulletPath.draw(point.coords, shooterCoords)
                     end
 
@@ -242,7 +242,7 @@ return {
 
                 CreateThread(function()
                     while point.isThreadRunning do
-                        if isInUvBeam(point.coords) then
+                        if isUvLit(point.coords) then
                             bulletPath.draw(point.coords, shooterCoords)
                             Wait(0)
                         else
