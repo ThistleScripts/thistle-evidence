@@ -186,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'Projecteur UV',
+    label = 'Projecteur à indices',
     description = 'Projecteur de chantier qui éclaire toute une scène de crime en UV et révèle toutes les preuves autour',
     weight = 3000,
     stack = false,
@@ -196,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'Spot UV',
-    description = 'Lampe UV directionnelle qui éclaire un long cône de la scène de crime et révèle les preuves qui s’y trouvent',
+    label = 'Lampe à indices 360',
+    description = 'Lampe UV qui éclaire tout autour d’elle et révèle les preuves d’une scène de crime',
     weight = 3000,
     stack = false,
     close = true,

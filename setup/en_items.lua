@@ -186,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV Floodlight',
+    label = 'Evidence Spotlight',
     description = 'UV lamp that lights all round it, showing all evidence nearby',
     weight = 3000,
     stack = false,
@@ -196,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV Spotlight',
-    description = 'Directional UV lamp that lights a long cone of a crime scene, showing the evidence in it',
+    label = '360 Evidence Light',
+    description = 'UV lamp that lights all round it, showing the evidence at a crime scene',
     weight = 3000,
     stack = false,
     close = true,

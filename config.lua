@@ -270,21 +270,23 @@ config.uvLight = {
 -- flashlight. Only matters while config.uvLight.required is on. Each style is its own item, named by its key.
 config.uvFloodlight = {
     styles = {
-        -- Lights all round it
+        -- "Evidence Spotlight": lights all round it
         uv_floodlight = {
             model = `bzzz_dream_of_lights_purple`,
             lamp = vec3(0.0, 0.0, 2.1), -- where the light comes from, from the lamp's base (metres)
             radius = 12.0 -- how far round it evidence shows up (metres)
         },
 
-        -- Lights a cone in front of it, further. It's turned to shine away from the officer placing it.
+        -- "360 Evidence Light": lights all round it, further
         uv_spotlight = {
             model = `bzzz_world_of_lamps_purple`,
             lamp = vec3(0.0, -0.3, 1.45),
-            direction = vec3(0.0, -1.0, -0.35), -- which way the lamp head points on the model
-            angle = 35.0, -- how wide the beam is (degrees from the centre)
-            radius = 25.0 -- how far the beam reaches (metres)
+            radius = 25.0
         }
+
+        -- A style can light only a cone in front of it instead, turned to shine away from the officer placing it:
+        -- direction = vec3(0.0, -1.0, -0.35), -- which way the lamp head points on the model
+        -- angle = 35.0, -- how wide the beam is (degrees from the centre)
     },
 
     intensity = 6.0, -- how bright the blue light is

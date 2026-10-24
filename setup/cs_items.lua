@@ -186,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV reflektor',
+    label = 'Reflektor na stopy',
     description = 'Pracovní světlo, které osvítí celé místo činu UV světlem a ukáže všechny stopy kolem',
     weight = 3000,
     stack = false,
@@ -196,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV reflektor (směrový)',
-    description = 'Směrová UV lampa, která osvítí dlouhý kužel místa činu a ukáže v něm stopy',
+    label = '360° světlo na stopy',
+    description = 'UV lampa, která svítí všude kolem sebe a ukáže stopy na místě činu',
     weight = 3000,
     stack = false,
     close = true,

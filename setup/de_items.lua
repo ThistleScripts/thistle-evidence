@@ -186,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV-Flutlicht',
+    label = 'Spurenstrahler',
     description = 'Arbeitsleuchte, die einen ganzen Tatort in UV-Licht taucht und alle Spuren darum sichtbar macht',
     weight = 3000,
     stack = false,
@@ -196,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV-Strahler',
-    description = 'Gerichtete UV-Lampe, die einen langen Bereich eines Tatorts ausleuchtet und die Spuren darin sichtbar macht',
+    label = '360°-Spurenleuchte',
+    description = 'UV-Lampe, die rundum leuchtet und die Spuren an einem Tatort sichtbar macht',
     weight = 3000,
     stack = false,
     close = true,

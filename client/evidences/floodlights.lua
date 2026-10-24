@@ -1,5 +1,5 @@
--- UV lamps at crime scenes (server/evidences/floodlights.lua), in the styles of config.uvFloodlight.styles: one lights
--- all round it, the other a cone in front of it. Evidence they light shows up without anyone holding a flashlight.
+-- UV lamps at crime scenes (server/evidences/floodlights.lua), in the styles of config.uvFloodlight.styles. They light
+-- all round them, or a cone in front if the style has a direction. Evidence they light shows up without anyone holding a flashlight.
 local config <const> = require "config"
 local eventHandler <const> = require "common.events.handler"
 local placement <const> = require "client.utils.placement"

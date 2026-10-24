@@ -14,7 +14,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Wiretap phone calls (npwd, lb-phone, yseries, roadphone), radio channels and placeable spy microphones (needs pma-voice).
 - UV flashlight: hold right click to point it and shine it where you look, while still walking and strafing. Evidence nearby glows faintly while it's on, evidence it has shown glows brightly so it can be found and collected, and blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
 - Evidence markers: officers pick a numbered marker prop from a menu and click to put down as many as they need, then pick them up one at a time or all at once.
-- UV lamps: officers stand a 360° lamp (`uv_floodlight`, 12 m round it) or a directional one (`uv_spotlight`, a 25 m cone) at a scene, and the evidence they light shows up and can be collected without holding a flashlight.
+- UV lamps: officers stand an Evidence Spotlight (`uv_floodlight`, 12 m round it) or a 360 Evidence Light (`uv_spotlight`, 25 m round it) at a scene, and the evidence they light shows up and can be collected without holding a flashlight.
 - Evidence ages: the longer a trace lies at a scene before it's collected, the more likely its analysis is partial (prints and DNA list a few possible citizens) or unreadable (`config.evidenceAging`). Old ground evidence disappears after two days.
 - Footprints on soft ground (mud, sand, snow, dirt) and tyre marks from hard braking or wheelspin. A footprint cast shows the shoe (men's or women's, size, tread) and direction; a tyre mark photo shows the vehicle model (`config.footprints`, `config.tyreMarks`).
 - Scene cleaning kit: anyone can scrub a scene with bleach, wiping the ground evidence around them, though some may be missed (`config.sceneCleaning`).
@@ -68,7 +68,7 @@ Database tables are created on first start. The language follows `setr ox:locale
 | Action | How |
 | --- | --- |
 | Find evidence | Equip the UV flashlight (`WEAPON_UVFLASHLIGHT`), hold right click to shine it, and point it at the faint hints around the scene. What it shows stays visible for 15 seconds to collect |
-| Light up a scene | Use a `uv_floodlight` (all round) or `uv_spotlight` (a cone, placed shining away from you) and place it; the evidence it lights shows up. Target it to pick it back up |
+| Light up a scene | Use an Evidence Spotlight (`uv_floodlight`) or a 360 Evidence Light (`uv_spotlight`) and place it; the evidence it lights shows up. Target it to pick it back up |
 | Mark evidence | Use the `evidence_marker` kit, pick a prop, then click to place (scroll rotates, ENTER or ESC finishes). Target a marker to pick it up, or to pick up every marker at the scene |
 | Collect evidence | Target it with a `forensic_kit` (jobs from `config.permissions.collect`) |
 | Destroy evidence | Target it with the item from `config.destroyItems` (`hydrogen_peroxide` or `cleaning_kit`) |

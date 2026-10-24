@@ -186,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV投光器',
+    label = '証拠スポットライト',
     description = '事件現場全体をUVで照らし、周囲の証拠をすべて浮かび上がらせる作業灯',
     weight = 3000,
     stack = false,
@@ -196,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UVスポットライト',
-    description = '事件現場を長い円錐状に照らし、その中の証拠を浮かび上がらせる指向性UVランプ',
+    label = '360度証拠ライト',
+    description = '周囲360度を照らし、事件現場の証拠を浮かび上がらせるUVランプ',
     weight = 3000,
     stack = false,
     close = true,

@@ -186,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'UV projektör',
+    label = 'Delil Spot Lambası',
     description = 'Tüm olay yerini UV ışığıyla aydınlatıp çevresindeki tüm delilleri gösteren çalışma lambası',
     weight = 3000,
     stack = false,
@@ -196,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'UV spot lambası',
-    description = 'Olay yerinin uzun bir koni alanını aydınlatıp içindeki delilleri gösteren yönlü UV lamba',
+    label = '360 Delil Lambası',
+    description = 'Çevresini her yönden aydınlatıp olay yerindeki delilleri gösteren UV lamba',
     weight = 3000,
     stack = false,
     close = true,

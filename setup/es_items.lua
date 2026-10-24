@@ -186,7 +186,7 @@
     }
 },
 ['uv_floodlight'] = {
-    label = 'Foco UV',
+    label = 'Foco de pruebas',
     description = 'Foco de trabajo que ilumina toda la escena del crimen con luz UV y muestra todas las pruebas a su alrededor',
     weight = 3000,
     stack = false,
@@ -196,8 +196,8 @@
     }
 },
 ['uv_spotlight'] = {
-    label = 'Proyector UV',
-    description = 'Lámpara UV direccional que ilumina un cono largo de la escena del crimen y muestra las pruebas en él',
+    label = 'Luz de pruebas 360',
+    description = 'Lámpara UV que ilumina todo a su alrededor y muestra las pruebas de la escena del crimen',
     weight = 3000,
     stack = false,
     close = true,
