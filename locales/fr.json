@@ -131,6 +131,11 @@
                 "title": "Preuves",
                 "description": "La pièce à conviction n'a pas encore été analysée"
             }
+        },
+        "seal": {
+            "metadata": "Seal",
+            "intact": "Intact, sealed by %s on %s",
+            "broken": "BROKEN, opened by %s on %s"
         }
     },
     "fingerprint_scanner": {
@@ -537,5 +542,13 @@
         "note_title": "Title, e.g. Booked for armed robbery",
         "note_text": "Details",
         "add_note": "Add note"
+    },
+    "locker": {
+        "open": "Open %s",
+        "view_log": "View locker log",
+        "log_title": "%s: log",
+        "deposit": "In:",
+        "withdraw": "Out:",
+        "empty_log": "Nothing has gone in or out yet."
     }
 }

@@ -15,6 +15,8 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - UV flashlight: hold right click to point it and shine it where you look, while still walking and strafing. Evidence nearby glows faintly while it's on, evidence it has shown glows brightly so it can be found and collected, and blood, casings, bullets, magazines and traces on vehicles and props only show up in its beam (can be turned off in `config.uvLight`).
 - Evidence markers: officers pick a numbered marker prop from a menu and click to put down as many as they need, then pick them up one at a time or all at once.
 - UV lamps: officers stand a 360° lamp (`uv_floodlight`, 12 m round it) or a directional one (`uv_spotlight`, a 25 m cone) at a scene, and the evidence they light shows up and can be collected without holding a flashlight.
+- Chain of custody: evidence boxes labelled with a case number are sealed, and opening one breaks the seal with who and when. Evidence lockers at the station log everything put in and taken out.
+- Forensic reports: copy a case file from the lab as text, and forensic matches can be posted to their own webhook.
 - Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.
 - Server-validated: collecting, destroying and reporting evidence, placing laptops and microphones, and every laptop action are checked server-side.
@@ -76,6 +78,22 @@ Database tables are created on first start. The language follows `setr ox:locale
 | See a bullet's path | Point the UV light at the bullet |
 | Label an evidence box | Right-click it in your inventory → Label: a case number and a name (shown as "Case 1042 · Davis Ave shooting"), and a description. It keeps the label in stashes |
 | Book a suspect | Take their fingerprints and DNA with a `forensic_kit`, then target a booking terminal: pick their record and put the samples you carry on file |
+| Store evidence | Target an evidence locker (`config.evidenceLockers`) to open it, or to view who put in and took out what |
+| Copy a report | Lab → open a case file → Copy report |
 | Scan a fingerprint | Use `forensic_fingerprint_scanner`; the other player targets it |
 | Place a spy microphone | Use `spy_microphone` |
 | Clear evidence around you | `/clearEvidences <radius>` (`group.admin`) |
+
+## For other scripts
+
+Leave the player's fingerprints on something they touch, such as an ATM keypad, a till, a safe or a lockpicked door. Nothing is left when they wear gloves. The print is revealed under UV and collected like any other, and the label shows where it was found.
+
+```lua
+-- client, on the player touching it
+exports["thistle-evidence"]:leaveFingerprint(coords, "ATM keypad") -- coords is optional (in front of their hands)
+
+-- server
+exports["thistle-evidence"]:leaveFingerprint(playerId, coords, "Till")
+```
+
+Also available on the server: `syncEvidence`, `getFingerprint`, `getDNA` and `registerFirearm`.

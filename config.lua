@@ -148,6 +148,23 @@ config.bookingTerminals = {
     radius = 0.6 -- how big the target is round each spot (metres)
 }
 
+-- Evidence lockers: shared stashes at the station where evidence is kept, with a log of who put in and took out what,
+-- and when (target the locker and choose View log). Opening one needs its groups (config.permissions.access by default).
+config.evidenceLockers = {
+    -- {
+    --     id = "mrpd_evidence", -- unique; the stash's id in ox_inventory
+    --     label = "Mission Row Evidence",
+    --     coords = vec3(474.3, -990.3, 26.3),
+    --     radius = 0.8,
+    --     slots = 200,
+    --     weight = 1000000
+    -- }
+}
+
+-- Labelling an evidence box with a case number seals it. Opening a sealed box breaks the seal and records who opened it
+-- and when, shown on the box, so tampering is visible. Relabelling it reseals it.
+config.evidenceBoxSeals = true
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.
@@ -355,6 +372,10 @@ config.logging = {
         ["Evidence collected"] = true,
         ["Evidence analysed"] = true,
         ["Forensic match"] = true, -- an analysis identified a citizen or a registered gun
+        ["Evidence box sealed"] = true,
+        ["Evidence box seal broken"] = true,
+        ["Evidence locker deposit"] = true,
+        ["Evidence locker withdrawal"] = true,
         ["Fingerprint scanned"] = true,
         ["Observation started"] = true,
         ["Observation ended"] = true,
