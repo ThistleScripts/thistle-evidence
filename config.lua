@@ -165,6 +165,19 @@ config.evidenceLockers = {
 -- and when, shown on the box, so tampering is visible. Relabelling it reseals it.
 config.evidenceBoxSeals = true
 
+-- Evidence ages: traces left lying at a scene give worse samples the longer they're there before being collected.
+-- On a sample's first analysis, its quality (0-100) is the chance of a full result. Otherwise it's partial (prints and
+-- DNA list a few possible citizens, bullets and casings only give the weapon) or nothing usable. Samples taken straight
+-- from a person are always perfect.
+config.evidenceAging = {
+    enabled = true,
+    freshMinutes = 30, -- collected within this, a sample is perfect
+    worstMinutes = 720, -- collected this long after (12 hours) or later, it's at minimumQuality
+    minimumQuality = 20,
+    partialCandidates = 3, -- how many possible citizens a partial print or DNA profile lists
+    removeAfterMinutes = 2880 -- ground evidence older than this (2 days) disappears; 0 keeps it until a restart
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.

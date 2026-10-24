@@ -590,6 +590,23 @@
             "collected": "collected",
             "analysed": "analysed %s by %s",
             "generated": "Report generated %s"
+        },
+        "quality": {
+            "label": "Sample condition",
+            "good": "Good",
+            "fair": "Fair",
+            "poor": "Poor"
+        },
+        "partial": {
+            "title": "Partial match",
+            "hint": "Only part of the sample could be read. It fits these citizens on file. Take their prints or DNA to confirm, or find a better sample.",
+            "none": "Only part of the sample could be read, and it fits nobody on file.",
+            "ballistics": "The marks are too damaged to identify the gun. Only the weapon type could be read.",
+            "key": "Partial %s"
+        },
+        "failed": {
+            "title": "Too degraded",
+            "hint": "The sample was too old or damaged to read. Fresh evidence collected sooner gives better results."
         }
     },
     "markers": {
@@ -657,5 +674,9 @@
         "deposit": "In:",
         "withdraw": "Out:",
         "empty_log": "Nothing has gone in or out yet."
+    },
+    "lab_results": {
+        "partial_information": "partial (%s)",
+        "failed_information": "too degraded to read"
     }
 }

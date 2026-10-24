@@ -31,7 +31,7 @@ const evidence: LabInventory[] = [
             },
             {
                 imagePath: image("Print"), label: "Collected Fingerprint", slot: 2,
-                details: { evidence: [{ kind: "fingerprint", evidenceType: "fingerprint", analysed: false, crimeScene: "Vespucci Blvd", vehicleLocation: "Steering wheel (front driver's seat)", plate: "46EEK572", collectionTime: "21/10/2026, 18:02", additionalData: "" }] }
+                details: { evidence: [{ kind: "fingerprint", evidenceType: "fingerprint", analysed: false, crimeScene: "Vespucci Blvd", vehicleLocation: "Steering wheel (front driver's seat)", plate: "46EEK572", collectionTime: "21/10/2026, 18:02", additionalData: "", quality: 34 }] }
             },
             {
                 imagePath: image("Residue"), label: "Collected Gunshot Residue", slot: 3,
@@ -69,6 +69,15 @@ export async function mockCallback<T>(name: string, args: any): Promise<ServerRe
             const caseFile = caseFiles[args.kind]!;
             const item = evidence.flatMap(inventory => inventory.items).find(item => item.slot === args.slot && item.details.evidence[0]?.kind === args.kind);
             const analysed = { ...item!.details.evidence[0]!, analysed: true };
+            // a degraded sample: a partial print with a few possible citizens
+            if ((analysed.quality ?? 100) < 50) {
+                const partial = { ...analysed, result: "partial" as const, partialKey: "9F3•••••••••••58" };
+                return { success: true, response: { evidence: partial, caseFile: { kind: args.kind, result: "partial", candidates: [
+                    { identifier: "XYZ789", fullName: "Rosa Lindqvist", birthdate: "1988-07-02", gender: "female" },
+                    { identifier: "ABC123", fullName: "Jamie Doyle", birthdate: "1994-03-11", gender: "male" },
+                    { identifier: "DEF456", fullName: "Marcus Hale", birthdate: "1979-11-23", gender: "male" }
+                ] } } as T };
+            }
             const typeOnly = analysed.evidenceType === "gunshot_residue" || analysed.evidenceType === "magazine";
             if (!typeOnly) analysed.key = caseFile.key;
             return { success: true, response: { evidence: analysed, caseFile: typeOnly ? { kind: args.kind } : caseFile } as T };

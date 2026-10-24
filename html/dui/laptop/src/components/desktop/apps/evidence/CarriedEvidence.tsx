@@ -45,9 +45,16 @@ export default function CarriedEvidence({ selection }: CarriedEvidenceProps) {
             </div>
             : evidence.key
                 ? <EvidenceCase kind={evidence.kind} matchKey={evidence.key} />
-                // magazines and gunshot residue only tell the weapon type
+                // an old sample that gave nothing, or only part of a print or profile (the lab lists who it could be)
+                : evidence.result === "failed" || (evidence.result === "partial" && evidence.kind !== "ballistics")
+                    ? <div className={cn("w-full flex flex-col gap-2 p-6", panel, evidence.result === "failed" ? "border-bad/40" : "border-warn/40")}>
+                        <p className={cn("text-30 leading-none", evidence.result === "failed" ? "text-bad" : "text-warn")}>{t(`lab.${evidence.result}.title`)}</p>
+                        {evidence.partialKey && <p className="text-25 leading-none font-mono tracking-wider">{evidence.partialKey}</p>}
+                        <p className="text-22.5 leading-tight text-muted">{t(evidence.result === "failed" ? "lab.failed.hint" : "lab.partial.hint")}</p>
+                    </div>
+                // magazines and gunshot residue only tell the weapon type, as does a partial bullet or casing
                 : <div className={cn("w-full flex flex-col gap-2 p-6", panel)}>
-                    <p className="text-22.5 leading-tight text-muted">{t(`lab.result.type_only.${evidence.evidenceType}`)}</p>
+                    <p className="text-22.5 leading-tight text-muted">{t(evidence.result === "partial" ? "lab.partial.ballistics" : `lab.result.type_only.${evidence.evidenceType}`)}</p>
                     <Detail label={t("lab.result.weapon_type")}>{evidence.weaponType ?? t("laptop.desktop_screen.common.statuses.unknown")}</Detail>
                 </div>}
     </>;

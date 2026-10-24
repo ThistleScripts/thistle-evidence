@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, CalendarClock, Car, MapPin, Microscope, Play } from "lucide-react";
+import { Activity, AlertTriangle, CalendarClock, Car, MapPin, Microscope, Play } from "lucide-react";
 import { useTranslation } from "@/components/TranslationContext";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/utils/cn";
@@ -95,6 +95,7 @@ export default function AnalysisBench({ selection, onAnalysed }: AnalysisBenchPr
                     <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted">
                         <span className="flex items-center gap-1.5"><MapPin size={14} />{evidence.crimeScene || "-"}</span>
                         {evidence.vehicleLocation && <span className="flex items-center gap-1.5 text-ink"><Car size={14} className="text-muted" />{vehiclePlace(evidence)}</span>}
+                        {evidence.quality !== undefined && evidence.quality < 100 && <SampleCondition quality={evidence.quality} />}
                         <span className="flex items-center gap-1.5"><CalendarClock size={14} />{evidence.collectionTime || "-"}</span>
                     </div>
                 </div>
@@ -132,6 +133,20 @@ export default function AnalysisBench({ selection, onAnalysed }: AnalysisBenchPr
                 </div>
             )}
         </section>
+    );
+}
+
+// How well the sample survived before it was collected (config.evidenceAging)
+function SampleCondition({ quality }: { quality: number }) {
+    const { t } = useTranslation();
+    const level = quality >= 70 ? "good" : quality >= 40 ? "fair" : "poor";
+    const colour = level === "good" ? "text-ok" : level === "fair" ? "text-warn" : "text-bad";
+
+    return (
+        <span className="flex items-center gap-1.5">
+            <Activity size={14} className={colour} />
+            {t("lab.quality.label")}: <span className={colour}>{t(`lab.quality.${level}`)} ({quality}%)</span>
+        </span>
     );
 }
 

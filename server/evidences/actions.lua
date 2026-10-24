@@ -202,6 +202,7 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     end
 
     metadata = sanitizeMetadata(metadata)
+    metadata.collectedAt = os.time() -- with createdAt, how old the trace was when it was bagged (config.evidenceAging)
     metadata.information.vehicleLocation = vehicleLocation
     metadata.information.plate = plate
     metadata.description = require "server.evidences.evidence_information"(metadata.information)
