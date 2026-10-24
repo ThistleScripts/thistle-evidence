@@ -33,6 +33,14 @@
     stack = false,
     decay = true
 },
+['swab_kit'] = {
+    label = 'スワブキット',
+    description = '口腔スワブと硝煙反応検査用の滅菌綿棒とチューブ。10回使用可能。',
+    weight = 300,
+    close = false,
+    stack = false,
+    decay = true
+},
 ['hydrogen_peroxide'] = {
     label = '過酸化水素水',
     weight = 500,

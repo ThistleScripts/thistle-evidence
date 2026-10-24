@@ -33,6 +33,14 @@
     stack = false,
     decay = true
 },
+['swab_kit'] = {
+    label = 'Abstrich-Set',
+    description = 'Sterile Tupfer und Röhrchen für Mundabstriche und Schmauchspurentests. Zehnmal verwendbar.',
+    weight = 300,
+    close = false,
+    stack = false,
+    decay = true
+},
 ['hydrogen_peroxide'] = {
     label = 'Wasserstoffperoxid',
     weight = 500,

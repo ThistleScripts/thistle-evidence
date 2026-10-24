@@ -33,6 +33,14 @@
     stack = false,
     decay = true
 },
+['swab_kit'] = {
+    label = 'Sada výtěrů',
+    description = 'Sterilní tyčinky a zkumavky na stěr z úst a test povýstřelových zplodin. Lze použít desetkrát.',
+    weight = 300,
+    close = false,
+    stack = false,
+    decay = true
+},
 ['hydrogen_peroxide'] = {
     label = 'Peroxid vodíku',
     weight = 500,

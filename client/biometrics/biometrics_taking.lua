@@ -68,7 +68,8 @@ exports.ox_target:addGlobalPlayer({
     icon = "fa-solid fa-dna",
     distance = 3,
     groups = config.permissions.collect or false,
-    items = "forensic_kit",
+    items = { "swab_kit", "forensic_kit" }, -- a mouth swab: either kit
+    anyItem = true,
     menuName = "evidences",
     canInteract = function(entity)
         if not config.isPedDead(cache.ped) then
@@ -110,7 +111,8 @@ exports.ox_target:addGlobalPlayer({
     icon = "fa-solid fa-dna",
     distance = 3,
     groups = config.permissions.collect or false,
-    items = "forensic_kit",
+    items = { "swab_kit", "forensic_kit" }, -- a mouth swab: either kit
+    anyItem = true,
     menuName = "evidences",
     canInteract = function(entity)
         if not config.isPedDead(cache.ped) then

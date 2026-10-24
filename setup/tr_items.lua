@@ -33,6 +33,14 @@
     stack = false,
     decay = true
 },
+['swab_kit'] = {
+    label = 'Swab Kiti',
+    description = 'Ağız içi sürüntü ve barut artığı testleri için steril çubuklar ve tüpler. On kez kullanılabilir.',
+    weight = 300,
+    close = false,
+    stack = false,
+    decay = true
+},
 ['hydrogen_peroxide'] = {
 	label = 'Parmak İzi Temizleyici',
 	weight = 500,
