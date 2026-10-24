@@ -23,28 +23,29 @@ jobs:
 
       - name: Install Dependencies
         run: bun install --frozen-lockfile
-        working-directory: html/dui/laptop
+        working-directory: thistle-evidence/html/dui/laptop
 
       - name: Build DUI
         run: bun run build
-        working-directory: html/dui/laptop
-      
+        working-directory: thistle-evidence/html/dui/laptop
+
+      # [thistle-evidence] holds both resources, ready to drop into the server's resources folder
       - name: Bundle Files
         run: |
-          mkdir -p ./temp/thistle-evidence
-          mkdir -p ./temp/thistle-evidence/html
-          mkdir -p ./temp/thistle-evidence/html/dui
-          mkdir -p ./temp/thistle-evidence/html/dui/laptop
-          cp ./{config.lua,fxmanifest.lua,README.md} ./temp/thistle-evidence
-          cp -r ./{client,common,data,locales,server,setup,stream} ./temp/thistle-evidence
-          cp -r html/dui/scanner ./temp/thistle-evidence/html/dui
-          cp -r html/dui/laptop/dist ./temp/thistle-evidence/html/dui/laptop
+          out=./temp/[thistle-evidence]
+          res=$out/thistle-evidence
+          mkdir -p $res/html/dui/laptop
+          cp ./thistle-evidence/{config.lua,permissions.lua,fxmanifest.lua,README.md} $res
+          cp -r ./thistle-evidence/{client,common,data,locales,server,setup,stream} $res
+          cp -r ./thistle-evidence/html/dui/scanner $res/html/dui
+          cp -r ./thistle-evidence/html/dui/laptop/dist $res/html/dui/laptop
+          cp -r ./thistle-lib $out/thistle-lib
 
           mkdir -p ./temp/item_images
-          cp ./setup/images/* ./temp/item_images
+          cp ./thistle-evidence/setup/images/* ./temp/item_images
 
           cd ./temp
-          zip -r thistle-evidence.zip ./thistle-evidence
+          zip -r thistle-evidence.zip "./[thistle-evidence]"
           cd item_images && zip -r ../item_images.zip ./*
 
       - name: Create Release

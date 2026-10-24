@@ -12,8 +12,10 @@ local function setupFailed(message)
     GlobalState[setupErrorKey] = message
 end
 
-if not Thistle.VersionAtLeast("0.3.0") then
-    setupFailed("thistle-evidence requires thistle-lib 0.3.0 or newer. Please update thistle-lib.")
+-- VersionAtLeast itself only exists from thistle-lib 0.3.0, so an older one is caught here too instead of erroring
+if type(Thistle) ~= "table" or type(Thistle.VersionAtLeast) ~= "function" or not Thistle.VersionAtLeast("0.3.0") then
+    local found <const> = type(Thistle) == "table" and (Thistle.VERSION or GetResourceMetadata("thistle-lib", "version", 0)) or nil
+    setupFailed(("thistle-evidence requires thistle-lib 0.3.0 or newer (found %s). Please update thistle-lib."):format(found or "none"))
     return
 end
 
