@@ -275,6 +275,7 @@ return {
     },
     -- trace evidence: what was left behind, not who (see client/evidences/registry/footprint.lua and tyre_mark.lua)
     footprint = {
+        trace = true, -- only ever on the ground, never on a player or vehicle
         target = {
             collect = {
                 label = locale("evidences.footprint.collecting_label"),
@@ -301,6 +302,7 @@ return {
         }
     },
     tyre_mark = {
+        trace = true,
         target = {
             collect = {
                 label = locale("evidences.tyre_mark.collecting_label"),

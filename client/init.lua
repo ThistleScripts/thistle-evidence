@@ -66,14 +66,17 @@ exports.ox_target:addGlobalPlayer({
         end
 
         for _, options in pairs(evidenceTypes) do
-            -- `a and b or true` is always true, so spell out "no item needed, or the player has it"
-            local collectItem <const>, destroyItem <const> = options.target.collect.requiredItem, options.target.destroy.requiredItem
-            local hasRequiredItemToCollect <const> = not collectItem or exports.ox_inventory:Search("count", collectItem) > 0
-            local hasRequiredItemToDestroy <const> = not destroyItem or exports.ox_inventory:Search("count", destroyItem) > 0
+            -- footprints and tyre marks are never on players, and need no item to scuff out
+            if not options.trace then
+                -- `a and b or true` is always true, so spell out "no item needed, or the player has it"
+                local collectItem <const>, destroyItem <const> = options.target.collect.requiredItem, options.target.destroy.requiredItem
+                local hasRequiredItemToCollect <const> = not collectItem or exports.ox_inventory:Search("count", collectItem) > 0
+                local hasRequiredItemToDestroy <const> = not destroyItem or exports.ox_inventory:Search("count", destroyItem) > 0
 
-            requiredItemPresent = hasRequiredItemToCollect or hasRequiredItemToDestroy
-            if requiredItemPresent then
-                break
+                requiredItemPresent = hasRequiredItemToCollect or hasRequiredItemToDestroy
+                if requiredItemPresent then
+                    break
+                end
             end
         end
 
