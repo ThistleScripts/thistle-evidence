@@ -1,12 +1,11 @@
 -- Creating a citizen record for the player in front of the officer (booking and firearm terminals, citizens not
 -- synced): the officer picks them from the players nearby, and the record gets their character's real name,
--- birthdate and gender. The record is tied to the character, so their real fingerprint and DNA go on it straight away
--- and every print or swab of theirs matches it. They can still give a false name out loud; the record knows better.
+-- birthdate and gender, under their character's identifier so booking them again finds the same record. Their
+-- fingerprint and DNA aren't added: the officer takes them and puts them on file as usual.
 local config <const> = require "config"
 local framework <const> = require "server.framework"
 local database <const> = require "server.database"
 local logger <const> = require "server.logger"
-local biometricsProvider <const> = require "server.biometrics.biometrics_provider"
 
 if config.citizens.synced then
     return
@@ -69,15 +68,7 @@ Thistle.Callback.Register("evidences:getNearbyCharacters", function(source)
     return { success = true, response = nearby }
 end)
 
-local function link(type, value, identifier)
-    database.update(("DELETE FROM linked_%s WHERE identifier = ?"):format(type), identifier)
-    database.update(
-        ("INSERT INTO linked_%s (%s, identifier) VALUES (?, ?) ON DUPLICATE KEY UPDATE identifier = ?"):format(type, type),
-        value, identifier, identifier
-    )
-end
-
--- Creates (or finds) the record for a nearby player and puts their real fingerprint and DNA on it
+-- Creates (or finds) the record for a nearby player
 Thistle.Callback.Register("evidences:storeCitizenFromPlayer", function(source, arguments)
     local target <const> = tonumber(type(arguments) == "table" and arguments.serverId)
     if not framework.hasPermission(config.permissions.access, source) or not target or target == source
@@ -106,12 +97,6 @@ Thistle.Callback.Register("evidences:storeCitizenFromPlayer", function(source, a
         record = { identifier = character.identifier, fullName = character.fullName, birthdate = tostring(character.birthdate), gender = character.gender }
         logger.log(source, "Citizen created", { identifier = record.identifier, fullName = record.fullName, fromPlayer = target })
     end
-
-    -- their real prints and DNA, moved here from any record made for them under another name
-    local fingerprint <const> = biometricsProvider.getBiometricData(target, "fingerprint")
-    local dna <const> = biometricsProvider.getBiometricData(target, "dna")
-    if fingerprint then link("fingerprint", fingerprint, record.identifier) end
-    if dna then link("dna", dna, record.identifier) end
 
     return { success = true, response = record }
 end)
