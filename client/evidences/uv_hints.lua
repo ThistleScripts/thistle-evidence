@@ -126,12 +126,12 @@ end
 
 CreateThread(function()
     while true do
-        -- also near a UV floodlight, which shows the evidence around it without anyone holding a flashlight
-        if uv.wasOnRecently() or uv.hasAreas() then
+        -- also near a UV lamp, or another officer's flashlight, which show evidence without this player holding one
+        if uv.wasOnRecently() or uv.hasAreas() or uv.hasRemoteBeams() then
             local colour <const> = uv.getColour()
             local nextScan = 0
 
-            while uv.wasOnRecently() or uv.hasAreas() do
+            while uv.wasOnRecently() or uv.hasAreas() or uv.hasRemoteBeams() do
                 local isOn <const> = uv.isOn()
 
                 if GetGameTimer() >= nextScan then

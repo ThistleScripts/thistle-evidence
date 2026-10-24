@@ -288,7 +288,7 @@ CreateThread(function()
             end
         end
 
-        Wait(uv.isOn() and 100 or 250)
+        Wait((uv.isOn() or uv.hasRemoteBeams()) and 100 or 250)
     end
 end)
 
