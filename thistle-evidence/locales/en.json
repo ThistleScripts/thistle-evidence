@@ -858,6 +858,20 @@
                 "label": "Evidence lockers",
                 "description": "Open evidence lockers and their logs"
             }
+        },
+        "ground": {
+            "title": "World evidence",
+            "hint": "Clear evidence from the map",
+            "description": "Evidence lying on the ground across the whole map, by type. Clearing it can't be undone. Evidence on vehicles, props and players, and evidence already collected, isn't touched.",
+            "on_map": "%s on the map",
+            "clear": "Clear",
+            "confirm": "Clear %s",
+            "cancel": "Cancel",
+            "refresh": "Refresh",
+            "all_types": "evidence",
+            "cleared": "Cleared %s pieces of %s.",
+            "error": "The evidence couldn't be cleared.",
+            "clear_all": "Clear all"
         }
     }
 }

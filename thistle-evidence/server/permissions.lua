@@ -270,6 +270,30 @@ adminCallback("evidences:admin:save", function(source, arguments)
     return { success = true }
 end)
 
+-- Ground evidence on the map, by type, for clearing it from the panel (server/evidences/clearing.lua)
+adminCallback("evidences:admin:getGroundEvidence", function()
+    local types = {}
+    for name in pairs(require("server.evidences.api").evidenceTypes) do
+        types[#types + 1] = name
+    end
+    table.sort(types)
+
+    return { success = true, response = { types = types, counts = require("server.evidences.clearing").count() } }
+end)
+
+-- Clears every piece of one type of ground evidence, or of every type (no type), from the whole map
+adminCallback("evidences:admin:clearGroundEvidence", function(source, arguments)
+    local evidenceType <const> = arguments.evidenceType
+    if evidenceType ~= nil and not require("server.evidences.api").evidenceTypes[evidenceType] then
+        return { success = false }
+    end
+
+    local cleared <const> = require("server.evidences.clearing").clear(evidenceType)
+    logger.log(source, "Evidence cleared from the map", { evidenceType = evidenceType or "all", amount = cleared })
+
+    return { success = true, response = cleared }
+end)
+
 adminCallback("evidences:admin:remove", function(source, arguments)
     local identifier <const> = type(arguments.identifier) == "string" and arguments.identifier or nil
     if not identifier or identifier == "*" or not rows[identifier] then

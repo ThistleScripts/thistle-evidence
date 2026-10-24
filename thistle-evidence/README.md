@@ -23,7 +23,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Chain of custody: evidence boxes labelled with a case number are sealed, and opening one breaks the seal with who and when. Evidence lockers at the station log everything put in and taken out.
 - Case board: the laptop's Cases app ties a case number to its suspects, DNA profiles, fingerprints and gun IDs, officers' notes and where its evidence boxes are kept. Add evidence to a case straight from the Evidence app.
 - Forensic reports: copy a case file from the lab as text, and forensic matches can be posted to their own webhook.
-- Evidence admin panel (`/evidenceadmin`): choose which officers can use the laptop and each of its apps, the microscopes, collecting, swabs, fingerprints, the UV flashlight and lamps, markers and lockers. Admins are listed by licence in `permissions.lua`. The booking terminal stays open to every officer.
+- Evidence admin panel (`/evidenceadmin`): clear ground evidence from the whole map, by type or all at once, and choose which officers can use the laptop and each of its apps, the microscopes, collecting, swabs, fingerprints, the UV flashlight and lamps, markers and lockers. Admins are listed by licence in `permissions.lua`. The booking terminal stays open to every officer.
 - Swab kit (`swab_kit`): any officer can take DNA mouth swabs and test for gunshot residue without a full forensic kit, e.g. on someone in custody.
 - Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.

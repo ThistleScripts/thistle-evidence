@@ -302,21 +302,27 @@ end
 
 -- Removes the evidence from the given coords.
 ---@param coords vector3
-function evidence:removeFromCoords(coords)
+---@param batch? boolean Part of a clear-out (server/evidences/clearing.lua), which tells clients and the database once
+function evidence:removeFromCoords(coords, batch)
     if not EvidencesAtCoords[coords] then return end
 
     if self.coordsMetadata then
         self.coordsMetadata[coords] = nil
     end
 
-    TriggerClientEvent("evidences:remove:atCoords", -1, self.__name, coords)
+    if not batch then
+        TriggerClientEvent("evidences:remove:atCoords", -1, self.__name, coords)
+    end
 
     if self.eventHandlers[coords] then
         eventHandler.removeCallback("evidences:playerLoaded", self.eventHandlers[coords])
     end
 
     EvidencesAtCoords[coords] = nil
-    persistence.groundRemoved(coords)
+
+    if not batch then
+        persistence.groundRemoved(coords)
+    end
 end
 
 

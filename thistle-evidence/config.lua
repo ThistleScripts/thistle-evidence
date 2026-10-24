@@ -425,6 +425,7 @@ config.logging = {
         ["Evidence locker withdrawal"] = true,
         ["Scene cleaned"] = true,
         ["Evidence permissions changed"] = true, -- the evidence admin panel (/evidenceadmin)
+        ["Evidence cleared from the map"] = true, -- the evidence admin panel's clear buttons
         ["Case opened"] = true,
         ["Case closed"] = true,
         ["Case reopened"] = true,
