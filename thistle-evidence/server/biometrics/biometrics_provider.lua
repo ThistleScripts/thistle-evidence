@@ -38,47 +38,83 @@ local function createDNA()
     return dna
 end
 
----@param identifier number The frameworks identifier of the player
----@param fingerprint string The fingerprint of the player
----@param dna string The DNA of the player
----@return boolean Returns true in case the insertion has been successfull, otherwise false
+-- Saves new biometric data unless the player already has some. INSERT IGNORE, so a clash (another request saving this
+-- player's data first, or a fingerprint or DNA that's already taken) isn't an error.
+---@return boolean saved
 local function insertBiometricData(identifier, fingerprint, dna)
-    return database.insert("INSERT INTO biometric_data (identifier, fingerprint, dna) VALUES (?, ?, ?)", identifier, fingerprint, dna).success
+    local result <const> = database.update("INSERT IGNORE INTO biometric_data (identifier, fingerprint, dna) VALUES (?, ?, ?)", identifier, fingerprint, dna)
+    return result.success and (tonumber(result.response) or 0) > 0
 end
 
+local function selectBiometricData(identifier)
+    local result <const> = database.selectFirstRow("SELECT fingerprint, dna FROM biometric_data WHERE identifier = ?", identifier)
+    return result.success and result.response or nil
+end
 
----@param identifier string The frameworks identifier of the player
----@return { fingerprint: string, dna: string }
-local function getBiometricData(identifier)
-    if identifier then
-        if cache[identifier] then
-            return cache[identifier]
-        end
-
-        local result <const> = database.selectFirstRow("SELECT fingerprint, dna FROM biometric_data WHERE identifier = ?", tostring(identifier))
-
-        if result.success and result.response then
-            cache[identifier] = result.response
-            return result.response
-        end
-
-        for i = 1, 5 do
-            local fingerprint <const> = createFingerprint(identifier)
-            local dna <const> = createDNA()
-
-            if insertBiometricData(identifier, fingerprint, dna) then
-                local data <const> = {
-                    fingerprint = fingerprint,
-                    dna = dna
-                }
-
-                cache[identifier] = data
-                return data
-            end
-
-            Wait(0)
-        end
+local function loadOrCreate(identifier)
+    local existing <const> = selectBiometricData(identifier)
+    if existing then
+        return existing
     end
+
+    for _ = 1, 5 do
+        local fingerprint <const> = createFingerprint(identifier)
+        local dna <const> = createDNA()
+
+        if insertBiometricData(identifier, fingerprint, dna) then
+            return { fingerprint = fingerprint, dna = dna }
+        end
+
+        -- not saved: either someone else saved this player's data first (use theirs), or the fingerprint or DNA
+        -- belongs to another player already (try new ones)
+        local saved <const> = selectBiometricData(identifier)
+        if saved then
+            return saved
+        end
+
+        Wait(0)
+    end
+end
+
+local pending = {} -- identifier -> promise, while that player's data is being looked up or created
+
+-- A player's fingerprint and DNA, created the first time they're needed. Getting in a car leaves several prints at
+-- once, so requests for a new player arrive together: only the first looks up or creates the data, and the others
+-- wait for it, so the player never gets two different fingerprints.
+---@param identifier string The frameworks identifier of the player
+---@return { fingerprint: string, dna: string }?
+local function getBiometricData(identifier)
+    if not identifier then
+        return nil
+    end
+
+    identifier = tostring(identifier)
+
+    if cache[identifier] then
+        return cache[identifier]
+    end
+
+    if pending[identifier] then
+        return Citizen.Await(pending[identifier])
+    end
+
+    local request <const> = promise.new()
+    pending[identifier] = request
+
+    local success <const>, data <const> = pcall(loadOrCreate, identifier)
+    pending[identifier] = nil
+
+    if not success then
+        lib.print.error(("Couldn't get the biometric data of %s: %s"):format(identifier, data))
+    end
+
+    local result <const> = success and data or nil
+    if result then
+        cache[identifier] = result
+    end
+
+    request:resolve(result)
+    return result
 end
 
 ---@param playerId number The serverId of the player

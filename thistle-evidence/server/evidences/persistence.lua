@@ -280,20 +280,34 @@ CreateThread(function()
 
     -- ground evidence
     local api <const> = require "server.evidences.api"
-    local rows <const> = database.query("SELECT * FROM evidence_ground")
     local restored = 0
 
-    persistence.restoring = true
-    for _, row in ipairs(rows.success and rows.response or {}) do
-        local owner <const> = decode(row.owner)
-        local object <const> = api.evidenceTypes[row.evidenceType] and owner ~= nil and api.get(row.evidenceType, owner)
+    -- in pages: oxmysql warns about any query returning over a thousand rows
+    local pageSize <const> = 500
+    local offset = 0
 
-        if object then
-            local metadata = decode(row.metadata) or {}
-            metadata.createdAt = tonumber(row.createdAt)
-            object:atCoords(vector3(row.x, row.y, row.z), metadata)
-            restored += 1
+    persistence.restoring = true
+    while true do
+        local rows <const> = database.query("SELECT * FROM evidence_ground ORDER BY coordsKey LIMIT ? OFFSET ?", pageSize, offset)
+        local page <const> = rows.success and rows.response or {}
+
+        for _, row in ipairs(page) do
+            local owner <const> = decode(row.owner)
+            local object <const> = api.evidenceTypes[row.evidenceType] and owner ~= nil and api.get(row.evidenceType, owner)
+
+            if object then
+                local metadata = decode(row.metadata) or {}
+                metadata.createdAt = tonumber(row.createdAt)
+                object:atCoords(vector3(row.x, row.y, row.z), metadata)
+                restored += 1
+            end
         end
+
+        if #page < pageSize then
+            break
+        end
+
+        offset += pageSize
     end
     persistence.restoring = false
 
