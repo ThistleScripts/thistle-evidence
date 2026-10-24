@@ -53,8 +53,8 @@ files {
 
 -- Evidence marker props marker1 to marker3 (the models themselves are in stream/)
 data_file 'DLC_ITYP_REQUEST' 'stream/markers.ytyp'
--- UV lamps: bzzz_dream_of_lights_purple (360°) and bzzz_world_of_lamps_purple (directional), with their textures
--- in bzzz_dream_of_lights.ytd. The ytyp also lists the other colours, whose models aren't included.
+-- UV lamps: bzzz_dream_of_lights_purple (the round lamp on a tall tripod) and bzzz_world_of_lamps_purple (the upright
+-- tube light), with their textures in bzzz_dream_of_lights.ytd. The ytyp also lists the other colours, whose models aren't included.
 data_file 'DLC_ITYP_REQUEST' 'stream/bzzz_dream_of_lights.ytyp'
 
 -- The UV flashlight addon weapon (WEAPON_UVFLASHLIGHT), using the game's flashlight model

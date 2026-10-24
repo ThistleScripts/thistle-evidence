@@ -277,14 +277,14 @@ config.persistence = {
 -- flashlight. Only matters while config.uvLight.required is on. Each style is its own item, named by its key.
 config.uvFloodlight = {
     styles = {
-        -- "Evidence Spotlight": the lamp head on a tripod, lights all round it
+        -- "Evidence Spotlight" (uv_floodlight): the upright tube light, lights all round it
         uv_floodlight = {
             model = `bzzz_world_of_lamps_purple`,
             lamp = vec3(0.0, -0.3, 1.45), -- where the light comes from, from the lamp's base (metres)
             radius = 25.0 -- how far round it evidence shows up (metres)
         },
 
-        -- "360 Evidence Light": the upright tube light, lights all round it
+        -- "360 Evidence Light" (uv_spotlight): the round lamp on a tall tripod, lights all round it
         uv_spotlight = {
             model = `bzzz_dream_of_lights_purple`,
             lamp = vec3(0.0, 0.0, 2.1),
