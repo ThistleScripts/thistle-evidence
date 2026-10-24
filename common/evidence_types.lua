@@ -207,6 +207,7 @@ return {
     },
     bullet = {
         target = {
+            distance = 4.0, -- bullets lodge high up in walls, so they can be reached from further away
             collect = {
                 label = locale("evidences.bullet.collecting_label"),
                 icon = "fa-solid fa-gun",

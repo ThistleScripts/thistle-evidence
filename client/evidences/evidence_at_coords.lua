@@ -62,19 +62,33 @@ local function refreshPileZone(pile)
         pile.zone = nil
     end
 
-    if #getVisibleMembers(pile) == 0 then
+    local visible <const> = getVisibleMembers(pile)
+    if #visible == 0 then
         return
     end
 
+    -- One target over every visible piece, so each one can be targeted where it lies (a burst into a wall spreads
+    -- its bullets), not only the first
+    local centre = vector3(0.0, 0.0, 0.0)
+    for _, evidence in ipairs(visible) do
+        centre += evidence.coords
+    end
+    centre = centre / #visible
+
+    local radius = 0.5
+    for _, evidence in ipairs(visible) do
+        radius = math.max(radius, #(evidence.coords - centre) + 0.3)
+    end
+
     pile.zone = exports.ox_target:addSphereZone({
-        coords = pile.center,
-        radius = 0.5,
+        coords = centre,
+        radius = radius,
         drawSprite = true,
         options = {
             {
                 label = getPileLabel(pile, "collect"),
                 icon = pile.options.target.collect.icon or "fa-solid fa-magnifying-glass",
-                distance = 2,
+                distance = pile.options.target.distance or 2,
                 groups = config.permissions.collect or false,
                 items = pile.options.target.collect.requiredItem or nil,
                 canInteract = function()
@@ -98,7 +112,7 @@ local function refreshPileZone(pile)
             {
                 label = getPileLabel(pile, "destroy"),
                 icon = pile.options.target.destroy.icon or "fa-solid fa-hand-back-fist",
-                distance = 2,
+                distance = pile.options.target.distance or 2,
                 items = pile.options.target.destroy.requiredItem or nil,
                 canInteract = function()
                     return not config.isPedDead(cache.ped)
