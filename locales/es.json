@@ -465,6 +465,42 @@
                     "observation_started": "La observación comenzó.",
                     "observation_ended": "La observación terminó."
                 }
+            },
+            "cases_app": {
+                "name": "Cases",
+                "search": "Search case number or title…",
+                "empty": "No cases yet. Open one to tie suspects, evidence and notes together.",
+                "select": "Select a case.",
+                "new_case": "New case",
+                "case_number": "Case number",
+                "case_title": "Title",
+                "title_placeholder": "e.g. Armed robbery, Fleeca Great Ocean Hwy",
+                "create": "Open case",
+                "errors": {
+                    "create": "The case couldn't be opened.",
+                    "exists": "A case with this number already exists."
+                },
+                "case": "Case",
+                "closed": "Closed",
+                "opened_by": "Opened by %s on %s",
+                "reopen": "Reopen",
+                "close": "Close case",
+                "suspects": "Suspects",
+                "no_suspects": "No suspects linked yet.",
+                "evidence": "Evidence IDs",
+                "no_evidence": "No DNA profiles, fingerprints or gun IDs linked yet.",
+                "storage": "Storage",
+                "no_storage": "Nothing labelled %s has been put in an evidence locker.",
+                "in_locker": "In %s",
+                "taken_out": "Taken out of %s",
+                "paste_id": "Paste an ID…",
+                "add": "Add",
+                "notes": "Notes",
+                "note_placeholder": "Add a note to this case…",
+                "add_note": "Add note",
+                "add_to_case": "Add to case",
+                "added": "Added to the case.",
+                "no_open_cases": "There are no open cases."
             }
         }
     },

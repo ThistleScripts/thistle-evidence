@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Crosshair, Dna, Fingerprint, Link2, ScrollText, Search, ShieldAlert, ShieldCheck, Unlink, UserCheck, UserRound, UserSearch } from "lucide-react";
+import { Crosshair, Dna, Fingerprint, FolderPlus, Link2, ScrollText, Search, ShieldAlert, ShieldCheck, Unlink, UserCheck, UserRound, UserSearch } from "lucide-react";
 import { useTranslation } from "@/components/TranslationContext";
 import { useAppContext } from "@/hooks/useAppContext";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -9,6 +9,7 @@ import { formatDateTime, useTypeLabel, vehiclePlace } from "@/lab/ui";
 import type Citizen from "@/types/citizen.type";
 import type { BiometricDataLinkedEvent } from "@/types/events.type";
 import { cn } from "@/utils/cn";
+import { AddToCasePopUp } from "../cases/CasesApp";
 
 export const panel = "bg-raised/70 shadow-glass border-2 border-line rounded-16";
 
@@ -41,7 +42,7 @@ export function Detail({ label, children }: { label: string; children: React.Rea
     </div>;
 }
 
-function PillButton({ onClick, icon: Icon, children, className }: { onClick: () => void; icon: typeof Dna; children: React.ReactNode; className?: string }) {
+export function PillButton({ onClick, icon: Icon, children, className }: { onClick: () => void; icon: typeof Dna; children: React.ReactNode; className?: string }) {
     return <button type="button" onClick={onClick}
         className={cn("flex items-center gap-2 px-3 py-1.5 rounded-10 border-2 border-line text-20 leading-none hoverable transition-colors hover:border-accent hover:text-accent", className)}>
         <Icon size={18} />
@@ -57,6 +58,7 @@ interface EvidenceCaseProps {
 // Everything known about a DNA profile, fingerprint or gun ID: who it belongs to and every analysed piece of evidence with it
 export default function EvidenceCase({ kind, matchKey }: EvidenceCaseProps) {
     const { t } = useTranslation();
+    const appContext = useAppContext();
     const { data: caseFile, trigger: fetchCaseFile, loading } = useLuaCallback<{ kind: Kind; key: string }, CaseFile>({ name: "evidences:lab:getCaseFile" });
 
     const reload = () => fetchCaseFile({ kind, key: matchKey });
@@ -65,10 +67,13 @@ export default function EvidenceCase({ kind, matchKey }: EvidenceCaseProps) {
     return <>
         <div className={cn("w-full flex items-center gap-4 p-6", panel)}>
             <KindBadge kind={kind} large />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
                 <p className="text-20 leading-none uppercase text-muted">{t(`lab.result.key.${kind}`)}</p>
                 <p className="text-35 leading-tight font-mono tracking-wider truncate">{matchKey}</p>
             </div>
+            <PillButton icon={FolderPlus} onClick={() => appContext.openPopUp(t("laptop.desktop_screen.cases_app.add_to_case"), <AddToCasePopUp kind={kind} matchKey={matchKey} />)}>
+                {t("laptop.desktop_screen.cases_app.add_to_case")}
+            </PillButton>
         </div>
 
         {!caseFile
@@ -167,7 +172,7 @@ function CitizenCard({ caseFile, onChanged }: { caseFile: CaseFile; onChanged: (
     </div>;
 }
 
-function CitizenSearch({ onPick }: { onPick: (citizen: Citizen) => void }) {
+export function CitizenSearch({ onPick }: { onPick: (citizen: Citizen) => void }) {
     const { t } = useTranslation();
     const [searchText, setSearchText] = useState("");
     const debouncedSearchText = useDebounce<string>(searchText, 500);

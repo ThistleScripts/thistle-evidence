@@ -19,6 +19,7 @@ Item-based forensics for FiveM. Players leave blood, fingerprints, saliva, bulle
 - Footprints on soft ground (mud, sand, snow, dirt) and tyre marks from hard braking or wheelspin. A footprint cast shows the shoe (men's or women's, size, tread) and direction; a tyre mark photo shows the vehicle model (`config.footprints`, `config.tyreMarks`).
 - Scene cleaning kit: anyone can scrub a scene with bleach, wiping the ground evidence around them, though some may be missed (`config.sceneCleaning`).
 - Chain of custody: evidence boxes labelled with a case number are sealed, and opening one breaks the seal with who and when. Evidence lockers at the station log everything put in and taken out.
+- Case board: the laptop's Cases app ties a case number to its suspects, DNA profiles, fingerprints and gun IDs, officers' notes and where its evidence boxes are kept. Add evidence to a case straight from the Evidence app.
 - Forensic reports: copy a case file from the lab as text, and forensic matches can be posted to their own webhook.
 - Fingerprint scanner, evidence boxes, steel files to file off serial numbers, and items to destroy evidence: hydrogen peroxide for biological traces and a cleaning kit for casings, bullets and magazines (`config.destroyItems`).
 - Qbox, QBCore and ESX through thistle-lib.
