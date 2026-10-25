@@ -178,7 +178,7 @@
         "input_help": "Použijte %s pro zrušení této akce",
         "scan_match": {
             "title": "Otisk prstu naskenován",
-            "description": "Shoda v databázi: %s (%s • %s)"
+            "description": "Shoda v databázi: %s (%s • %s)%s"
         },
         "scan_no_match": {
             "title": "Otisk prstu naskenován",
@@ -800,6 +800,36 @@
             "not_carried": "You're no longer carrying that firearm.",
             "registered_to_someone_else": "That firearm is registered to someone else. Use the laptop's Firearms registry to change it.",
             "failed": "The firearm couldn't be registered."
+        }
+    },
+    "records": {
+        "flags": {
+            "wanted": "WANTED",
+            "armed": "ARMED & DANGEROUS",
+            "bail": "BAIL CONDITIONS",
+            "warning": "WARNING"
+        },
+        "notifications": {
+            "already_on_file": {
+                "title": "Already on file",
+                "description": "This %s is already on file as %s. Check it's the same person: it hasn't been moved."
+            },
+            "not_linked": "Not saved: it's already on another citizen's record."
+        },
+        "flags_title": "Warnings",
+        "no_flags": "No warnings on this record.",
+        "flag_note": "Note (needed for a warning)",
+        "aliases_title": "Also known as",
+        "no_aliases": "No other names on record.",
+        "alias_placeholder": "Another name they've given",
+        "added_by": "Added by %s",
+        "conflict": {
+            "title": "This %s is already on file as %s.",
+            "hint": "If it's the same person, %s is probably a false name: add it to their record as an alias, or open their record.",
+            "cancel": "Cancel",
+            "move": "Move it here anyway",
+            "open": "Open %s",
+            "alias": "Add %s as an alias of %s"
         }
     }
 }

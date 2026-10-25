@@ -163,6 +163,16 @@ function CitizenResult({ caseFile, onChanged }: { caseFile: CaseFile; onChanged:
                 <div className="flex-1">
                     <Label className="text-ok">{t("lab.result.citizen_match")}</Label>
                     <p className="font-display text-lg font-bold">{citizen.fullName}</p>
+                    {/* warnings on their record (wanted, armed...) */}
+                    {citizen.flags && citizen.flags.length > 0 && (
+                        <div className="mt-1 flex flex-wrap gap-1.5">
+                            {citizen.flags.map(entry => (
+                                <span key={entry.id} className="rounded border border-bad/50 bg-bad/10 px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-bad">
+                                    ⚠ {t(`records.flags.${entry.flag}`)}{entry.note ? `: ${entry.note}` : ""}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div className="text-right text-sm text-muted">
                     <p>{String(citizen.birthdate)}</p>

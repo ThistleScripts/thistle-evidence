@@ -3,6 +3,15 @@ export default interface Citizen {
     fullName: string;
     birthdate: string | number;
     gender: string;
+    flags?: CitizenFlag[]; // warnings on the record, when the server sends them (server/citizens/records.lua)
+}
+
+export interface CitizenFlag {
+    id: number;
+    flag: "wanted" | "armed" | "bail" | "warning";
+    note: string;
+    addedBy: string;
+    addedAt: number;
 }
 
 export interface Gender {

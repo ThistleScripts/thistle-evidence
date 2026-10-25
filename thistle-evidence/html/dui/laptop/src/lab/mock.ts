@@ -132,6 +132,13 @@ export async function mockCallback<T>(name: string, args: any): Promise<ServerRe
             return { success: true, response: [{ serverId: 7, fullName: "Luke Smith" }, { serverId: 12, fullName: "Rosa Lindqvist" }] as T };
         case "evidences:storeCitizenFromPlayer":
             return { success: true, response: { identifier: "BLRP-000207", fullName: "Luke Smith", birthdate: "1991-05-14", gender: "male" } as T };
+        case "evidences:records:get":
+            return { success: true, response: {
+                flags: [{ id: 1, flag: "wanted", note: "", addedBy: "Det. Shaw", addedAt: Date.now() - 36e5 }, { id: 2, flag: "warning", note: "Known to carry a knife", addedBy: "Ofc. Grant", addedAt: Date.now() }],
+                aliases: [{ id: 1, alias: "Mike Jones", addedBy: "Ofc. Grant" }]
+            } as T };
+        case "evidences:linkBiometricDataToIdentifier":
+            return { success: false, response: "records.notifications.not_linked", conflict: { identifier: "XYZ789", fullName: "Rosa Lindqvist", birthdate: "1988-07-02", gender: "female" } } as unknown as ServerResult<T>;
         default:
             return { success: true };
     }

@@ -4,6 +4,7 @@ local database <const> = require "server.database"
 local logger <const> = require "server.logger"
 
 require "server.citizens.notes"
+local records <const> = require "server.citizens.records"
 
 local citizens = {}
 
@@ -100,18 +101,37 @@ Thistle.Callback.Register("evidences:getCitizens", function(source, arguments)
     arguments.offset = arguments.offset or 0
 
     if config.citizens.synced then
-        return framework.getCitizens(arguments.searchText, arguments.offset)
+        local result <const> = framework.getCitizens(arguments.searchText, arguments.offset)
+
+        -- citizens known by an alias like the search, on the first page
+        if result.success and arguments.offset == 0 and arguments.searchText ~= "" then
+            local listed = {}
+            for _, citizen in ipairs(result.response or {}) do
+                listed[citizen.identifier] = true
+            end
+
+            for _, identifier in ipairs(records.searchAliases(arguments.searchText)) do
+                local citizen <const> = not listed[identifier] and framework.getCitizen(identifier)
+                if citizen and citizen.success and citizen.response then
+                    table.insert(result.response, citizen.response)
+                end
+            end
+        end
+
+        return result
     end
 
     local pattern <const> = "%" .. arguments.searchText:sub(1, 25):gsub("\\", "\\\\"):gsub("%%", "\\%%"):gsub("_", "\\_") .. "%"
 
+    -- by name, or by an alias they've given (server/citizens/records.lua)
     return database.query(
         [[
             SELECT * FROM citizens
-            HAVING fullName LIKE ?
+            WHERE fullName LIKE ?
+                OR identifier IN (SELECT identifier FROM evidence_citizen_aliases WHERE alias LIKE ?)
             LIMIT 10 OFFSET ?
         ]],
-        pattern, arguments.offset
+        pattern, pattern, arguments.offset
     )
 end)
 

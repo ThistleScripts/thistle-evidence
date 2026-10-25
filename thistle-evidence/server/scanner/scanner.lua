@@ -2,6 +2,7 @@ local logger <const> = require "server.logger"
 local biometricsProvider <const> = require "server.biometrics.biometrics_provider"
 local linkedBiometrics <const> = require "server.biometrics.linked_biometrics"
 local officerPermissions <const> = require "server.permissions"
+local records <const> = require "server.citizens.records"
 
 local function isPlayerNear(playerId, otherPlayerId, maxDistance)
     local ped <const>, otherPed <const> = GetPlayerPed(playerId), GetPlayerPed(otherPlayerId)
@@ -36,6 +37,9 @@ end
 -- Tells the officer the result: the matching citizen, or the print itself (on a card) when nobody matches
 local function sendResult(officer, citizen, fingerprint)
     local matched <const> = citizen and citizen.success and citizen.response
+    if matched then
+        matched.flagsText = records.describeFlags(matched.identifier) -- e.g. " ⚠ WANTED", shown with the match
+    end
     local gaveCard <const> = not matched and giveFingerprintCard(officer, fingerprint) or false
     TriggerClientEvent("evidences:fingerprintScanned", officer, citizen, not matched and fingerprint or nil, gaveCard)
 end
