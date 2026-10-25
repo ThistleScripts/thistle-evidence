@@ -292,7 +292,8 @@ RegisterNetEvent("evidences:fingerprintScanned", function(result, fingerprint, g
         arguments = {
             citizen.fullName,
             citizen.birthdate,
-            locale("laptop.desktop_screen.citizens_app.gender." .. citizen.gender)
+            locale("laptop.desktop_screen.citizens_app.gender." .. citizen.gender),
+            citizen.flagsText or ""
         }
     }, "success", 7500)
 end)

@@ -6,6 +6,7 @@ local database <const> = require "server.database"
 local inventory <const> = require "server.evidences.inventory"
 local citizens <const> = require "server.citizens.citizens"
 local linkedBiometrics <const> = require "server.biometrics.linked_biometrics"
+local records <const> = require "server.citizens.records"
 local createInformation <const> = require "server.evidences.evidence_information"
 local logger <const> = require "server.logger"
 local officerPermissions <const> = require "server.permissions"
@@ -142,6 +143,7 @@ local function describe(item, kind)
         key = result == "full" and not isTypeOnly(item, kind) and data.owner or nil,
         partialKey = result == "partial" and kind ~= "ballistics" and maskKey(data.owner) or nil,
         createdAt = item.metadata.createdAt or data.createdAt, -- when the trace was left (a shot, for gunshot residue)
+        negative = data.negative or nil, -- a gunshot residue swab of clean hands
         weaponType = data.weaponType,
         weaponImage = data.weaponImage,
         crimeScene = information.crimeScene or "",
@@ -170,6 +172,11 @@ local function getCaseFile(kind, key)
     else
         local linkedCitizen <const> = linkedBiometrics.getCitizenLinkedToBiometricData(kind, key)
         caseFile.citizen = linkedCitizen and linkedCitizen.success and linkedCitizen.response or nil
+    end
+
+    -- warnings on the matched citizen's record (wanted, armed...)
+    if caseFile.citizen then
+        caseFile.citizen.flags = records.getFlags(caseFile.citizen.identifier)
     end
 
     local matches <const> = database.query(

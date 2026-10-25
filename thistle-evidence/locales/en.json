@@ -178,7 +178,7 @@
         "input_help": "Use %s to cancel this action",
         "scan_match": {
             "title": "Fingerprint scanned",
-            "description": "Database match: %s (%s • %s)"
+            "description": "Database match: %s (%s • %s)%s"
         },
         "scan_no_match": {
             "title": "Fingerprint scanned",
@@ -631,7 +631,9 @@
             "type_only": {
                 "magazine": "Magazines can be matched to a weapon type, but not to an individual gun.",
                 "gunshot_residue": "Gunshot residue shows the type of weapon fired and when, but not the individual gun."
-            }
+            },
+            "no_residue": "No gunshot residue found",
+            "no_residue_hint": "The hands swabbed were clean of gunshot residue when the sample was taken. Residue wears off within about 15 minutes, or can be washed off."
         },
         "links": {
             "title": "Linked evidence",
@@ -752,7 +754,9 @@
         "notes": "Notes",
         "note_title": "Title, e.g. Booked for armed robbery",
         "note_text": "Details",
-        "add_note": "Add note"
+        "add_note": "Add note",
+        "nearby": "People near you: pick the suspect to create their record from who they really are",
+        "or_by_hand": "Or enter the details by hand:"
     },
     "locker": {
         "open": "Open %s",
@@ -907,6 +911,43 @@
             "not_carried": "You're no longer carrying that firearm.",
             "registered_to_someone_else": "That firearm is registered to someone else. Use the laptop's Firearms registry to change it.",
             "failed": "The firearm couldn't be registered."
+        }
+    },
+    "records": {
+        "flags": {
+            "wanted": "WANTED",
+            "armed": "ARMED & DANGEROUS",
+            "bail": "BAIL CONDITIONS",
+            "warning": "WARNING"
+        },
+        "notifications": {
+            "already_on_file": {
+                "title": "Already on file",
+                "description": "This %s is already on file as %s. Check it's the same person: it hasn't been moved."
+            },
+            "not_linked": "Not saved: it's already on another citizen's record."
+        },
+        "flags_title": "Warnings",
+        "no_flags": "No warnings on this record.",
+        "flag_note": "Note (needed for a warning)",
+        "aliases_title": "Also known as",
+        "no_aliases": "No other names on record.",
+        "alias_placeholder": "Another name they've given",
+        "added_by": "Added by %s",
+        "conflict": {
+            "title": "This %s is already on file as %s.",
+            "hint": "If it's the same person, %s is probably a false name: add it to their record as an alias, or open their record.",
+            "cancel": "Cancel",
+            "move": "Move it here anyway",
+            "open": "Open %s",
+            "alias": "Add %s as an alias of %s"
+        }
+    },
+    "bleach": {
+        "examine": "Examine residue",
+        "examined": {
+            "title": "Bleach residue",
+            "description": "This spot was cleaned with bleach about %s minutes ago."
         }
     }
 }

@@ -40,6 +40,29 @@ Thistle.Callback.Register("evidences:linkBiometricDataToIdentifier", function(so
     local identifier <const> = arguments.identifier
 
     if lib.table.contains(allowedTypes, type) then
+        -- already on another record: say whose, rather than quietly moving it (a false name, or the wrong person
+        -- booked). arguments.move moves it anyway, once the officer has seen whose it was.
+        if biometricData and not arguments.move then
+            local owner <const> = database.selectFirstColumn(string.format("SELECT identifier FROM linked_%s WHERE %s = ?", type, type), biometricData)
+            local ownerIdentifier <const> = owner.success and owner.response
+
+            if ownerIdentifier and ownerIdentifier ~= identifier then
+                local citizen <const> = citizens.getCitizen(ownerIdentifier)
+                local record <const> = citizen and citizen.success and citizen.response or { identifier = ownerIdentifier, fullName = "?" }
+
+                TriggerClientEvent("evidences:notify", source, {
+                    key = "records.notifications.already_on_file",
+                    arguments = { locale(("laptop.desktop_screen.common.%s"):format(type)), record.fullName or "?" }
+                }, "error", 10000)
+
+                return {
+                    success = false,
+                    response = "records.notifications.not_linked",
+                    conflict = { identifier = record.identifier, fullName = record.fullName, birthdate = record.birthdate, gender = record.gender }
+                }
+            end
+        end
+
         local result <const> = database.update(string.format("DELETE FROM linked_%s WHERE identifier = ?", type), identifier)
 
         if result.success then

@@ -163,6 +163,16 @@ function CitizenResult({ caseFile, onChanged }: { caseFile: CaseFile; onChanged:
                 <div className="flex-1">
                     <Label className="text-ok">{t("lab.result.citizen_match")}</Label>
                     <p className="font-display text-lg font-bold">{citizen.fullName}</p>
+                    {/* warnings on their record (wanted, armed...) */}
+                    {citizen.flags && citizen.flags.length > 0 && (
+                        <div className="mt-1 flex flex-wrap gap-1.5">
+                            {citizen.flags.map(entry => (
+                                <span key={entry.id} className="rounded border border-bad/50 bg-bad/10 px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-bad">
+                                    ⚠ {t(`records.flags.${entry.flag}`)}{entry.note ? `: ${entry.note}` : ""}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div className="text-right text-sm text-muted">
                     <p>{String(citizen.birthdate)}</p>
@@ -297,6 +307,17 @@ function PartialResult({ caseFile, evidence }: { caseFile: CaseFile; evidence: L
 function WeaponTypeResult({ evidence, note }: { evidence: LabEvidence; note?: string }) {
     const { t } = useTranslation();
     const locales = t("laptop.desktop_screen.common.date_locales");
+
+    // a swab of clean hands
+    if (evidence.negative) {
+        return (
+            <Card className="animate-th-rise space-y-1 px-6 py-5">
+                <Label>{t("lab.result.weapon_type")}</Label>
+                <p className="font-display text-xl font-bold">{t("lab.result.no_residue")}</p>
+                <p className="text-sm text-muted">{t("lab.result.no_residue_hint")}</p>
+            </Card>
+        );
+    }
 
     return (
         <Card className="animate-th-rise flex items-center gap-6 px-6 py-5">

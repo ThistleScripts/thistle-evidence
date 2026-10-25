@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { ClipboardPen, Dna, Fingerprint, Link2, NotebookPen, Plus, Search, Unlink, UserPlus, UserRound, X } from "lucide-react";
+import { AlertTriangle, ClipboardPen, Dna, Fingerprint, Link2, NotebookPen, Plus, Search, Tag, Unlink, UserPlus, UserRound, X } from "lucide-react";
 import { useTranslation } from "@/components/TranslationContext";
 import { useDebounce } from "@/hooks/useDebounce";
 import type Citizen from "@/types/citizen.type";
+import type { CitizenFlag } from "@/types/citizen.type";
 import type Note from "@/types/note.type";
 import { cn } from "@/utils/cn";
 import { post } from "./bridge";
@@ -92,7 +93,7 @@ export default function BookingApp() {
                 <main className="relative z-10 flex min-h-0 flex-1">
                     <CitizenFinder synced={synced} selected={citizen} onSelect={setCitizen} />
                     {citizen
-                        ? <CitizenRecord key={citizen.identifier} citizen={citizen} />
+                        ? <CitizenRecord key={citizen.identifier} citizen={citizen} onOpen={setCitizen} />
                         : <div className="flex flex-1 flex-col items-center justify-center gap-3 px-10 text-center text-muted">
                             <UserRound size={40} strokeWidth={1.25} className="opacity-50" />
                             <p className="text-sm">{t("booking.select")}</p>
@@ -138,7 +139,7 @@ export function CitizenFinder({ synced, selected, onSelect }: { synced: boolean;
                     <input className="th-input py-2 pl-9 pr-3 text-sm" placeholder={t("booking.search")} maxLength={25}
                         value={searchText} onChange={event => setSearchText(event.target.value)} />
                 </div>
-                {creating && <NewCitizen onCreated={citizen => { setCreating(false); setCitizens(list => [citizen, ...list]); onSelect(citizen); }} />}
+                {creating && <NewCitizen onCreated={citizen => { setCreating(false); setCitizens(list => [citizen, ...list.filter(other => other.identifier !== citizen.identifier)]); onSelect(citizen); }} />}
             </div>
 
             <ul className="th-scroll min-h-0 flex-1 space-y-1 overflow-y-auto px-3 pb-5">
@@ -173,6 +174,23 @@ function NewCitizen({ onCreated }: { onCreated: (citizen: Citizen) => void }) {
     const [gender, setGender] = useState("male");
     const [saving, setSaving] = useState(false);
 
+    const [nearby, setNearby] = useState<{ serverId: number; fullName: string }[]>([]);
+
+    // the players standing near the officer: picking one makes the record from their character's real details
+    useEffect(() => {
+        callServer<{ serverId: number; fullName: string }[]>("evidences:getNearbyCharacters").then(result => {
+            setNearby(result.success && Array.isArray(result.response) ? result.response : []);
+        });
+    }, []);
+
+    const createFromPlayer = async (serverId: number) => {
+        setSaving(true);
+        const result = await callServer<Citizen>("evidences:storeCitizenFromPlayer", { serverId });
+        setSaving(false);
+
+        if (result.success && result.response) onCreated(result.response);
+    };
+
     const create = async () => {
         if (!fullName.trim() || !birthdate.trim()) return;
 
@@ -185,6 +203,21 @@ function NewCitizen({ onCreated }: { onCreated: (citizen: Citizen) => void }) {
 
     return (
         <Card className="space-y-2 p-3">
+            {nearby.length > 0 && (
+                <div className="space-y-1.5 pb-1">
+                    <p className="text-xs text-muted">{t("booking.nearby")}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                        {nearby.map(player => (
+                            <button key={player.serverId} type="button" disabled={saving} onClick={() => createFromPlayer(player.serverId)}
+                                className="flex cursor-pointer items-center gap-1.5 rounded-md border border-line px-2 py-1 text-xs transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-50">
+                                <UserRound size={12} />
+                                {player.fullName}
+                            </button>
+                        ))}
+                    </div>
+                    <p className="pt-1 text-[11px] text-muted">{t("booking.or_by_hand")}</p>
+                </div>
+            )}
             <input className="th-input px-3 py-2 text-sm" placeholder={t("booking.full_name")} maxLength={25} value={fullName} onChange={event => setFullName(event.target.value)} />
             <input className="th-input px-3 py-2 text-sm" placeholder={t("booking.birthdate")} maxLength={25} value={birthdate} onChange={event => setBirthdate(event.target.value)} />
             <div className="flex gap-1 rounded-lg border border-line bg-surface p-1">
@@ -203,7 +236,7 @@ function NewCitizen({ onCreated }: { onCreated: (citizen: Citizen) => void }) {
     );
 }
 
-function CitizenRecord({ citizen }: { citizen: Citizen }) {
+function CitizenRecord({ citizen, onOpen }: { citizen: Citizen; onOpen: (citizen: Citizen) => void }) {
     const { t } = useTranslation();
 
     return (
@@ -218,15 +251,18 @@ function CitizenRecord({ citizen }: { citizen: Citizen }) {
                 </div>
             </Card>
 
-            <BiometricsOnFile citizen={citizen} />
+            <RecordDetails citizen={citizen} />
+            <BiometricsOnFile citizen={citizen} onOpen={onOpen} />
             <Notes citizen={citizen} />
         </section>
     );
 }
 
 // The fingerprint and DNA profile on the citizen's record, put on file from samples the officer is carrying
-function BiometricsOnFile({ citizen }: { citizen: Citizen }) {
+function BiometricsOnFile({ citizen, onOpen }: { citizen: Citizen; onOpen: (citizen: Citizen) => void }) {
     const { t } = useTranslation();
+    // a sample that's already on someone else's record, waiting for the officer to decide
+    const [conflict, setConflict] = useState<{ type: Biometric; biometricData: string; owner: Citizen } | null>(null);
     const [onFile, setOnFile] = useState<{ fingerprint?: string; dna?: string }>({});
     const [samples, setSamples] = useState<Record<Biometric, CarriedSample[]>>({ fingerprint: [], dna: [] });
     const [busy, setBusy] = useState(false);
@@ -253,10 +289,17 @@ function BiometricsOnFile({ citizen }: { citizen: Citizen }) {
 
     useEffect(() => { load(); }, [load]);
 
-    const link = async (type: Biometric, biometricData?: string) => {
+    const link = async (type: Biometric, biometricData?: string, move = false) => {
         setBusy(true);
-        const result = await callServer("evidences:linkBiometricDataToIdentifier", { type, identifier: citizen.identifier, biometricData });
+        setConflict(null);
+        const result = await callServer("evidences:linkBiometricDataToIdentifier", { type, identifier: citizen.identifier, biometricData, move }) as { success: boolean; conflict?: Citizen };
         setBusy(false);
+
+        if (!result.success && result.conflict && biometricData) {
+            setMessage(null);
+            setConflict({ type, biometricData, owner: result.conflict });
+            return;
+        }
 
         setMessage(result.success
             ? { ok: true, text: t(biometricData ? "booking.linked" : "booking.unlinked", t(`laptop.desktop_screen.common.${type}`)) }
@@ -270,6 +313,32 @@ function BiometricsOnFile({ citizen }: { citizen: Citizen }) {
                 <Label>{t("booking.biometrics")}</Label>
                 {message && <span className={cn("text-xs", message.ok ? "text-ok" : "text-bad")}>{message.text}</span>}
             </div>
+
+            {conflict && (
+                <Card className="space-y-3 border-warn/50 bg-warn/5 p-4">
+                    <div className="flex items-start gap-3">
+                        <AlertTriangle size={18} className="mt-0.5 shrink-0 text-warn" />
+                        <div className="text-sm">
+                            <p className="font-semibold">{t("records.conflict.title", t(`laptop.desktop_screen.common.${conflict.type}`), conflict.owner.fullName)}</p>
+                            <p className="text-xs text-muted">{t("records.conflict.hint", citizen.fullName)}</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap justify-end gap-2">
+                        <Button variant="ghost" disabled={busy} onClick={() => setConflict(null)}>{t("records.conflict.cancel")}</Button>
+                        <Button variant="outline" disabled={busy} onClick={() => link(conflict.type, conflict.biometricData, true)}>{t("records.conflict.move")}</Button>
+                        <Button variant="outline" disabled={busy} onClick={() => onOpen(conflict.owner)}>{t("records.conflict.open", conflict.owner.fullName)}</Button>
+                        <Button disabled={busy} onClick={async () => {
+                            setBusy(true);
+                            await callServer("evidences:records:addAlias", { identifier: conflict.owner.identifier, alias: citizen.fullName });
+                            setBusy(false);
+                            onOpen(conflict.owner);
+                        }}>
+                            <Tag size={14} />
+                            {t("records.conflict.alias", citizen.fullName, conflict.owner.fullName)}
+                        </Button>
+                    </div>
+                </Card>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
                 {(["fingerprint", "dna"] as Biometric[]).map(type => {
@@ -315,6 +384,100 @@ function BiometricsOnFile({ citizen }: { citizen: Citizen }) {
                     );
                 })}
             </div>
+        </div>
+    );
+}
+
+interface Alias {
+    id: number;
+    alias: string;
+    addedBy: string;
+}
+
+const flagStyles: Record<CitizenFlag["flag"], string> = {
+    wanted: "border-bad/50 bg-bad/10 text-bad",
+    armed: "border-bad/50 bg-bad/10 text-bad",
+    bail: "border-warn/50 bg-warn/10 text-warn",
+    warning: "border-warn/50 bg-warn/10 text-warn"
+};
+
+// Warnings on the record (shown with any fingerprint or lab match) and other names the person has given
+function RecordDetails({ citizen }: { citizen: Citizen }) {
+    const { t } = useTranslation();
+    const [flags, setFlags] = useState<CitizenFlag[]>([]);
+    const [aliases, setAliases] = useState<Alias[]>([]);
+    const [flag, setFlag] = useState<CitizenFlag["flag"]>("wanted");
+    const [note, setNote] = useState("");
+    const [alias, setAlias] = useState("");
+    const [busy, setBusy] = useState(false);
+
+    const load = useCallback(async () => {
+        const result = await callServer<{ flags: CitizenFlag[]; aliases: Alias[] }>("evidences:records:get", { identifier: citizen.identifier });
+        setFlags(result.success && result.response ? result.response.flags : []);
+        setAliases(result.success && result.response ? result.response.aliases : []);
+    }, [citizen.identifier]);
+
+    useEffect(() => { load(); }, [load]);
+
+    const run = async (name: string, args: object) => {
+        setBusy(true);
+        await callServer(name, args);
+        setBusy(false);
+        load();
+    };
+
+    return (
+        <div className="grid grid-cols-2 gap-4">
+            <Card className="space-y-3 p-4">
+                <Label>{t("records.flags_title")}</Label>
+                {flags.length === 0
+                    ? <p className="text-xs text-muted">{t("records.no_flags")}</p>
+                    : <div className="flex flex-wrap gap-1.5">
+                        {flags.map(entry => (
+                            <span key={entry.id} title={t("records.added_by", entry.addedBy)}
+                                className={cn("inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-semibold", flagStyles[entry.flag])}>
+                                <AlertTriangle size={12} />
+                                {t(`records.flags.${entry.flag}`)}{entry.note ? `: ${entry.note}` : ""}
+                                <button type="button" disabled={busy} title={t("booking.remove")} onClick={() => run("evidences:records:removeFlag", { id: entry.id })}
+                                    className="cursor-pointer opacity-60 hover:opacity-100"><X size={12} /></button>
+                            </span>
+                        ))}
+                    </div>}
+                <div className="flex gap-1.5">
+                    <select className="th-input w-auto px-2 py-1.5 text-xs" value={flag} onChange={event => setFlag(event.target.value as CitizenFlag["flag"])}>
+                        {(["wanted", "armed", "bail", "warning"] as const).map(option => <option key={option} value={option}>{t(`records.flags.${option}`)}</option>)}
+                    </select>
+                    <input className="th-input min-w-0 flex-1 px-2 py-1.5 text-xs" maxLength={250} placeholder={t("records.flag_note")} value={note} onChange={event => setNote(event.target.value)} />
+                    <Button className="px-2.5 py-1.5 text-xs" disabled={busy || (flag === "warning" && !note.trim())}
+                        onClick={() => { run("evidences:records:addFlag", { identifier: citizen.identifier, flag, note: note.trim() }); setNote(""); }}>
+                        <Plus size={12} />
+                    </Button>
+                </div>
+            </Card>
+
+            <Card className="space-y-3 p-4">
+                <Label>{t("records.aliases_title")}</Label>
+                {aliases.length === 0
+                    ? <p className="text-xs text-muted">{t("records.no_aliases")}</p>
+                    : <div className="flex flex-wrap gap-1.5">
+                        {aliases.map(entry => (
+                            <span key={entry.id} title={t("records.added_by", entry.addedBy)}
+                                className="inline-flex items-center gap-1.5 rounded-md border border-line px-2 py-1 text-xs">
+                                <Tag size={12} className="text-muted" />
+                                {entry.alias}
+                                <button type="button" disabled={busy} title={t("booking.remove")} onClick={() => run("evidences:records:removeAlias", { id: entry.id })}
+                                    className="cursor-pointer text-muted hover:text-bad"><X size={12} /></button>
+                            </span>
+                        ))}
+                    </div>}
+                <div className="flex gap-1.5">
+                    <input className="th-input min-w-0 flex-1 px-2 py-1.5 text-xs" maxLength={100} placeholder={t("records.alias_placeholder")} value={alias} onChange={event => setAlias(event.target.value)} />
+                    <Button className="px-2.5 py-1.5 text-xs" disabled={busy || !alias.trim()}
+                        onClick={() => { run("evidences:records:addAlias", { identifier: citizen.identifier, alias: alias.trim() }); setAlias(""); }}>
+                        <Plus size={12} />
+                    </Button>
+                </div>
+            </Card>
         </div>
     );
 }

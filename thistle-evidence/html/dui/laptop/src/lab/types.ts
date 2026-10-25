@@ -6,6 +6,7 @@ export type Kind = "dna" | "fingerprint" | "ballistics";
 export interface LabEvidence {
     kind: Kind;
     evidenceType: string; // blood, saliva, fingerprint, bullet, casing, magazine, gunshot_residue, or an item name
+    negative?: boolean; // a gunshot residue swab that found none
     analysed: boolean;
     result?: "full" | "partial" | "failed"; // how much the first analysis could read (config.evidenceAging)
     quality?: number; // the sample's condition, 0-100
