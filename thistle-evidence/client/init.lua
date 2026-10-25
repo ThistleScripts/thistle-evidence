@@ -27,6 +27,7 @@ require "client.permissions"
 
 require "client.evidences.uv"
 require "client.evidences.uv_hints"
+require "client.evidences.bleach"
 require "client.evidences.markers"
 require "client.evidences.floodlights"
 require "client.evidences.locker"

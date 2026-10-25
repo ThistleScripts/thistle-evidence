@@ -834,5 +834,12 @@
             "open": "Open %s",
             "alias": "Add %s as an alias of %s"
         }
+    },
+    "bleach": {
+        "examine": "Examine residue",
+        "examined": {
+            "title": "Bleach residue",
+            "description": "This spot was cleaned with bleach about %s minutes ago."
+        }
     }
 }

@@ -213,6 +213,15 @@ config.sceneCleaning = {
     missChance = 0.15 -- the chance each piece is missed
 }
 
+-- Bleach residue: destroying ground evidence with an item (hydrogen peroxide, a cleaning kit) or scrubbing a scene with
+-- a scene cleaning kit leaves residue there. It glows faintly under UV light, and officers can examine it to see roughly
+-- how long ago the spot was cleaned. Residue isn't kept over a restart.
+config.bleachResidue = {
+    enabled = true,
+    lifetime = 120, -- minutes before residue fades
+    colour = { r = 190, g = 255, b = 140 } -- how it glows under UV
+}
+
 -- The forensics lab is where evidence gets analysed (DNA, fingerprints, ballistics) and case files are looked up.
 -- Officers open it by targeting a microscope. The laptop doesn't analyse anything.
 -- Who can use it is set by config.permissions.access.

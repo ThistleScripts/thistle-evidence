@@ -3,6 +3,7 @@ local framework <const> = require "server.framework"
 local evidenceTypes <const> = require "common.evidence_types"
 local api <const> = require "server.evidences.api"
 local logger <const> = require "server.logger"
+local bleach <const> = require "server.evidences.bleach"
 local officerPermissions <const> = require "server.permissions"
 
 local actions = {}
@@ -91,6 +92,11 @@ Thistle.Callback.Register("evidences:destroy", function(source, evidenceType, ow
 
     local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
     object[remove.fun](object, table.unpack(remove.arguments))
+
+    -- cleaning a spot on the ground with an item leaves residue there (server/evidences/bleach.lua)
+    if requiredItem and remove.fun == "removeFromCoords" then
+        bleach.leave(remove.arguments[1])
+    end
 
     logger.log(source, "Evidence destroyed", {
         evidenceType = evidenceType,
@@ -451,6 +457,10 @@ Thistle.Callback.Register("evidences:destroyPile", function(source, evidenceType
         for _, coords in ipairs(groups[owner].coords) do
             object:removeFromCoords(coords)
             destroyed += 1
+
+            if requiredItem then
+                bleach.leave(coords)
+            end
         end
     end
 

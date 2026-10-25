@@ -2,6 +2,7 @@
 -- piece has a chance of being missed. It's used up once the cleaning finishes.
 local config <const> = require "config"
 local logger <const> = require "server.logger"
+local bleach <const> = require "server.evidences.bleach"
 
 local settings <const> = config.sceneCleaning
 local item <const> = "scene_cleaning_kit"
@@ -46,7 +47,11 @@ Thistle.Callback.Register("evidences:finishSceneCleaning", function(source)
     for _, entry in ipairs(toRemove) do
         entry.evidence:removeFromCoords(entry.coords)
         cleaned += 1
+        bleach.leave(entry.coords)
     end
+
+    -- the scrubbed patch itself, whether or not there was anything to clean (the player's feet, not their middle)
+    bleach.leave(playerCoords - vector3(0.0, 0.0, 1.0))
 
     logger.log(source, "Scene cleaned", { cleaned = cleaned, missed = missed, coords = tostring(playerCoords) })
     return cleaned
