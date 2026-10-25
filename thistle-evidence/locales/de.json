@@ -557,7 +557,10 @@
                 "description": "Error picking up the microscope"
             }
         },
-        "result": {},
+        "result": {
+            "no_residue": "No gunshot residue found",
+            "no_residue_hint": "The hands swabbed were clean of gunshot residue when the sample was taken. Residue wears off within about 15 minutes, or can be washed off."
+        },
         "vehicle": {
             "found_on": "Found on",
             "plate": "Plate %s"

@@ -194,6 +194,33 @@ local function describeTrace(evidenceType, owner, coordsMetadata)
     end
 end
 
+-- Finds the kit to use (the first in the list the player has: saliva and gunshot residue take a swab kit or a forensic
+-- kit) and wears the most worn one of that kind down by a use.
+---@return boolean used
+local function useKit(source, kits)
+    local slots
+    for _, kit in ipairs(type(kits) == "table" and kits or { kits or "forensic_kit" }) do
+        slots = exports.ox_inventory:GetSlotsWithItem(source, kit)
+        if slots and #slots > 0 then
+            break
+        end
+    end
+
+    if not slots or #slots < 1 then
+        return false
+    end
+
+    local mostWorn = slots[1]
+    for _, slot in ipairs(slots) do
+        if ((slot.metadata and slot.metadata.durability) or 100) < ((mostWorn.metadata and mostWorn.metadata.durability) or 100) then
+            mostWorn = slot
+        end
+    end
+
+    exports.ox_inventory:SetDurability(source, mostWorn.slot, ((mostWorn.metadata and mostWorn.metadata.durability) or 100) - 10)
+    return true
+end
+
 ---@param source number The collecting player
 ---@param evidenceType string
 ---@param owner number|string The evidence owner, or a player's server id when taking their biometrics directly
@@ -229,33 +256,14 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
         return fail("cannot_carry")
     end
 
-    -- the first kit in the list the player has (saliva and gunshot residue take a swab kit or a forensic kit)
-    local kits <const> = options.target.collect.requiredItem or "forensic_kit"
-    local slots
-    for _, kit in ipairs(type(kits) == "table" and kits or { kits }) do
-        slots = exports.ox_inventory:GetSlotsWithItem(source, kit)
-        if slots and #slots > 0 then
-            break
-        end
-    end
-
-    if not slots or #slots < 1 then
-        return fail("no_kit")
-    end
-
     local object <const> = api.get(api.evidenceTypes[evidenceType], owner)
     if not object then
         return false
     end
 
-    local lowestDurability = lib.array.reduce(lib.array:from(slots), function(accumulator, element)
-        local accDurability = (accumulator.metadata and accumulator.metadata.durability) or 100
-        local elemDurability = (element.metadata and element.metadata.durability) or 100
-
-        return elemDurability < accDurability and element or accumulator
-    end, slots[1])
-
-    exports.ox_inventory:SetDurability(source, lowestDurability.slot, ((lowestDurability.metadata and lowestDurability.metadata.durability) or 100) - 10)
+    if not useKit(source, options.target.collect.requiredItem) then
+        return fail("no_kit")
+    end
 
     local success <const>, response <const> = exports.ox_inventory:AddItem(source, collectedItem, 1)
     if not success then
@@ -305,6 +313,51 @@ function actions.collect(source, evidenceType, owner, remove, metadata, amount)
     logger.log(source, "Evidence collected", data)
     return true
 end
+
+-- A gunshot residue test of clean hands (client/evidences/evidences.lua): the swab is taken all the same, and the lab
+-- reports no residue on it. Officers can't tell from the menu whether someone has fired a gun; they find out in the lab.
+Thistle.Callback.Register("evidences:swabNoResidue", function(source, targetId, metadata)
+    targetId = tonumber(targetId)
+    if not targetId or targetId <= 0 or targetId == source or not DoesPlayerExist(targetId)
+        or not api.isNear(source, GetEntityCoords(GetPlayerPed(targetId)), reach)
+        or not framework.hasPermission(config.permissions.collect, source)
+        or not officerPermissions.canCollect(source, "gunshot_residue") then
+        return false
+    end
+
+    -- residue there after all: the normal swab collects it
+    local residue <const> = Player(targetId).state["evidences:gunshot_residue"]
+    if type(residue) == "table" and next(residue) then
+        return false
+    end
+
+    local options <const> = evidenceTypes.gunshot_residue
+    local collectedItem <const> = options.target.collect.collectedItem
+
+    if not exports.ox_inventory:CanCarryItem(source, collectedItem, 1) then
+        TriggerClientEvent("evidences:notify", source, { key = "evidences.notifications.common.errors.cannot_carry" }, "error")
+        return false
+    end
+
+    if not useKit(source, options.target.collect.requiredItem) then
+        TriggerClientEvent("evidences:notify", source, { key = "evidences.notifications.common.errors.no_kit" }, "error")
+        return false
+    end
+
+    local now <const> = os.time()
+    metadata = sanitizeMetadata(metadata)
+    metadata.createdAt = now
+    metadata.collectedAt = now
+    metadata.ballistics = { owner = "none", type = "gunshot_residue", negative = true, createdAt = now }
+    metadata.description = require "server.evidences.evidence_information"(metadata.information)
+
+    if not exports.ox_inventory:AddItem(source, collectedItem, 1, metadata) then
+        return false
+    end
+
+    logger.log(source, "Evidence collected", { evidenceType = "gunshot_residue", result = "no residue", target = targetId })
+    return true
+end)
 
 Thistle.Callback.Register("evidences:collect", function(source, evidenceType, owner, remove, metadata)
     if not evidenceTypes[evidenceType] or not isEvidenceInReach(source, evidenceType, owner, remove) then

@@ -308,6 +308,17 @@ function WeaponTypeResult({ evidence, note }: { evidence: LabEvidence; note?: st
     const { t } = useTranslation();
     const locales = t("laptop.desktop_screen.common.date_locales");
 
+    // a swab of clean hands
+    if (evidence.negative) {
+        return (
+            <Card className="animate-th-rise space-y-1 px-6 py-5">
+                <Label>{t("lab.result.weapon_type")}</Label>
+                <p className="font-display text-xl font-bold">{t("lab.result.no_residue")}</p>
+                <p className="text-sm text-muted">{t("lab.result.no_residue_hint")}</p>
+            </Card>
+        );
+    }
+
     return (
         <Card className="animate-th-rise flex items-center gap-6 px-6 py-5">
             {evidence.weaponImage && <img src={evidence.weaponImage} className="h-20 w-28 shrink-0 object-contain" />}

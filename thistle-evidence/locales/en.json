@@ -631,7 +631,9 @@
             "type_only": {
                 "magazine": "Magazines can be matched to a weapon type, but not to an individual gun.",
                 "gunshot_residue": "Gunshot residue shows the type of weapon fired and when, but not the individual gun."
-            }
+            },
+            "no_residue": "No gunshot residue found",
+            "no_residue_hint": "The hands swabbed were clean of gunshot residue when the sample was taken. Residue wears off within about 15 minutes, or can be washed off."
         },
         "links": {
             "title": "Linked evidence",

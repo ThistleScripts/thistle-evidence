@@ -38,6 +38,12 @@ local function getTargetedEvidences(evidences, isTargeted)
 end
 
 -- atPlayer
+-- A gunshot residue test is offered on everyone (with a kit): clean hands give a swab the lab reports as no residue, so
+-- officers can't read the answer off the menu.
+local function isResidueTest(evidenceType, action)
+    return evidenceType == "gunshot_residue" and action == "collect"
+end
+
 local function createPlayerTarget(evidenceType, options, action)
     return {
         name = string.format("%s:player:%s", evidenceType, action),
@@ -57,6 +63,10 @@ local function createPlayerTarget(evidenceType, options, action)
                 return false
             end
             
+            if isResidueTest(evidenceType, action) then
+                return true
+            end
+
             -- get all evidences of evidenceType on the player
             local player <const> = GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
             local evidences <const> = Player(player).state[string.format("evidences:%s", evidenceType)] or {}
@@ -66,6 +76,22 @@ local function createPlayerTarget(evidenceType, options, action)
             local player <const> = GetPlayerServerId(NetworkGetPlayerIndexFromPed(data.entity))
             local evidences <const> = Player(player).state[string.format("evidences:%s", evidenceType)] or {}
             local targetedEvidences = getTargetedEvidences(evidences, function(_) return true end)
+
+            -- clean hands: the swab is taken all the same
+            if #targetedEvidences == 0 and isResidueTest(evidenceType, action) then
+                local metadata <const> = options.target.collect.createMetadata(evidenceType, {}, data.coords, { player = true })
+                if not Thistle.Callback.Await("evidences:swabNoResidue", player, metadata) then
+                    config.notify({ key = "evidences.notifications.common.errors.collect" }, "error")
+                    return
+                end
+
+                lib.playAnim(cache.ped, "mp_common", "givetake1_a")
+                config.notify({
+                    key = "evidences.notifications.collect",
+                    arguments = { locale("evidences.notifications.common.placeholders.at_player") }
+                }, "success")
+                return
+            end
 
             for _, evidence in pairs(targetedEvidences) do
                 local metadata <const> = options.target[action].createMetadata and options.target[action].createMetadata(evidenceType, evidence.data, data.coords, { player = true }) or nil

@@ -143,6 +143,7 @@ local function describe(item, kind)
         key = result == "full" and not isTypeOnly(item, kind) and data.owner or nil,
         partialKey = result == "partial" and kind ~= "ballistics" and maskKey(data.owner) or nil,
         createdAt = item.metadata.createdAt or data.createdAt, -- when the trace was left (a shot, for gunshot residue)
+        negative = data.negative or nil, -- a gunshot residue swab of clean hands
         weaponType = data.weaponType,
         weaponImage = data.weaponImage,
         crimeScene = information.crimeScene or "",
